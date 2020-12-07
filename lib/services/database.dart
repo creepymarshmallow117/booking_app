@@ -4,17 +4,11 @@ class DatabaseService{
   final String uid;
   DatabaseService({this.uid});
 
-  Future updateDocument(String typeOfUser) async {
-    final CollectionReference collection = FirebaseFirestore.instance.collection(typeOfUser);
-    if(typeOfUser == "user"){
+  Future createDocument(String displayName, String typeOfUser) async {
+    final CollectionReference collection = FirebaseFirestore.instance.collection("user");
       return await collection.doc(uid).set({
-        typeOfUser: typeOfUser
+        'displayName': displayName,
+        'typeOfUser': 'user'
       });
-    }
-    else{
-      return await collection.doc(uid).set({
-        typeOfUser: typeOfUser
-      });
-    }
   }
 }

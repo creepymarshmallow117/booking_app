@@ -14,8 +14,8 @@ class _RegisterState extends State<Register> {
   //email and password
   String email = '';
   String password = '';
+  String displayName = '';
   String error = '';
-  TypeOfUser typeUser = TypeOfUser.user;
 
   @override
   Widget build(BuildContext context) {
@@ -62,29 +62,16 @@ class _RegisterState extends State<Register> {
                   ),
                 ),
                 SizedBox(height: 20.0),
-                ListTile(
-                    title: const Text("User"),
-                    leading: Radio(
-                      value: TypeOfUser.user,
-                      groupValue: typeUser,
-                      onChanged: (TypeOfUser value){
-                        setState(() {
-                          typeUser = value;
-                        });
-                      },
-                    )
-                ),
-                ListTile(
-                    title: const Text("Client"),
-                    leading: Radio(
-                      value: TypeOfUser.client,
-                      groupValue: typeUser,
-                      onChanged: (TypeOfUser value){
-                        setState(() {
-                          typeUser = value;
-                        });
-                      },
-                    )
+                TextFormField(
+                  validator: (val) => displayName.isEmpty ? "a display name is required": null,
+                  decoration: new InputDecoration(
+                      hintText: 'display name'
+                  ),
+                  onChanged: (val){
+                    setState(() {
+                      displayName = val;
+                    });
+                  },
                 ),
                 SizedBox(height: 20.0),
                 RaisedButton(
@@ -94,7 +81,7 @@ class _RegisterState extends State<Register> {
                       print(email);
                       print(password);
                       if (formKey.currentState.validate()){
-                        dynamic result = await auth.registerWithEmail(email, password, typeUser.toString());
+                        dynamic result = await auth.registerWithEmail(email, password, displayName);
                         if(result == null){
                           setState((){
                             error = 'please supply a valid email';
