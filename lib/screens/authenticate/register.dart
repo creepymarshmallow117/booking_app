@@ -6,6 +6,7 @@ class Register extends StatefulWidget {
   _RegisterState createState() => _RegisterState();
 }
 
+enum TypeOfUser { user, client}
 class _RegisterState extends State<Register> {
   final AuthService auth = AuthService();
   final formKey = GlobalKey<FormState>();
@@ -14,13 +15,15 @@ class _RegisterState extends State<Register> {
   String email = '';
   String password = '';
   String error = '';
+  TypeOfUser typeUser = TypeOfUser.user;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.brown[400],
         elevation: 0.0,
-        title: Text("Sign in to Brew Crew"),
+        title: Text("Sign up to Booking app"),
       ),
       body: Container(
         padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
@@ -51,6 +54,39 @@ class _RegisterState extends State<Register> {
                   ),
                 ),
                 SizedBox(height: 20.0),
+                TextFormField(
+                  validator: (val) => password != val ? "Password mismatch": null,
+                  obscureText: true,
+                  decoration: new InputDecoration(
+                      hintText: 're enter password'
+                  ),
+                ),
+                SizedBox(height: 20.0),
+                ListTile(
+                    title: const Text("User"),
+                    leading: Radio(
+                      value: TypeOfUser.user,
+                      groupValue: typeUser,
+                      onChanged: (TypeOfUser value){
+                        setState(() {
+                          typeUser = value;
+                        });
+                      },
+                    )
+                ),
+                ListTile(
+                    title: const Text("Client"),
+                    leading: Radio(
+                      value: TypeOfUser.client,
+                      groupValue: typeUser,
+                      onChanged: (TypeOfUser value){
+                        setState(() {
+                          typeUser = value;
+                        });
+                      },
+                    )
+                ),
+                SizedBox(height: 20.0),
                 RaisedButton(
                     color: Colors.red[200],
                     child: Text('Register', style: TextStyle(color: Colors.brown[400])),
@@ -58,7 +94,7 @@ class _RegisterState extends State<Register> {
                       print(email);
                       print(password);
                       if (formKey.currentState.validate()){
-                        dynamic result = await auth.registerWithEmail(email, password);
+                        dynamic result = await auth.registerWithEmail(email, password, typeUser.toString());
                         if(result == null){
                           setState((){
                             error = 'please supply a valid email';
@@ -67,11 +103,11 @@ class _RegisterState extends State<Register> {
                         else{
                           setState(() {
                             error = 'done';
+                            print(result);
                           });
                         }
                       }
                     }),
-                SizedBox(height: 12.0),
                 Text(
                   error,
                   style: TextStyle(color: Colors.red, fontSize: 14.0),
