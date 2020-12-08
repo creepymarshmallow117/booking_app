@@ -1,12 +1,17 @@
+import 'dart:io';
+
+import 'package:path/path.dart';
 import 'package:booking_app/services/auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class Register extends StatefulWidget {
   @override
   _RegisterState createState() => _RegisterState();
 }
 
-enum TypeOfUser { user, client}
+
 class _RegisterState extends State<Register> {
   final AuthService auth = AuthService();
   final formKey = GlobalKey<FormState>();
@@ -71,6 +76,27 @@ class _RegisterState extends State<Register> {
                     setState(() {
                       displayName = val;
                     });
+                  },
+                ),
+                SizedBox(height: 20.0),
+                RaisedButton(
+                  color: Colors.red[200],
+                  child: Text('Upload Image', style: TextStyle(color: Colors.brown[400])),
+                  onPressed: () async{
+                    File _image;
+                    final picker = ImagePicker();
+                    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+                    setState(() {
+                      _image = File(pickedFile.path);
+                    });
+                    String fileName = basename(_image.path);
+                    Reference firebaseStorageRef =
+                    FirebaseStorage.instance.ref().child('uploads/$fileName');
+                    UploadTask uploadTask = firebaseStorageRef.putFile(_image);
+                    TaskSnapshot taskSnapshot = await uploadTask;
+                    taskSnapshot.ref.getDownloadURL().then(
+                          (value) => print("Done: $value"),
+                    );
                   },
                 ),
                 SizedBox(height: 20.0),
