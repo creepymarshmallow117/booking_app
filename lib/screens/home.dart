@@ -7,7 +7,6 @@ import 'package:booking_app/screens/profile.dart';
 import 'package:booking_app/screens/logout.dart';
 import 'package:booking_app/screens/cart.dart';
 
-
 class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
