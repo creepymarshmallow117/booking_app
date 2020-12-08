@@ -1,18 +1,19 @@
-//This is the profiles page.
+//This is the cart page.
 
 import 'package:flutter/material.dart';
 import 'package:booking_app/screens/home.dart';
 import 'package:booking_app/screens/orders.dart';
+import 'package:booking_app/screens/profile.dart';
 import 'package:booking_app/screens/logout.dart';
 
-class Profile extends StatelessWidget {
+class Cart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Profile Page'),
-          backgroundColor: Colors.green,
+          title: Text('Your Items'),
+          backgroundColor: Colors.blueGrey,
         ),
         drawer: Drawer(
           child: ListView(
@@ -74,7 +75,7 @@ class Profile extends StatelessWidget {
           ),
         ),
         body: Scaffold(
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.grey,
         ),
       ),
     );
