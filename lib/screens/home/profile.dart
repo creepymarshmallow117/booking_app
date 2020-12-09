@@ -1,21 +1,31 @@
 //This is the profiles page.
 
 import 'package:booking_app/services/auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'file:///C:/Users/Aditya/AndroidStudioProjects/booking_app/lib/screens/home/home.dart';
 import 'file:///C:/Users/Aditya/AndroidStudioProjects/booking_app/lib/screens/home/orders.dart';
+import 'package:provider/provider.dart';
+import 'package:booking_app/services/database.dart';
 
 class Profile extends StatefulWidget {
+  final DocumentSnapshot userDocument;
+  Profile({this.userDocument});
   @override
   _ProfileState createState() => _ProfileState();
 }
 
 class _ProfileState extends State<Profile> {
   final AuthService auth = AuthService();
+  final DatabaseService db = DatabaseService();
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
+    final AuthService auth = AuthService();
+    //final DatabaseService db = DatabaseService();
+    final user = Provider.of<User>(context);
+    print(user.uid);
+    return Scaffold (
         appBar: AppBar(
           title: Text('Profile Page'),
           backgroundColor: Colors.green,
@@ -80,10 +90,19 @@ class _ProfileState extends State<Profile> {
             ],
           ),
         ),
-        body: Scaffold(
-          backgroundColor: Colors.white,
-        ),
-      ),
-    );
+        body: Container(
+          child: Center(
+            child: Column(
+              children: [
+                Text('User details:\n', style: TextStyle(backgroundColor: Colors.lightGreenAccent, color: Colors.green,fontWeight: FontWeight.bold)),
+                Text('Display Name:\n', style: TextStyle(backgroundColor: Colors.lightGreenAccent, color: Colors.green,fontWeight: FontWeight.bold)),
+                Text(widget.userDocument['displayName']+'\n', style: TextStyle(color: Colors.green)),
+                Text('Type Of User:\n', style: TextStyle(backgroundColor: Colors.lightGreenAccent, color: Colors.green,fontWeight: FontWeight.bold)),
+                Text(widget.userDocument['typeOfUser']+'\n', style: TextStyle(color: Colors.green))
+              ],
+            ),
+          )
+          ),
+      );
   }
 }

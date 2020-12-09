@@ -2,6 +2,7 @@
 
 import 'package:booking_app/screens/authenticate/authenticate.dart';
 import 'package:booking_app/services/auth.dart';
+import 'package:booking_app/services/database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     final AuthService auth = AuthService();
+    final DatabaseService db = DatabaseService();
     final user = Provider.of<User>(context);
     if(user == null){
       setState(() => _isVisible = false);
@@ -121,11 +123,24 @@ class _HomeState extends State<Home> {
             child: ListTile(
             leading: Icon(Icons.account_circle),
             title: Text('Profile'),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.push(context,
-              MaterialPageRoute(builder: (context) => Profile()),
-            );
+            onTap: () async{
+              if(user != null) {
+                print("inside here");
+                dynamic result =  await db.getDocument(user.uid.toString());
+                if (result == null) {
+                  print("this is a problem");
+                }
+                else {
+                  print(result);
+                  Navigator.pop(context);
+                  Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => Profile(userDocument: result)),
+                  );
+                }
+              }
+              else{
+                print("this is a big problem");
+              }
             },
           ),
           ),

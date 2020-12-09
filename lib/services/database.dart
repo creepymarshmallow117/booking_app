@@ -11,4 +11,12 @@ class DatabaseService{
         'typeOfUser': 'user'
       });
   }
+  Future getDocument(String uid) async{
+    CollectionReference collection = FirebaseFirestore.instance.collection("user");
+    dynamic document = await collection.doc(uid).get();
+    if(document == null){
+      collection = FirebaseFirestore.instance.collection("client");
+    }
+    return document;
+  }
 }
