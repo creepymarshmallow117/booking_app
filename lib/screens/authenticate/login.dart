@@ -1,3 +1,4 @@
+import 'package:booking_app/screens/home.dart';
 import 'package:flutter/material.dart';
 import 'package:booking_app/services/auth.dart';
 
@@ -71,6 +72,12 @@ class _LoginState extends State<Login> {
                               setState((){
                                 error = 'could not sign in with credentials';
                               });
+                            }
+                            else{
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => Home()),
+                              );
                             }
                           }
                         }),

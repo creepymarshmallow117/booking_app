@@ -1,15 +1,27 @@
 //This is the home page.
 
+import 'package:booking_app/screens/authenticate/authenticate.dart';
+import 'package:booking_app/services/auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:booking_app/screens/orders.dart';
 import 'package:booking_app/screens/profile.dart';
 import 'package:booking_app/screens/logout.dart';
 import 'package:booking_app/screens/cart.dart';
+import 'package:provider/provider.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget{
+  @override
+  _HomeState createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
+    final AuthService auth = AuthService();
+    final user = Provider.of<User>(context);
+    print(user);
     return MaterialApp(
       home : Scaffold(
         appBar: AppBar(
@@ -72,20 +84,25 @@ class Home extends StatelessWidget {
                 leading: Icon(Icons.account_circle),
                 title: Text('Profile'),
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Profile()),
-                  );
+                  if(user != null) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Profile()),
+                    );
+                  }
+                  else{
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Authenticate()),
+                    );
+                  }
                 },
               ),
               ListTile(
                 leading: Icon(Icons.logout),
                 title: Text('Log Out'),
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Logout()),
-                  );
+                  auth.signOut();
                 },
               ),
             ],

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:booking_app/screens/home.dart';
 import 'package:path/path.dart';
 import 'package:booking_app/services/auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -124,10 +125,10 @@ class _RegisterState extends State<Register> {
                           });
                         }
                         else{
-                          setState(() {
-                            error = 'done';
-                            print(result);
-                          });
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => Home()),
+                          );
                         }
                       }
                     }),
