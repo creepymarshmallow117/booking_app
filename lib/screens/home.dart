@@ -17,13 +17,17 @@ class Home extends StatefulWidget{
 }
 
 class _HomeState extends State<Home> {
+  bool _isVisible = false;
   @override
   Widget build(BuildContext context) {
     final AuthService auth = AuthService();
     final user = Provider.of<User>(context);
-    print(user);
-    return MaterialApp(
-      home : Scaffold(
+    if(user == null){
+      setState(() => _isVisible = false);
+    }else{
+      setState(() => _isVisible = true);
+    }
+    return Scaffold(
         appBar: AppBar(
           title: const Text('Home'),
           actions: <Widget>[
@@ -70,7 +74,10 @@ class _HomeState extends State<Home> {
                   );
                 },
               ),
-              ListTile(
+              Visibility(
+                visible: _isVisible,
+                child: ListTile(
+
                 leading: Icon(Icons.message),
                 title: Text('Your Orders'),
                 onTap: () {
@@ -80,36 +87,47 @@ class _HomeState extends State<Home> {
                   );
                 },
               ),
-              ListTile(
+              ),
+              Visibility(
+                visible: _isVisible,
+                child: ListTile(
                 leading: Icon(Icons.account_circle),
                 title: Text('Profile'),
                 onTap: () {
-                  if(user != null) {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => Profile()),
                     );
-                  }
-                  else{
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Authenticate()),
-                    );
-                  }
                 },
               ),
-              ListTile(
+              ),
+              Visibility(
+                visible: _isVisible,
+                child: ListTile(
                 leading: Icon(Icons.logout),
                 title: Text('Log Out'),
                 onTap: () {
                   auth.signOut();
                 },
               ),
+              ),
+              Visibility(
+                  visible: !_isVisible,
+                  child: ListTile(
+                    leading: Icon(Icons.account_circle),
+                    title: Text('Login/Sign up'),
+                    onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Authenticate()),
+                        );
+                    },
+                  ),
+              ),
             ],
           ),
         ),
-      ),
-    );
+      );
   }
 }
 
