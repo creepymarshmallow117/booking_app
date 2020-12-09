@@ -1,24 +1,24 @@
-//This is the orders page.
+//This is the profiles page.
 
 import 'package:booking_app/services/auth.dart';
 import 'package:flutter/material.dart';
-import 'package:booking_app/screens/home.dart';
-import 'package:booking_app/screens/profile.dart';
+import 'file:///C:/Users/Aditya/AndroidStudioProjects/booking_app/lib/screens/home/home.dart';
+import 'file:///C:/Users/Aditya/AndroidStudioProjects/booking_app/lib/screens/home/orders.dart';
 
-class Orders extends StatefulWidget {
+class Profile extends StatefulWidget {
   @override
-  _OrdersState createState() => _OrdersState();
+  _ProfileState createState() => _ProfileState();
 }
 
-class _OrdersState extends State<Orders> {
+class _ProfileState extends State<Profile> {
   final AuthService auth = AuthService();
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Here are your orders'),
-          backgroundColor: Colors.blueGrey,
+          title: Text('Profile Page'),
+          backgroundColor: Colors.green,
         ),
         drawer: Drawer(
           child: ListView(
@@ -81,7 +81,7 @@ class _OrdersState extends State<Orders> {
           ),
         ),
         body: Scaffold(
-          backgroundColor: Colors.grey,
+          backgroundColor: Colors.white,
         ),
       ),
     );

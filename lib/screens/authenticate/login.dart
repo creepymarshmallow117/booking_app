@@ -1,4 +1,4 @@
-import 'package:booking_app/screens/home.dart';
+import 'file:///C:/Users/Aditya/AndroidStudioProjects/booking_app/lib/screens/home/home.dart';
 import 'package:flutter/material.dart';
 import 'package:booking_app/services/auth.dart';
 

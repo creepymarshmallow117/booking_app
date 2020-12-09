@@ -5,9 +5,9 @@ import 'package:booking_app/services/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:booking_app/screens/orders.dart';
-import 'package:booking_app/screens/profile.dart';
-import 'package:booking_app/screens/cart.dart';
+import 'file:///C:/Users/Aditya/AndroidStudioProjects/booking_app/lib/screens/home/orders.dart';
+import 'file:///C:/Users/Aditya/AndroidStudioProjects/booking_app/lib/screens/home/profile.dart';
+import 'file:///C:/Users/Aditya/AndroidStudioProjects/booking_app/lib/screens/home/cart.dart';
 import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget{

@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:booking_app/screens/home.dart';
+import 'file:///C:/Users/Aditya/AndroidStudioProjects/booking_app/lib/screens/home/home.dart';
 import 'package:path/path.dart';
 import 'package:booking_app/services/auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
