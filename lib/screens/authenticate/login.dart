@@ -24,7 +24,7 @@ class _LoginState extends State<Login> {
         backgroundColor:  Colors.brown[100],
         appBar: AppBar(backgroundColor: Colors.brown[400],
             elevation: 0.0,
-            title: Text("Sign in to Booking app"),
+            title: Text("Log in"),
             actions: <Widget>[
               FlatButton.icon(
                   icon: Icon(Icons.person),
@@ -47,7 +47,7 @@ class _LoginState extends State<Login> {
                           setState(() => email = val);
                         }
                         ,decoration: new InputDecoration(
-                        hintText: 'Email'
+                        hintText: 'Enter Email'
                     )
                     ),
                     SizedBox(height: 20.0),
@@ -58,7 +58,7 @@ class _LoginState extends State<Login> {
                         setState(() => password = val);
                       },
                       decoration: new InputDecoration(
-                          hintText: 'password'
+                          hintText: 'Enter password'
                       ),
                     ),
                     SizedBox(height: 20.0),
@@ -70,7 +70,7 @@ class _LoginState extends State<Login> {
                             dynamic result = await _auth.signInWithEmail(email, password);
                             if (result == null) {
                               setState((){
-                                error = 'could not sign in with credentials';
+                                error = 'Could not sign in with credentials';
                               });
                             }
                             else{

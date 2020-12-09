@@ -7,7 +7,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:booking_app/screens/orders.dart';
 import 'package:booking_app/screens/profile.dart';
-import 'package:booking_app/screens/logout.dart';
 import 'package:booking_app/screens/cart.dart';
 import 'package:provider/provider.dart';
 
@@ -18,6 +17,8 @@ class Home extends StatefulWidget{
 
 class _HomeState extends State<Home> {
   bool _isVisible = false;
+  Widget appBarTitle = new Text("Home");
+  Icon searchIcon = new Icon(Icons.search);
   @override
   Widget build(BuildContext context) {
     final AuthService auth = AuthService();
@@ -29,193 +30,131 @@ class _HomeState extends State<Home> {
     }
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Home'),
+          title: appBarTitle,
           actions: <Widget>[
+            new IconButton(icon: searchIcon,iconSize : 30,onPressed:(){
+              setState(() {
+                if (this.searchIcon.icon == Icons.search)
+                {
+                  this.searchIcon = new Icon(Icons.close);
+                  this.appBarTitle = new TextField(
+                    style: new TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                    ),
+                    decoration: new InputDecoration(
+                        hintText: "Search...",
+                        border: InputBorder.none,
+                        hintStyle: new TextStyle(color: Colors.white,fontSize: 20)
+                    ),
+                  );}
+                  else {
+                    this.searchIcon = new Icon(Icons.search);
+                    this.appBarTitle = new Text("Home");
+                }
+              });
+            },),
             Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                IconButton(
-                  icon : Icon(Icons.shopping_cart,color: Colors.white),
-                  iconSize: 30,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Cart()),
-                    );
-                  },
-                )
-              ],
-            ),
-          ],
-        ),
-        drawer: Drawer(
-          child: ListView(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              IconButton(
+                          icon : Icon(Icons.shopping_cart,color: Colors.white),
+                          iconSize: 30,
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => Cart()),
+                            );
+                          },
+                        )
+                      ],
+                    ),
+                    ],
+                  ),
+      drawer: Drawer(
+        child: ListView(
             padding: EdgeInsets.zero,
             children: <Widget>[
-              DrawerHeader(
-                decoration: BoxDecoration(
-                  color: Colors.blue,
-                ),
-                child: Text(
-                  'Welcome User',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                  ),
-                ),
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
               ),
-              ListTile(
-                leading: Icon(Icons.home),
-                title: Text('Home'),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Home()),
-                  );
-                },
-              ),
-              Visibility(
-                visible: _isVisible,
-                child: ListTile(
-
-                leading: Icon(Icons.message),
-                title: Text('Your Orders'),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Orders()),
-                  );
-                },
-              ),
-              ),
-              Visibility(
-                visible: _isVisible,
-                child: ListTile(
-                leading: Icon(Icons.account_circle),
-                title: Text('Profile'),
-                onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Profile()),
-                    );
-                },
-              ),
-              ),
-              Visibility(
-                visible: _isVisible,
-                child: ListTile(
-                leading: Icon(Icons.logout),
-                title: Text('Log Out'),
-                onTap: () {
-                  auth.signOut();
-                },
-              ),
-              ),
-              Visibility(
-                  visible: !_isVisible,
-                  child: ListTile(
-                    leading: Icon(Icons.account_circle),
-                    title: Text('Login/Sign up'),
-                    onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => Authenticate()),
-                        );
-                    },
-                  ),
-              ),
-            ],
+              child: Text('Welcome User',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+             ),
+            ),
           ),
-        ),
-      );
+          ListTile(
+            leading: Icon(Icons.home),
+            title: Text('Home'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(context,
+              MaterialPageRoute(builder: (context) => Home()),
+              );
+            },
+          ),
+          Visibility(
+            visible: _isVisible,
+            child: ListTile(
+            leading: Icon(Icons.message),
+            title: Text('Your Orders'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push( context,
+              MaterialPageRoute(builder: (context) => Orders()),
+              );
+            },
+          ),
+          ),
+          Visibility(
+            visible: _isVisible,
+            child: ListTile(
+            leading: Icon(Icons.account_circle),
+            title: Text('Profile'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(context,
+              MaterialPageRoute(builder: (context) => Profile()),
+            );
+            },
+          ),
+          ),
+          Visibility(
+            visible: _isVisible,
+            child: ListTile(
+            leading: Icon(Icons.logout),
+            title: Text('Log Out'),
+            onTap: () {
+              Navigator.pop(context);
+              auth.signOut();
+            },
+            ),
+          ),
+          Visibility(
+            visible: !_isVisible,
+            child: ListTile(
+            leading: Icon(Icons.account_circle),
+            title: Text('Login/Sign up'),
+            onTap: () {
+              Navigator.pop(context);
+            Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Authenticate()),
+          );
+          },
+          ),
+          ),
+      ],
+    ),
+    ),
+  );
   }
 }
 
-class Grid extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-          backgroundColor: Colors.teal,
-          body:CustomScrollView(
-            primary: false,
-            slivers: <Widget>[
-              SliverPadding(
-                padding: const EdgeInsets.all(20),
-                sliver: SliverGrid.count(
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                  crossAxisCount: 2,
-                  children: <Widget>[
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      child: const Text("6"),
-                      color: Colors.blueAccent,
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      child: const Text('5'),
-                      color: Colors.blueAccent,
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      child: const Text('4'),
-                      color: Colors.blueAccent,
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      child: const Text('3'),
-                      color: Colors.blueAccent,
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      child: const Text('2'),
-                      color: Colors.green[500],
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      child: const Text('1'),
-                      color: Colors.green[600],
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      child: const Text('1'),
-                      color: Colors.green[600],
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      child: const Text('1'),
-                      color: Colors.green[600],
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      child: const Text('1'),
-                      color: Colors.green[600],
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      child: const Text('1'),
-                      color: Colors.green[600],
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      child: const Text('1'),
-                      color: Colors.green[600],
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      child: const Text('1'),
-                      color: Colors.green[600],
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-      ),
-    );
-  }
-}
+
 
 
 

@@ -5,7 +5,12 @@ import 'package:booking_app/screens/home.dart';
 import 'package:booking_app/screens/orders.dart';
 import 'package:booking_app/screens/logout.dart';
 
-class Profile extends StatelessWidget {
+class Profile extends StatefulWidget {
+  @override
+  _ProfileState createState() => _ProfileState();
+}
+
+class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -34,6 +39,7 @@ class Profile extends StatelessWidget {
                 leading: Icon(Icons.home),
                 title: Text('Home'),
                 onTap: () {
+                  Navigator.pop(context);
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => Home()),
@@ -44,6 +50,7 @@ class Profile extends StatelessWidget {
                 leading: Icon(Icons.message),
                 title: Text('Your Orders'),
                 onTap: () {
+                  Navigator.pop(context);
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => Orders()),
@@ -54,6 +61,7 @@ class Profile extends StatelessWidget {
                 leading: Icon(Icons.account_circle),
                 title: Text('Profile'),
                 onTap: () {
+                  Navigator.pop(context);
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => Profile()),
@@ -64,6 +72,7 @@ class Profile extends StatelessWidget {
                 leading: Icon(Icons.logout),
                 title: Text('Log Out'),
                 onTap: () {
+                  Navigator.pop(context);
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => Logout()),

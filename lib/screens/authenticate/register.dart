@@ -31,11 +31,11 @@ class _RegisterState extends State<Register> {
       appBar: AppBar(
         backgroundColor: Colors.brown[400],
         elevation: 0.0,
-        title: Text("Sign up to Booking app"),
+        title: Text("Register"),
           actions: <Widget>[
       FlatButton.icon(
       icon: Icon(Icons.person),
-        label: Text('Sign in'),
+        label: Text('Log in'),
         onPressed: (){
           widget.toggleView();
         }
@@ -55,7 +55,7 @@ class _RegisterState extends State<Register> {
                   setState(() => email = val);
                 }
                 ,decoration: new InputDecoration(
-                hintText: 'Email'
+                hintText: 'Enter Email'
             )
             ),
                 SizedBox(height: 20.0),
@@ -66,22 +66,22 @@ class _RegisterState extends State<Register> {
                     setState(() => password = val);
                   },
                   decoration: new InputDecoration(
-                      hintText: 'password'
+                      hintText: 'Enter Password'
                   ),
                 ),
                 SizedBox(height: 20.0),
                 TextFormField(
-                  validator: (val) => password != val ? "Password mismatch": null,
+                  validator: (val) => password != val ? "Password aren't the same": null,
                   obscureText: true,
                   decoration: new InputDecoration(
-                      hintText: 're enter password'
+                      hintText: 'Re-enter Password'
                   ),
                 ),
                 SizedBox(height: 20.0),
                 TextFormField(
                   validator: (val) => displayName.isEmpty ? "a display name is required": null,
                   decoration: new InputDecoration(
-                      hintText: 'display name'
+                      hintText: 'Enter Display Name'
                   ),
                   onChanged: (val){
                     setState(() {
