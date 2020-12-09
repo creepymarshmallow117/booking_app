@@ -61,10 +61,17 @@ class _HomeState extends State<Home> {
                           icon : Icon(Icons.shopping_cart,color: Colors.white),
                           iconSize: 30,
                           onPressed: () {
+                            if(_isVisible == true){
                             Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) => Cart()),
                             );
+                            }else{
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => Authenticate()),
+                              );
+                            }
                           },
                         )
                       ],

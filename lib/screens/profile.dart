@@ -1,9 +1,9 @@
 //This is the profiles page.
 
+import 'package:booking_app/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:booking_app/screens/home.dart';
 import 'package:booking_app/screens/orders.dart';
-import 'package:booking_app/screens/logout.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -11,6 +11,7 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  final AuthService auth = AuthService();
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -73,10 +74,7 @@ class _ProfileState extends State<Profile> {
                 title: Text('Log Out'),
                 onTap: () {
                   Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Logout()),
-                  );
+                  auth.signOut();
                 },
               ),
             ],

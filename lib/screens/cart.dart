@@ -1,14 +1,15 @@
 //This is the cart page.
 
+import 'package:booking_app/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:booking_app/screens/home.dart';
 import 'package:booking_app/screens/orders.dart';
 import 'package:booking_app/screens/profile.dart';
-import 'package:booking_app/screens/logout.dart';
 
 
 
 class Cart extends StatelessWidget {
+  final AuthService auth = AuthService();
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -67,10 +68,8 @@ class Cart extends StatelessWidget {
                 leading: Icon(Icons.logout),
                 title: Text('Log Out'),
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Logout()),
-                  );
+                  Navigator.pop(context);
+                  auth.signOut();
                 },
               ),
             ],
