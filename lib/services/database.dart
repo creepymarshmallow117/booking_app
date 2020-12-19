@@ -12,11 +12,25 @@ class DatabaseService{
       });
   }
   Future getDocument(String uid) async{
-    CollectionReference collection = FirebaseFirestore.instance.collection("user");
-    dynamic document = await collection.doc(uid).get();
-    if(document == null){
-      collection = FirebaseFirestore.instance.collection("client");
+    try {
+      CollectionReference collection = FirebaseFirestore.instance.collection(
+          "user");
+      DocumentSnapshot document = await collection.doc(uid).get();
+      Map<String, Object> map = document.data();
+      if(map.length > 0){
+        return document;
+      }
+    }on NoSuchMethodError{
+      CollectionReference collection = FirebaseFirestore.instance.collection(
+          "client");
+      DocumentSnapshot document = await collection.doc(uid).get();
+      Map<String, Object> map = document.data();
+      if(map.length > 0){
+        return document;
+      }
     }
-    return document;
+    catch(e){
+      print(e.toString());
+    }
   }
 }

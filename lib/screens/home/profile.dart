@@ -24,7 +24,8 @@ class _ProfileState extends State<Profile> {
     final AuthService auth = AuthService();
     //final DatabaseService db = DatabaseService();
     final user = Provider.of<User>(context);
-    print(user.uid);
+    //print(user.uid);
+    print("this is document id:"+widget.userDocument.data()['displayName']);
     return Scaffold (
         appBar: AppBar(
           title: Text('Profile Page'),
@@ -75,7 +76,7 @@ class _ProfileState extends State<Profile> {
                   Navigator.pop(context);
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Profile()),
+                    MaterialPageRoute(builder: (context) => Profile(userDocument: widget.userDocument,)),
                   );
                 },
               ),
@@ -83,8 +84,8 @@ class _ProfileState extends State<Profile> {
                 leading: Icon(Icons.logout),
                 title: Text('Log Out'),
                 onTap: () {
-                  Navigator.pop(context);
                   auth.signOut();
+                  Navigator.pop(context);
                 },
               ),
             ],
@@ -96,9 +97,9 @@ class _ProfileState extends State<Profile> {
               children: [
                 Text('User details:\n', style: TextStyle(backgroundColor: Colors.lightGreenAccent, color: Colors.green,fontWeight: FontWeight.bold)),
                 Text('Display Name:\n', style: TextStyle(backgroundColor: Colors.lightGreenAccent, color: Colors.green,fontWeight: FontWeight.bold)),
-                Text(widget.userDocument['displayName']+'\n', style: TextStyle(color: Colors.green)),
+                Text(widget.userDocument.data()['displayName']+'\n', style: TextStyle(color: Colors.green)),
                 Text('Type Of User:\n', style: TextStyle(backgroundColor: Colors.lightGreenAccent, color: Colors.green,fontWeight: FontWeight.bold)),
-                Text(widget.userDocument['typeOfUser']+'\n', style: TextStyle(color: Colors.green))
+                Text(widget.userDocument.data()['typeOfUser']+'\n', style: TextStyle(color: Colors.green))
               ],
             ),
           )
