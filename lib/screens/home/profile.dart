@@ -1,9 +1,11 @@
 //This is the profiles page.
 
 import 'package:booking_app/services/auth.dart';
+import 'package:booking_app/services/image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'file:///C:/Users/Aditya/AndroidStudioProjects/booking_app/lib/screens/home/home.dart';
 import 'file:///C:/Users/Aditya/AndroidStudioProjects/booking_app/lib/screens/home/orders.dart';
 import 'package:provider/provider.dart';
@@ -99,7 +101,17 @@ class _ProfileState extends State<Profile> {
                 Text('Display Name:\n', style: TextStyle(backgroundColor: Colors.lightGreenAccent, color: Colors.green,fontWeight: FontWeight.bold)),
                 Text(widget.userDocument.data()['displayName']+'\n', style: TextStyle(color: Colors.green)),
                 Text('Type Of User:\n', style: TextStyle(backgroundColor: Colors.lightGreenAccent, color: Colors.green,fontWeight: FontWeight.bold)),
-                Text(widget.userDocument.data()['typeOfUser']+'\n', style: TextStyle(color: Colors.green))
+                Text(widget.userDocument.data()['typeOfUser']+'\n', style: TextStyle(color: Colors.green)),
+                RaisedButton(
+                    child: Text("Click Image"),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ImageUpload())
+                      );
+                    },
+                )
               ],
             ),
           )
