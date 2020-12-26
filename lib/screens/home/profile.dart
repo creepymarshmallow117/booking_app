@@ -91,19 +91,81 @@ class _ProfileState extends State<Profile> {
             ],
           ),
         ),
-        body: Container(
-          child: Center(
+        body:SafeArea(
             child: Column(
-              children: [
-                Text('User details:\n', style: TextStyle(backgroundColor: Colors.lightGreenAccent, color: Colors.green,fontWeight: FontWeight.bold)),
-                Text('Display Name:\n', style: TextStyle(backgroundColor: Colors.lightGreenAccent, color: Colors.green,fontWeight: FontWeight.bold)),
-                Text(widget.userDocument.data()['displayName']+'\n', style: TextStyle(color: Colors.green)),
-                Text('Type Of User:\n', style: TextStyle(backgroundColor: Colors.lightGreenAccent, color: Colors.green,fontWeight: FontWeight.bold)),
-                Text(widget.userDocument.data()['typeOfUser']+'\n', style: TextStyle(color: Colors.green))
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                SizedBox(
+                  height: 110.0,
+                  width: 150.0,
+                  child: Divider(
+                    color: Colors.teal.shade100,
+                  ),
+                ),
+                CircleAvatar(
+                  radius: 80.0,
+                  backgroundImage: AssetImage(''),
+                ),
+                Text(
+                  'NAME',
+                  style: TextStyle(
+                    fontFamily: 'Pacifico',
+                    fontSize: 40.0,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  'CLIENT',
+                  style: TextStyle(
+                    fontFamily: 'Source Sans Pro',
+                    color: Colors.teal.shade100,
+                    fontSize: 20.0,
+                    letterSpacing: 2.5,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(
+                  height: 20.0,
+                  width: 150.0,
+                  child: Divider(
+                    color: Colors.teal.shade100,
+                  ),
+                ),
+                Card(
+                    margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
+                    child: ListTile(
+                      leading: Icon(
+                        Icons.phone,
+                        color: Colors.teal,
+                      ),
+                      title: Text(
+                        '+44 123 456 789',
+                        style: TextStyle(
+                          color: Colors.teal.shade900,
+                          fontFamily: 'Source Sans Pro',
+                          fontSize: 20.0,
+                        ),
+                      ),
+                    )),
+                Card(
+                    margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
+                    child: ListTile(
+                      leading: Icon(
+                        Icons.email,
+                        color: Colors.teal,
+                      ),
+                      title: Text(
+                        'XYZ@email.com',
+                        style: TextStyle(
+                            fontSize: 20.0,
+                            color: Colors.teal.shade900,
+                            fontFamily: 'Source Sans Pro'),
+                      ),
+                    ))
               ],
-            ),
-          )
-          ),
+            )),
+
       );
   }
 }
