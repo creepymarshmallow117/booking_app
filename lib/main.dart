@@ -1,5 +1,4 @@
 import 'package:booking_app/screens/wrapper.dart';
-import 'file:///C:/Users/Aditya/AndroidStudioProjects/booking_app/lib/screens/home/home.dart';
 import 'package:booking_app/services/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
