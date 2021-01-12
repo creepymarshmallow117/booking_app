@@ -90,7 +90,7 @@ class _RegisterState extends State<Register> {
                   },
                 ),
                 SizedBox(height: 20.0),
-                RaisedButton(
+                /*RaisedButton(
                   color: Colors.red[200],
                   child: Text('Upload Image', style: TextStyle(color: Colors.brown[400])),
                   onPressed: () async{
@@ -109,7 +109,7 @@ class _RegisterState extends State<Register> {
                           (value) => print("Done: $value"),
                     );
                   },
-                ),
+                ),*/
                 SizedBox(height: 20.0),
                 RaisedButton(
                     color: Colors.red[200],
