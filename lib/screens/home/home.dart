@@ -1,6 +1,7 @@
 //This is the home page.
 
 import 'package:booking_app/screens/authenticate/authenticate.dart';
+import 'package:booking_app/screens/home/search.dart';
 import 'package:booking_app/services/auth.dart';
 import 'package:booking_app/services/database.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -288,42 +289,9 @@ class Datasearch extends SearchDelegate<String> {
 
   @override
   Widget buildResults(BuildContext context) {
-    String query1 = toBeginningOfSentenceCase(query);
-    return Container(
-        child: StreamBuilder<QuerySnapshot>(
-            stream: FirebaseFirestore.instance.collection("client").where("groundName", isEqualTo: query1, isLessThan: query1).snapshots(),
-            builder: (context,snapshot){
-              return (snapshot.connectionState == ConnectionState.waiting)
-                  ? Center(child: CircularProgressIndicator())
-                  :ListView.builder(
-                  itemCount: snapshot.data.docs.length,
-                  itemBuilder: (context,index){
-                    DocumentSnapshot data = snapshot.data.docs.elementAt(index);
-                    String groundName = data.data()["groundName"];
-                    String groundAddress = data.data()["address"];
-                    String groundDescription = data.data()["description"];
-                    String groundContactInfo = data.data()["contactInfo"];
-                    print(groundName);
-                    print(groundContactInfo);
-                    print(groundDescription);
-                    print(groundAddress);
-                    return Container(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: <Widget>[
-                            Text(groundName),
-                            Text(groundContactInfo),
-                            Text(groundDescription),
-                            Text(groundAddress),
-                          ],
-                        ),
-                      ),
-                    );
-                  }
-              );
-            }
-        )
-    );
+   return Container(
+
+   );
   }
 
   @override
@@ -349,11 +317,12 @@ class Datasearch extends SearchDelegate<String> {
                       :ListView.builder(
                       itemCount: searchList.length,
                       itemBuilder: (context,index){
-
                         return ListTile(
                           title: Text(searchList.elementAt(index)),
                           onTap: (){
-                            showResults(context);
+                            String id = snapshot.data.docs.elementAt(index).id;
+                            print(index);
+                            print(id);
                         },
                         );
                 }
