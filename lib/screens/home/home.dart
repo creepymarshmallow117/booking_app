@@ -265,6 +265,7 @@ class Datasearch extends SearchDelegate<String> {
 
   final DatabaseService data = DatabaseService();
 
+
   @override
   List<Widget> buildActions(BuildContext context) {
     return [IconButton(icon: Icon(Icons.clear), onPressed: () {
@@ -290,7 +291,7 @@ class Datasearch extends SearchDelegate<String> {
     String query1 = toBeginningOfSentenceCase(query);
     return Container(
         child: StreamBuilder<QuerySnapshot>(
-            stream: FirebaseFirestore.instance.collection("client").where("groundName", isEqualTo: query1).snapshots(),
+            stream: FirebaseFirestore.instance.collection("client").where("groundName", isEqualTo: query1, isLessThan: query1).snapshots(),
             builder: (context,snapshot){
               return (snapshot.connectionState == ConnectionState.waiting)
                   ? Center(child: CircularProgressIndicator())
@@ -352,7 +353,7 @@ class Datasearch extends SearchDelegate<String> {
                         return ListTile(
                           title: Text(searchList.elementAt(index)),
                           onTap: (){
-                          showResults(context);
+                            showResults(context);
                         },
                         );
                 }
@@ -362,6 +363,9 @@ class Datasearch extends SearchDelegate<String> {
     );
   }
 }
+
+
+
 
 
 class Item1 extends StatelessWidget {
