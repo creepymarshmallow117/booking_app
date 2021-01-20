@@ -3,13 +3,17 @@
 import 'package:booking_app/screens/authenticate/authenticate.dart';
 import 'package:booking_app/services/auth.dart';
 import 'package:booking_app/services/database.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'file:///C:/Users/Aditya/AndroidStudioProjects/booking_app/lib/screens/home/orders.dart';
-import 'file:///C:/Users/Aditya/AndroidStudioProjects/booking_app/lib/screens/home/profile.dart';
-import 'file:///C:/Users/Aditya/AndroidStudioProjects/booking_app/lib/screens/home/cart.dart';
+import 'file:///D:/College/Project/App/lib/screens/home/orders.dart';
+import 'file:///D:/College/Project/App/lib/screens/home/profile.dart';
+import 'file:///D:/College/Project/App/lib/screens/home/cart.dart';
 import 'package:provider/provider.dart';
+import 'package:booking_app/services/database.dart';
+import 'package:intl/intl.dart';
 
 class Home extends StatefulWidget{
   @override
@@ -20,6 +24,22 @@ class _HomeState extends State<Home> {
   bool _isVisible = false;
   Widget appBarTitle = new Text("Home");
   Icon searchIcon = new Icon(Icons.search);
+  int _currentIndex=0;
+
+  List cardList=[
+    Item1(),
+    Item2(),
+    Item3(),
+    Item4()
+  ];
+
+  List<T> map<T>(List list, Function handler) {
+    List<T> result = [];
+    for (var i = 0; i < list.length; i++) {
+      result.add(handler(i, list[i]));
+    }
+    return result;
+  }
   @override
   Widget build(BuildContext context) {
     final AuthService auth = AuthService();
@@ -31,31 +51,12 @@ class _HomeState extends State<Home> {
       setState(() => _isVisible = true);
     }
     return Scaffold(
-        appBar: AppBar(
-          title: appBarTitle,
-          actions: <Widget>[
-            new IconButton(icon: searchIcon,iconSize : 30,onPressed:(){
-              setState(() {
-                if (this.searchIcon.icon == Icons.search)
-                {
-                  this.searchIcon = new Icon(Icons.close);
-                  this.appBarTitle = new TextField(
-                    style: new TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                    ),
-                    decoration: new InputDecoration(
-                        hintText: "Search...",
-                        border: InputBorder.none,
-                        hintStyle: new TextStyle(color: Colors.white,fontSize: 20)
-                    ),
-                  );}
-                  else {
-                    this.searchIcon = new Icon(Icons.search);
-                    this.appBarTitle = new Text("Home");
-                }
-              });
-            },),
+      appBar: AppBar(
+        title: appBarTitle,
+            actions: <Widget>[
+            IconButton(icon: Icon(Icons.search),iconSize : 30,onPressed:() {
+              showSearch(context: context, delegate: Datasearch());
+            }),
             Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
@@ -80,8 +81,8 @@ class _HomeState extends State<Home> {
                     ),
                     ],
                   ),
-      drawer: Drawer(
-        child: ListView(
+          drawer : Drawer(
+          child: ListView(
             padding: EdgeInsets.zero,
             children: <Widget>[
             DrawerHeader(
@@ -172,14 +173,393 @@ class _HomeState extends State<Home> {
       ],
     ),
     ),
-  );
+        body : SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            CarouselSlider(
+              options: CarouselOptions(
+                height: 220.0,
+                autoPlay: true,
+                autoPlayInterval: Duration(seconds: 3),
+                autoPlayAnimationDuration: Duration(milliseconds: 800),
+                autoPlayCurve: Curves.fastOutSlowIn,
+                pauseAutoPlayOnTouch: true,
+                aspectRatio: 2.0,
+                onPageChanged: (index, reason) {
+                  setState(() {
+                    _currentIndex = index;
+                  });
+                },
+              ),
+              items: cardList.map((card){
+                return Builder(
+                    builder:(BuildContext context){
+                      return Container(
+                        height: MediaQuery.of(context).size.height*0.30,
+                        width: MediaQuery.of(context).size.width,
+                        child: Card(
+                          color: Colors.blueAccent,
+                          child: card,
+                        ),
+                      );
+                    }
+                );
+              }).toList(),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: map<Widget>(cardList, (index, url) {
+                return Container(
+                  width: 10.0,
+                  height: 10.0,
+                  margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: _currentIndex == index ? Colors.blueAccent : Colors.grey,
+                  ),
+                );
+              }),
+            ),
+            Container(
+              margin: EdgeInsets.fromLTRB(10,18,10,0),
+              height: 170,
+              width: double.maxFinite,
+              child: Card(
+                elevation: 5,
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.fromLTRB(10,0,10,0),
+              height: 170,
+              width: double.maxFinite,
+              child: Card(
+                elevation: 5,
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.fromLTRB(10,0,10,0),
+              height: 170,
+              width: double.maxFinite,
+              child: Card(
+                elevation: 5,
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.fromLTRB(10,0,10,0),
+              height: 170,
+              width: double.maxFinite,
+              child: Card(
+                elevation: 5,
+              ),
+            ),
+          ],
+        ),
+          )
+    );
+    }
+  }
+
+
+
+class Datasearch extends SearchDelegate<String> {
+
+  final DatabaseService data = DatabaseService();
+
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    return [IconButton(icon: Icon(Icons.clear), onPressed: () {
+      query = "";
+    })
+    ];
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+    return IconButton(
+        icon: AnimatedIcon(
+          icon: AnimatedIcons.menu_arrow,
+          progress: transitionAnimation,
+        ), onPressed: () {
+      close(context, null);
+    }
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    String query1 = toBeginningOfSentenceCase(query);
+    return Container(
+        child: StreamBuilder<QuerySnapshot>(
+            stream: FirebaseFirestore.instance.collection("client").where("groundName", isEqualTo: query1).snapshots(),
+            builder: (context,snapshot){
+              return (snapshot.connectionState == ConnectionState.waiting)
+                  ? Center(child: CircularProgressIndicator())
+                  :ListView.builder(
+                  itemCount: snapshot.data.docs.length,
+                  itemBuilder: (context,index){
+                    DocumentSnapshot data = snapshot.data.docs.elementAt(index);
+                    String groundName = data.data()["groundName"];
+                    String groundAddress = data.data()["address"];
+                    String groundDescription = data.data()["description"];
+                    String groundContactInfo = data.data()["contactInfo"];
+                    print(groundName);
+                    print(groundContactInfo);
+                    print(groundDescription);
+                    print(groundAddress);
+                    return Container(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: <Widget>[
+                            Text(groundName),
+                            Text(groundContactInfo),
+                            Text(groundDescription),
+                            Text(groundAddress),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+              );
+            }
+        )
+    );
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    return Container(
+            child : StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance.collection("client").snapshots(),
+                builder: (context,snapshot){
+                  List<String> suggestionList = List<String>();
+                      for(int i = 0; i<snapshot.data.docs.length; i++){
+                        DocumentSnapshot data = snapshot.data.docs.elementAt(i);
+                        suggestionList.add(data.data()['groundName']);
+                      }
+
+                  String query1 = toBeginningOfSentenceCase(query);
+                  print(query1);
+                  print(query);
+                  List<String> searchList= suggestionList.where((element)=> element.startsWith(query1)).toList();
+                  print(suggestionList);
+                  print(searchList);
+                  return (snapshot.connectionState == ConnectionState.waiting)
+                      ? Center(child: CircularProgressIndicator())
+                      :ListView.builder(
+                      itemCount: searchList.length,
+                      itemBuilder: (context,index){
+
+                        return ListTile(
+                          title: Text(searchList.elementAt(index)),
+                          onTap: (){
+                          showResults(context);
+                        },
+                        );
+                }
+            );
+           }
+            ),
+    );
   }
 }
 
 
+class Item1 extends StatelessWidget {
+  const Item1({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            stops: [0.3, 1],
+            colors: [Color(0xffff4000),Color(0xffffcc66),]
+        ),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+              "Data",
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 22.0,
+                  fontWeight: FontWeight.bold
+              )
+          ),
+          Text(
+              "Data",
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 17.0,
+                  fontWeight: FontWeight.w600
+              )
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class Item2 extends StatelessWidget {
+  const Item2({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            stops: [0.3, 1],
+            colors: [Color(0xff5f2c82), Color(0xff49a09d)]
+        ),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+              "Data",
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 22.0,
+                  fontWeight: FontWeight.bold
+              )
+          ),
+          Text(
+              "Data",
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 17.0,
+                  fontWeight: FontWeight.w600
+              )
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class Item3 extends StatelessWidget {
+  const Item3({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            stops: [0.3, 1],
+            colors: [Color(0xffff4000),Color(0xffffcc66),]
+        ),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+
+        ],
+      ),
+    );
+  }
+}
+
+class Item4 extends StatelessWidget {
+  const Item4({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+              "Data",
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 22.0,
+                  fontWeight: FontWeight.bold
+              )
+          ),
+          Text(
+              "Data",
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 17.0,
+                  fontWeight: FontWeight.w600
+              )
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+/*
+final db = FirebaseFirestore.instance.reference().child("places");
+    db.once().then((iterable<DataSnapshot> snapshot){
+      Map<dynamic, dynamic> values = snapshot.value;
+      values.forEach((key,values) {
+        print(values["DisplayName"]);
 
 
 
+
+
+
+
+
+
+
+
+final suggestionList = query.isEmpty
+        ? recentTurfs
+        : turfs.where((p)=>p.startsWith(query)).toList();
+    return ListView.builder(itemBuilder: (context,index)=>ListTile(
+      onTap: (){
+        showResults(context);
+      },
+      title: Text(suggestionList[index]),
+    ),
+      itemCount: suggestionList.length,
+    );
+    final turfs = [
+    "EcoGrass",
+    "Sundial Gardening",
+    "Fairy Yardmother",
+    "Solid Ground Landscaping",
+    "Grass Masters",
+    "Star Landscape Design",
+    "A Cut Above",
+    "Forest Green Lawn and Landscaping",
+    "Budget Lawn Mowing",
+    "Push Lawn Care",
+    "Navlan’s Landscape",
+    "Sharp Lawn Inc.",
+    "Plush Lawns",
+    "Turf Pros",
+    "Turf Terminators",
+    "Yard Smart",
+    "CleanMe Lawn",
+    "Green Acres",
+    "A Good Turf",
+    "Edge Cut Lawn",
+    "Lawn & Turf Contracting",
+    "Curb Appeal",
+    "LawnStarter",
+    "Perfect Lawncare",
+    "Cloverdale Mowing"
+  ];
+
+  final recentTurfs = [
+    "Yard Smart",
+    "Lawn & Turf Contracting",
+    "Curb Appeal",
+    "LawnStarter"
+  ];*/
 
 /*class dropdown extends StatefulWidget {
   dropdown({Key key}) : super(key: key);
