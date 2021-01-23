@@ -9,6 +9,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'file:///D:/College/Project/App/lib/screens/home/orders.dart';
 import 'file:///D:/College/Project/App/lib/screens/home/profile.dart';
 import 'file:///D:/College/Project/App/lib/screens/home/cart.dart';
@@ -41,6 +42,33 @@ class _HomeState extends State<Home> {
     }
     return result;
   }
+
+  Future<bool> _onBackPressed() {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Are you sure?'),
+            content: Text('You are going to exit the application'),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('NO'),
+                onPressed: () {
+                  WidgetsBinding.instance.handlePopRoute();
+                  Navigator.of(context).pop(false);
+                },
+              ),
+              FlatButton(
+                child: Text('YES'),
+                onPressed: () {
+                  SystemNavigator.pop();
+                },
+              ),
+            ],
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     final AuthService auth = AuthService();
@@ -127,10 +155,10 @@ class _HomeState extends State<Home> {
             title: Text('Profile'),
             onTap: () async{
               if(user != null) {
-                print("inside here");
+                print("Inside here");
                 dynamic result =  await db.getDocument(user.uid.toString());
                 if (result == null) {
-                  print("this is a problem");
+                  print("This is a problem");
                 }
                 else {
                   print(result);
@@ -141,7 +169,7 @@ class _HomeState extends State<Home> {
                 }
               }
               else{
-                print("this is a big problem");
+                print("This is a big problem");
               }
             },
           ),
@@ -174,8 +202,10 @@ class _HomeState extends State<Home> {
       ],
     ),
     ),
-        body : SingleChildScrollView(
-        child: Column(
+        body : WillPopScope(
+          onWillPop: _onBackPressed,
+          child : SingleChildScrollView(
+          child: Column(
           children: <Widget>[
             CarouselSlider(
               options: CarouselOptions(
@@ -256,6 +286,7 @@ class _HomeState extends State<Home> {
           ],
         ),
           )
+        ),
     );
     }
   }
@@ -312,6 +343,15 @@ class Datasearch extends SearchDelegate<String> {
                   List<String> searchList= suggestionList.where((element)=> element.startsWith(query1)).toList();
                   print(suggestionList);
                   print(searchList);
+                  List<String> idList = List<String>();
+                  for(int i=0; i<snapshot.data.docs.length;i++){
+                    DocumentSnapshot data = snapshot.data.docs.elementAt(i);
+                    for(int j=0; j<searchList.length;j++){
+                      if(data.data()['groundName'] == searchList.elementAt(j)){
+                        idList.add(data.id);
+                      }
+                    }
+                  }
                   return (snapshot.connectionState == ConnectionState.waiting)
                       ? Center(child: CircularProgressIndicator())
                       :ListView.builder(
@@ -323,6 +363,10 @@ class Datasearch extends SearchDelegate<String> {
                             String id = snapshot.data.docs.elementAt(index).id;
                             print(index);
                             print(id);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => Search(id: idList.elementAt(index))),
+                            );
                         },
                         );
                 }
@@ -478,7 +522,21 @@ final db = FirebaseFirestore.instance.reference().child("places");
       values.forEach((key,values) {
         print(values["DisplayName"]);
 
-
+StreamBuilder<DocumentSnapshot>(
+            stream: FirebaseFirestore.instance.collection("client").doc(widget.id).snapshots(),
+            builder: (context,snapshot){
+            DocumentSnapshot data = snapshot.data;
+            String groundName = data.data()["groundName"];
+            String groundAddress = data.data()["address"];
+            String groundDescription = data.data()["description"];
+            String groundContactInfo = data.data()["contactInfo"];
+            print(groundName);
+            print(groundContactInfo);
+            print(groundDescription);
+            print(groundAddress);
+            return (snapshot.connectionState == ConnectionState.waiting)
+                ? Center(child: CircularProgressIndicator())
+                :
 
 
 

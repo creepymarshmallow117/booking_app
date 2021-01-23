@@ -1,4 +1,4 @@
-import 'file:///C:/Users/Aditya/AndroidStudioProjects/booking_app/lib/screens/home/home.dart';
+import 'file:///D:/College/Project/App/lib/screens/home/home.dart';
 import 'package:flutter/material.dart';
 import 'package:booking_app/services/auth.dart';
 
@@ -21,10 +21,10 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor:  Colors.brown[100],
-        appBar: AppBar(backgroundColor: Colors.brown[400],
+        backgroundColor:  Colors.white,
+        appBar: AppBar(backgroundColor: Colors.grey,
             elevation: 0.0,
-            title: Text("Log in"),
+            title: Text("Log in", style: TextStyle(color: Colors.black)),
             actions: <Widget>[
               FlatButton.icon(
                   icon: Icon(Icons.person),
@@ -38,6 +38,7 @@ class _LoginState extends State<Login> {
           padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
           child: Form(
               key: _formKey,
+              child: SingleChildScrollView(
               child: Column(
                   children: <Widget>[
                     SizedBox(height: 20.0),
@@ -63,14 +64,14 @@ class _LoginState extends State<Login> {
                     ),
                     SizedBox(height: 20.0),
                     RaisedButton(
-                        color: Colors.red[200],
-                        child: Text('Sign in', style: TextStyle(color: Colors.brown[400])),
+                        color: Colors.grey,
+                        child: Text('Sign in', style: TextStyle(color: Colors.black)),
                         onPressed: () async{
                           if(_formKey.currentState.validate()) {
                             dynamic result = await _auth.signInWithEmail(email, password);
                             if (result == null) {
                               setState((){
-                                error = 'Could not sign in with credentials';
+                                error = 'Invalid Credentials';
                               });
                             }
                             else{
@@ -90,6 +91,7 @@ class _LoginState extends State<Login> {
               )
           ),
         )
+    )
     );
   }
 }

@@ -29,13 +29,13 @@ class _RegisterState extends State<Register> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.brown[400],
+        backgroundColor: Colors.grey,
         elevation: 0.0,
-        title: Text("Register"),
+        title: Text("Register",style: TextStyle(color: Colors.black)),
           actions: <Widget>[
       FlatButton.icon(
       icon: Icon(Icons.person),
-        label: Text('Log in'),
+        label: Text('Log in',),
         onPressed: (){
           widget.toggleView();
         }
@@ -50,7 +50,7 @@ class _RegisterState extends State<Register> {
                   children: <Widget>[
                     SizedBox(height: 20.0),
                     TextFormField(
-                        validator: (val) => val.isEmpty ? "Enter email" : null,
+                        validator: (val) => val.isEmpty ? "Enter email address" : null,
                         onChanged: (val){
                           print(val);
                           setState(() => email = val);
@@ -92,8 +92,8 @@ class _RegisterState extends State<Register> {
                     ),
                     SizedBox(height: 20.0),
                     RaisedButton(
-                      color: Colors.red[200],
-                      child: Text('Upload Image', style: TextStyle(color: Colors.brown[400])),
+                      color: Colors.grey,
+                      child: Text('Upload Image', style: TextStyle(color: Colors.black)),
                       onPressed: () async{
                         File _image;
                         final picker = ImagePicker();
@@ -113,8 +113,8 @@ class _RegisterState extends State<Register> {
                     ),
                     SizedBox(height: 20.0),
                     RaisedButton(
-                        color: Colors.red[200],
-                        child: Text('Register', style: TextStyle(color: Colors.brown[400])),
+                        color: Colors.grey,
+                        child: Text('Register', style: TextStyle(color: Colors.black)),
                         onPressed: () async{
                           print(email);
                           print(password);
@@ -122,7 +122,7 @@ class _RegisterState extends State<Register> {
                             dynamic result = await auth.registerWithEmail(email, password, displayName);
                             if(result == null){
                               setState((){
-                                error = 'Please supply a valid email';
+                                error = 'Please enter a valid email address';
                               });
                             }
                             else{
