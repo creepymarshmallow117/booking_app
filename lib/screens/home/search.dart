@@ -1,19 +1,33 @@
 //This is the search result page.
 
+import 'dart:ffi';
+
 import 'package:booking_app/screens/authenticate/authenticate.dart';
 import 'package:booking_app/screens/authenticate/login.dart';
-import 'package:booking_app/screens/home/schedule.dart';
+import 'package:booking_app/screens/home/slots.dart';
 import 'package:booking_app/services/auth.dart';
 import 'package:booking_app/services/database.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'file:///D:/College/Project/App/lib/screens/home/home.dart';
 import 'file:///D:/College/Project/App/lib/screens/home/profile.dart';
 import 'file:///D:/College/Project/App/lib/screens/home/orders.dart';
 import 'file:///D:/College/Project/App/lib/screens/home/cart.dart';
 import 'package:provider/provider.dart';
+
+class Images extends StatelessWidget {
+  final FirebaseStorage storage = FirebaseStorage.instanceFor(bucket: 'gs://booking-app-63e61.appspot.com/');
+
+  @override
+  Widget build(BuildContext context) {
+
+  }
+
+
+}
 
 class Search extends StatefulWidget {
   final String id;
@@ -55,128 +69,107 @@ class _SearchState extends State<Search> {
       setState(() => _isVisible = true);
     }
     return Scaffold(
-        appBar: AppBar(
-          title: appBarTitle,
-          actions: <Widget>[
-            IconButton(icon: Icon(Icons.search),iconSize : 30,onPressed:() {
-              showSearch(context: context, delegate: Datasearch());
-            }),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                IconButton(
-                  icon : Icon(Icons.shopping_cart,color: Colors.white),
-                  iconSize: 30,
-                  onPressed: () {
-                    if(_isVisible == true){
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Cart()),
-                      );
-                    }else{
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Authenticate()),
-                      );
-                    }
-                  },
-                )
-              ],
-            ),
-          ],
-        ),
-        drawer : Drawer(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              DrawerHeader(
-                decoration: BoxDecoration(
-                  color: Colors.blue,
-                ),
-                child: Text('Welcome User',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                  ),
+      appBar: AppBar(
+        backgroundColor: Colors.teal,
+        title: Text(" "),
+        actions: <Widget>[
+          IconButton(icon: Icon(Icons.search, color: Colors.white,),iconSize : 30,onPressed:() {
+            showSearch(context: context, delegate: Datasearch());
+          }),
+        ],
+      ),
+      drawer : Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.teal,
+              ),
+              child: Text('Welcome User',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
                 ),
               ),
-              ListTile(
-                leading: Icon(Icons.home),
-                title: Text('Home'),
+            ),
+            ListTile(
+              leading: Icon(Icons.home, color: Colors.teal),
+              title: Text('Home'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => Home()),
+                );
+              },
+            ),
+            Visibility(
+              visible: _isVisible,
+              child: ListTile(
+                leading: Icon(Icons.message, color: Colors.teal),
+                title: Text('Your Orders'),
                 onTap: () {
                   Navigator.pop(context);
-                  Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Home()),
+                  Navigator.push( context,
+                    MaterialPageRoute(builder: (context) => Orders()),
                   );
                 },
               ),
-              Visibility(
-                visible: _isVisible,
-                child: ListTile(
-                  leading: Icon(Icons.message),
-                  title: Text('Your Orders'),
-                  onTap: () {
-                    Navigator.pop(context);
-                    Navigator.push( context,
-                      MaterialPageRoute(builder: (context) => Orders()),
-                    );
-                  },
-                ),
-              ),
-              Visibility(
-                visible: _isVisible,
-                child: ListTile(
-                  leading: Icon(Icons.account_circle),
-                  title: Text('Profile'),
-                  onTap: () async{
-                    if(user != null) {
-                      print("Inside here");
-                      dynamic result =  await db.getDocument(user.uid.toString());
-                      if (result == null) {
-                        print("This is a problem");
-                      }
-                      else {
-                        print(result);
-                        Navigator.pop(context);
-                        Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => Profile(userDocument: result)),
-                        );
-                      }
+            ),
+            Visibility(
+              visible: _isVisible,
+              child: ListTile(
+                leading: Icon(Icons.account_circle, color: Colors.teal),
+                title: Text('Profile'),
+                onTap: () async{
+                  if(user != null) {
+                    print("Inside here");
+                    dynamic result =  await db.getDocument(user.uid.toString());
+                    if (result == null) {
+                      print("This is a problem");
                     }
-                    else{
-                      print("This is a big problem");
+                    else {
+                      print(result);
+                      Navigator.pop(context);
+                      Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Profile(userDocument: result)),
+                      );
                     }
-                  },
-                ),
+                  }
+                  else{
+                    print("This is a big problem");
+                  }
+                },
               ),
-              Visibility(
-                visible: _isVisible,
-                child: ListTile(
-                  leading: Icon(Icons.logout),
-                  title: Text('Log Out'),
-                  onTap: () {
-                    Navigator.pop(context);
-                    auth.signOut();
-                  },
-                ),
+            ),
+            Visibility(
+              visible: _isVisible,
+              child: ListTile(
+                leading: Icon(Icons.logout, color: Colors.teal),
+                title: Text('Log Out'),
+                onTap: () {
+                  Navigator.pop(context);
+                  auth.signOut();
+                },
               ),
-              Visibility(
-                visible: !_isVisible,
-                child: ListTile(
-                  leading: Icon(Icons.account_circle),
-                  title: Text('Login/Sign up'),
-                  onTap: () {
-                    Navigator.pop(context);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Authenticate()),
-                    );
-                  },
-                ),
+            ),
+            Visibility(
+              visible: !_isVisible,
+              child: ListTile(
+                leading: Icon(Icons.account_circle,color: Colors.teal),
+                title: Text('Login/Sign up'),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Authenticate()),
+                  );
+                },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
+      ),
         body : SingleChildScrollView(
         child : StreamBuilder<DocumentSnapshot>(
                 stream: FirebaseFirestore.instance.collection("client").doc(widget.id).snapshots(),
@@ -245,33 +238,37 @@ class _SearchState extends State<Search> {
                                   ],
                               ),
                               SizedBox(height: 10),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget>[
+                                  Padding(padding: EdgeInsets.only(left: 10)),
+                                  Text(
+                                    groundDescription,
+                                    style: TextStyle(fontSize: 15),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 10),
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: <Widget>[
+                                      Padding(padding: EdgeInsets.only(left: 10)),
+                                      Text("Contact : ",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold)),
                                       Text(
                                         groundContactInfo,
-                                        textAlign: TextAlign.center,
                                         style: TextStyle(fontSize: 15),
                                       ),
                                     ],
                                   ),
+
                                   SizedBox(height: 10),
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: <Widget>[
-                                      Text(
-                                        groundDescription,
-                                        style: TextStyle(fontSize: 15),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 10),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
+                                      Padding(padding: EdgeInsets.only(left: 10)),
+                                      Text("Address : ",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold)),
                                       Text(
                                         groundAddress,
-                                        textAlign: TextAlign.end,
                                         style: TextStyle(fontSize: 15),
                                       ),
                                     ],
@@ -282,16 +279,16 @@ class _SearchState extends State<Search> {
                                         heightFactor: 9.0,
                                         child : SizedBox(
                                           child: MaterialButton(
-                                            child: Text("Book Now", style: TextStyle(fontSize: 20),),
+                                            child: Text("Book Now", style: TextStyle(fontSize: 20, color: Colors.white)),
                                             padding: EdgeInsets.all(7.0),
                                             minWidth: 350,
-                                            color: Colors.blueGrey,
+                                            color: Colors.teal,
                                             onPressed: () async{
                                               if(_isVisible==true)
                                                 {
                                                   Navigator.push(
                                                     context,
-                                                    MaterialPageRoute(builder: (context) => Schedule()),
+                                                    MaterialPageRoute(builder: (context) => Slots()),
                                                   );
                                                 }
                                               else{

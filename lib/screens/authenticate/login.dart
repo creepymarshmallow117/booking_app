@@ -22,13 +22,13 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor:  Colors.white,
-        appBar: AppBar(backgroundColor: Colors.grey,
+        appBar: AppBar(backgroundColor: Colors.teal,
             elevation: 0.0,
-            title: Text("Log in", style: TextStyle(color: Colors.black)),
+            title: Text("Log in", style: TextStyle(color: Colors.white)),
             actions: <Widget>[
               FlatButton.icon(
-                  icon: Icon(Icons.person),
-                  label: Text('Register'),
+                  icon: Icon(Icons.person, color: Colors.white,),
+                  label: Text('Register', style: TextStyle(color: Colors.white)),
                   onPressed: (){
                     widget.toggleView();
                   }
@@ -64,8 +64,8 @@ class _LoginState extends State<Login> {
                     ),
                     SizedBox(height: 20.0),
                     RaisedButton(
-                        color: Colors.grey,
-                        child: Text('Sign in', style: TextStyle(color: Colors.black)),
+                        color: Colors.teal,
+                        child: Text('Sign in', style: TextStyle(color: Colors.white)),
                         onPressed: () async{
                           if(_formKey.currentState.validate()) {
                             dynamic result = await _auth.signInWithEmail(email, password);

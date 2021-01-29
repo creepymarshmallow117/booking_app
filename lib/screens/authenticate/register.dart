@@ -29,13 +29,13 @@ class _RegisterState extends State<Register> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.grey,
+        backgroundColor: Colors.teal,
         elevation: 0.0,
-        title: Text("Register",style: TextStyle(color: Colors.black)),
+        title: Text("Register",style: TextStyle(color: Colors.white)),
           actions: <Widget>[
       FlatButton.icon(
-      icon: Icon(Icons.person),
-        label: Text('Log in',),
+      icon: Icon(Icons.person, color: Colors.white,),
+        label: Text('Log in',style: TextStyle(color: Colors.white)),
         onPressed: (){
           widget.toggleView();
         }
@@ -92,29 +92,8 @@ class _RegisterState extends State<Register> {
                     ),
                     SizedBox(height: 20.0),
                     RaisedButton(
-                      color: Colors.grey,
-                      child: Text('Upload Image', style: TextStyle(color: Colors.black)),
-                      onPressed: () async{
-                        File _image;
-                        final picker = ImagePicker();
-                        final pickedFile = await picker.getImage(source: ImageSource.gallery);
-                        setState(() {
-                          _image = File(pickedFile.path);
-                        });
-                        String fileName = basename(_image.path);
-                        Reference firebaseStorageRef =
-                        FirebaseStorage.instance.ref().child('uploads/$fileName');
-                        UploadTask uploadTask = firebaseStorageRef.putFile(_image);
-                        TaskSnapshot taskSnapshot = await uploadTask;
-                        taskSnapshot.ref.getDownloadURL().then(
-                              (value) => print("Done: $value"),
-                        );
-                      },
-                    ),
-                    SizedBox(height: 20.0),
-                    RaisedButton(
-                        color: Colors.grey,
-                        child: Text('Register', style: TextStyle(color: Colors.black)),
+                        color: Colors.teal,
+                        child: Text('Register', style: TextStyle(color: Colors.white)),
                         onPressed: () async{
                           print(email);
                           print(password);

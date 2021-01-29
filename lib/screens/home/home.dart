@@ -81,33 +81,12 @@ class _HomeState extends State<Home> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: appBarTitle,
+        backgroundColor: Colors.teal,
+        title: Text("Home", style: TextStyle(color: Colors.white)),
             actions: <Widget>[
-            IconButton(icon: Icon(Icons.search),iconSize : 30,onPressed:() {
+            IconButton(icon: Icon(Icons.search, color: Colors.white,),iconSize : 30,onPressed:() {
               showSearch(context: context, delegate: Datasearch());
             }),
-            Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              IconButton(
-                          icon : Icon(Icons.shopping_cart,color: Colors.white),
-                          iconSize: 30,
-                          onPressed: () {
-                            if(_isVisible == true){
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => Cart()),
-                            );
-                            }else{
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => Authenticate()),
-                              );
-                            }
-                          },
-                        )
-                      ],
-                    ),
                     ],
                   ),
           drawer : Drawer(
@@ -116,7 +95,7 @@ class _HomeState extends State<Home> {
             children: <Widget>[
             DrawerHeader(
               decoration: BoxDecoration(
-                color: Colors.blue,
+                color: Colors.teal,
               ),
               child: Text('Welcome User',
               style: TextStyle(
@@ -126,7 +105,7 @@ class _HomeState extends State<Home> {
             ),
           ),
           ListTile(
-            leading: Icon(Icons.home),
+            leading: Icon(Icons.home, color: Colors.teal),
             title: Text('Home'),
             onTap: () {
               Navigator.pop(context);
@@ -138,7 +117,7 @@ class _HomeState extends State<Home> {
           Visibility(
             visible: _isVisible,
             child: ListTile(
-            leading: Icon(Icons.message),
+            leading: Icon(Icons.message, color: Colors.teal),
             title: Text('Your Orders'),
             onTap: () {
               Navigator.pop(context);
@@ -151,7 +130,7 @@ class _HomeState extends State<Home> {
           Visibility(
             visible: _isVisible,
             child: ListTile(
-            leading: Icon(Icons.account_circle),
+            leading: Icon(Icons.account_circle, color: Colors.teal),
             title: Text('Profile'),
             onTap: () async{
               if(user != null) {
@@ -177,7 +156,7 @@ class _HomeState extends State<Home> {
           Visibility(
             visible: _isVisible,
             child: ListTile(
-            leading: Icon(Icons.logout),
+            leading: Icon(Icons.logout, color: Colors.teal),
             title: Text('Log Out'),
             onTap: () {
               Navigator.pop(context);
@@ -188,7 +167,7 @@ class _HomeState extends State<Home> {
           Visibility(
             visible: !_isVisible,
             child: ListTile(
-            leading: Icon(Icons.account_circle),
+            leading: Icon(Icons.account_circle,color: Colors.teal),
             title: Text('Login/Sign up'),
             onTap: () {
               Navigator.pop(context);
@@ -246,7 +225,7 @@ class _HomeState extends State<Home> {
                   margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: _currentIndex == index ? Colors.blueAccent : Colors.grey,
+                    color: _currentIndex == index ? Colors.teal : Colors.grey,
                   ),
                 );
               }),
@@ -256,14 +235,11 @@ class _HomeState extends State<Home> {
               height: 170,
               width: double.maxFinite,
               child: Card(
-                elevation: 5,
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.fromLTRB(10,0,10,0),
-              height: 170,
-              width: double.maxFinite,
-              child: Card(
+                child: Column(
+                  children: [
+                    Text("Turf 29")
+                  ],
+                ),
                 elevation: 5,
               ),
             ),
@@ -329,29 +305,30 @@ class Datasearch extends SearchDelegate<String> {
   Widget buildSuggestions(BuildContext context) {
     return Container(
             child : StreamBuilder<QuerySnapshot>(
-                stream: FirebaseFirestore.instance.collection("client").snapshots(),
+                stream: FirebaseFirestore.instance.collection("client").orderBy("groundName").snapshots(),
                 builder: (context,snapshot){
                   List<String> suggestionList = List<String>();
-                      for(int i = 0; i<snapshot.data.docs.length; i++){
-                        DocumentSnapshot data = snapshot.data.docs.elementAt(i);
-                        suggestionList.add(data.data()['groundName']);
-                      }
-
-                  String query1 = toBeginningOfSentenceCase(query);
-                  print(query1);
-                  print(query);
-                  List<String> searchList= suggestionList.where((element)=> element.startsWith(query1)).toList();
-                  print(suggestionList);
-                  print(searchList);
-                  List<String> idList = List<String>();
-                  for(int i=0; i<snapshot.data.docs.length;i++){
-                    DocumentSnapshot data = snapshot.data.docs.elementAt(i);
-                    for(int j=0; j<searchList.length;j++){
-                      if(data.data()['groundName'] == searchList.elementAt(j)){
-                        idList.add(data.id);
+                    for (int i = 0; i < snapshot.data.docs.length; i++) {
+                      DocumentSnapshot data = snapshot.data.docs.elementAt(i);
+                      suggestionList.add(data.data()['groundName']);
+                    }
+                    String query1 = toBeginningOfSentenceCase(query);
+                    print(query1);
+                    print(query);
+                    List<String> searchList = suggestionList.where((element) =>
+                        element.startsWith(query1)).toList();
+                    print(suggestionList);
+                    print(searchList);
+                    List<String> idList = List<String>();
+                    for (int i = 0; i < snapshot.data.docs.length; i++) {
+                      DocumentSnapshot data = snapshot.data.docs.elementAt(i);
+                      for (int j = 0; j < searchList.length; j++) {
+                        if (data.data()['groundName'] ==
+                            searchList.elementAt(j)) {
+                          idList.add(data.id);
+                        }
                       }
                     }
-                  }
                   return (snapshot.connectionState == ConnectionState.waiting)
                       ? Center(child: CircularProgressIndicator())
                       :ListView.builder(
@@ -388,30 +365,19 @@ class Item1 extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            stops: [0.3, 1],
-            colors: [Color(0xffff4000),Color(0xffffcc66),]
-        ),
+        color: Colors.grey[800],
       ),
-      child: Column(
+      child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
+          Icon(Icons.local_offer, size: 40, color: Colors.white,),
+          SizedBox(height: 20),
           Text(
-              "Data",
+              "Great Offers Coming Soon!",
               style: TextStyle(
                   color: Colors.white,
-                  fontSize: 22.0,
+                  fontSize: 20,
                   fontWeight: FontWeight.bold
-              )
-          ),
-          Text(
-              "Data",
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 17.0,
-                  fontWeight: FontWeight.w600
               )
           ),
         ],
