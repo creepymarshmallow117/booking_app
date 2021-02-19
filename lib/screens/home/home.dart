@@ -1,4 +1,4 @@
-//This is the home page.
+//This is the User's home page.
 
 import 'package:booking_app/screens/authenticate/authenticate.dart';
 import 'package:booking_app/screens/home/search.dart';
@@ -12,7 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'file:///D:/College/Project/App/lib/screens/home/orders.dart';
 import 'file:///D:/College/Project/App/lib/screens/home/profile.dart';
-import 'file:///D:/College/Project/App/lib/screens/home/cart.dart';
 import 'package:provider/provider.dart';
 import 'package:booking_app/services/database.dart';
 import 'package:intl/intl.dart';
@@ -42,6 +41,8 @@ class _HomeState extends State<Home> {
     }
     return result;
   }
+
+
 
   Future<bool> _onBackPressed() {
     return showDialog(
@@ -79,190 +80,236 @@ class _HomeState extends State<Home> {
     }else{
       setState(() => _isVisible = true);
     }
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.teal,
-        title: Text("Home", style: TextStyle(color: Colors.white)),
-            actions: <Widget>[
-            IconButton(icon: Icon(Icons.search, color: Colors.white,),iconSize : 30,onPressed:() {
-              showSearch(context: context, delegate: Datasearch());
-            }),
+    return StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection("client").orderBy("groundName").snapshots(),
+        builder: (context,snapshot) {
+          if(snapshot.data == null) return CircularProgressIndicator();
+          List<String> suggestionList = List<String>();
+          for (int i = 0; i < snapshot.data.docs.length; i++) {
+            DocumentSnapshot data = snapshot.data.docs.elementAt(i);
+            suggestionList.add(data.data()['groundName']);
+          }
+          List<String> idList = List<String>();
+          for (int i = 0; i < snapshot.data.docs.length; i++) {
+            DocumentSnapshot data = snapshot.data.docs.elementAt(i);
+            for (int j = 0; j < suggestionList.length; j++) {
+              if (data.data()['groundName'] ==
+                  suggestionList.elementAt(j)) {
+                idList.add(data.id);
+              }
+            }
+          }
+          return Scaffold(
+            appBar: AppBar(
+              backgroundColor: Colors.teal,
+              title: Text("Home", style: TextStyle(color: Colors.white)),
+              actions: <Widget>[
+                IconButton(icon: Icon(Icons.search, color: Colors.white,),
+                    iconSize: 30,
+                    onPressed: () {
+                      showSearch(context: context, delegate: Datasearch());
+                    }),
+              ],
+            ),
+            drawer: Drawer(
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: <Widget>[
+                  DrawerHeader(
+                    decoration: BoxDecoration(
+                      color: Colors.teal,
+                    ),
+                    child: Text('Welcome User',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                      ),
+                    ),
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.home, color: Colors.teal),
+                    title: Text('Home'),
+                    onTap: () {
+                      Navigator.pop(context);
+                      Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Home()),
+                      );
+                    },
+                  ),
+                  Visibility(
+                    visible: _isVisible,
+                    child: ListTile(
+                      leading: Icon(Icons.message, color: Colors.teal),
+                      title: Text('Your Orders'),
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Orders()),
+                        );
+                      },
+                    ),
+                  ),
+                  Visibility(
+                    visible: _isVisible,
+                    child: ListTile(
+                      leading: Icon(Icons.account_circle, color: Colors.teal),
+                      title: Text('Profile'),
+                      onTap: () async {
+                        if (user != null) {
+                          print("Inside here");
+                          dynamic result = await db.getDocument(user.uid
+                              .toString());
+                          if (result == null) {
+                            print("This is a problem");
+                          }
+                          else {
+                            print(result);
+                            Navigator.pop(context);
+                            Navigator.push(context,
+                              MaterialPageRoute(builder: (context) =>
+                                  Profile(userDocument: result)),
+                            );
+                          }
+                        }
+                        else {
+                          print("This is a big problem");
+                        }
+                      },
+                    ),
+                  ),
+                  Visibility(
+                    visible: _isVisible,
+                    child: ListTile(
+                      leading: Icon(Icons.logout, color: Colors.teal),
+                      title: Text('Log Out'),
+                      onTap: () {
+                        Navigator.pop(context);
+                        auth.signOut();
+                      },
+                    ),
+                  ),
+                  Visibility(
+                    visible: !_isVisible,
+                    child: ListTile(
+                      leading: Icon(Icons.account_circle, color: Colors.teal),
+                      title: Text('Login/Sign up'),
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) =>
+                              Authenticate()),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            body: WillPopScope(
+                onWillPop: _onBackPressed,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: <Widget>[
+                      CarouselSlider(
+                        options: CarouselOptions(
+                          height: 220.0,
+                          autoPlay: true,
+                          autoPlayInterval: Duration(seconds: 3),
+                          autoPlayAnimationDuration: Duration(
+                              milliseconds: 800),
+                          autoPlayCurve: Curves.fastOutSlowIn,
+                          pauseAutoPlayOnTouch: true,
+                          aspectRatio: 2.0,
+                          onPageChanged: (index, reason) {
+                            setState(() {
+                              _currentIndex = index;
+                            });
+                          },
+                        ),
+                        items: cardList.map((card) {
+                          return Builder(
+                              builder: (BuildContext context) {
+                                return Container(
+                                  height: MediaQuery
+                                      .of(context)
+                                      .size
+                                      .height * 0.30,
+                                  width: MediaQuery
+                                      .of(context)
+                                      .size
+                                      .width,
+                                  child: Card(
+                                    color: Colors.blueAccent,
+                                    child: card,
+                                  ),
+                                );
+                              }
+                          );
+                        }).toList(),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: map<Widget>(cardList, (index, url) {
+                          return Container(
+                            width: 10.0,
+                            height: 10.0,
+                            margin: EdgeInsets.symmetric(
+                                vertical: 10.0, horizontal: 2.0),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: _currentIndex == index
+                                  ? Colors.teal
+                                  : Colors.grey,
+                            ),
+                          );
+                        }),
+                      ),
+                      Container(
+                        margin: EdgeInsets.fromLTRB(10, 18, 10, 0),
+                        height: 170,
+                        width: double.maxFinite,
+                        child: Card(
+                          child: Column(
+                            children: [
+                              Text("Ground Zero")
+                            ],
+                          ),
+                          elevation: 5,
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                        height: 170,
+                        width: double.maxFinite,
+                        child: Card(
+                          child: Column(
+                            children: [
+                              Text("Solaris")
+                            ],
+                          ),
+                          elevation: 5,
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                        height: 170,
+                        width: double.maxFinite,
+                        child: Card(
+                          child: Column(
+                            children: [
+                              Text("Turf 29")
+                            ],
+                          ),
+                          elevation: 5,
+                        ),
+                      ),
                     ],
                   ),
-          drawer : Drawer(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-            DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.teal,
-              ),
-              child: Text('Welcome User',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-             ),
+                )
             ),
-          ),
-          ListTile(
-            leading: Icon(Icons.home, color: Colors.teal),
-            title: Text('Home'),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.push(context,
-              MaterialPageRoute(builder: (context) => Home()),
-              );
-            },
-          ),
-          Visibility(
-            visible: _isVisible,
-            child: ListTile(
-            leading: Icon(Icons.message, color: Colors.teal),
-            title: Text('Your Orders'),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.push( context,
-              MaterialPageRoute(builder: (context) => Orders()),
-              );
-            },
-          ),
-          ),
-          Visibility(
-            visible: _isVisible,
-            child: ListTile(
-            leading: Icon(Icons.account_circle, color: Colors.teal),
-            title: Text('Profile'),
-            onTap: () async{
-              if(user != null) {
-                print("Inside here");
-                dynamic result =  await db.getDocument(user.uid.toString());
-                if (result == null) {
-                  print("This is a problem");
-                }
-                else {
-                  print(result);
-                  Navigator.pop(context);
-                  Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Profile(userDocument: result)),
-                  );
-                }
-              }
-              else{
-                print("This is a big problem");
-              }
-            },
-          ),
-          ),
-          Visibility(
-            visible: _isVisible,
-            child: ListTile(
-            leading: Icon(Icons.logout, color: Colors.teal),
-            title: Text('Log Out'),
-            onTap: () {
-              Navigator.pop(context);
-              auth.signOut();
-            },
-            ),
-          ),
-          Visibility(
-            visible: !_isVisible,
-            child: ListTile(
-            leading: Icon(Icons.account_circle,color: Colors.teal),
-            title: Text('Login/Sign up'),
-            onTap: () {
-              Navigator.pop(context);
-            Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => Authenticate()),
           );
-          },
-          ),
-          ),
-      ],
-    ),
-    ),
-        body : WillPopScope(
-          onWillPop: _onBackPressed,
-          child : SingleChildScrollView(
-          child: Column(
-          children: <Widget>[
-            CarouselSlider(
-              options: CarouselOptions(
-                height: 220.0,
-                autoPlay: true,
-                autoPlayInterval: Duration(seconds: 3),
-                autoPlayAnimationDuration: Duration(milliseconds: 800),
-                autoPlayCurve: Curves.fastOutSlowIn,
-                pauseAutoPlayOnTouch: true,
-                aspectRatio: 2.0,
-                onPageChanged: (index, reason) {
-                  setState(() {
-                    _currentIndex = index;
-                  });
-                },
-              ),
-              items: cardList.map((card){
-                return Builder(
-                    builder:(BuildContext context){
-                      return Container(
-                        height: MediaQuery.of(context).size.height*0.30,
-                        width: MediaQuery.of(context).size.width,
-                        child: Card(
-                          color: Colors.blueAccent,
-                          child: card,
-                        ),
-                      );
-                    }
-                );
-              }).toList(),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: map<Widget>(cardList, (index, url) {
-                return Container(
-                  width: 10.0,
-                  height: 10.0,
-                  margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: _currentIndex == index ? Colors.teal : Colors.grey,
-                  ),
-                );
-              }),
-            ),
-            Container(
-              margin: EdgeInsets.fromLTRB(10,18,10,0),
-              height: 170,
-              width: double.maxFinite,
-              child: Card(
-                child: Column(
-                  children: [
-                    Text("Turf 29")
-                  ],
-                ),
-                elevation: 5,
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.fromLTRB(10,0,10,0),
-              height: 170,
-              width: double.maxFinite,
-              child: Card(
-                elevation: 5,
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.fromLTRB(10,0,10,0),
-              height: 170,
-              width: double.maxFinite,
-              child: Card(
-                elevation: 5,
-              ),
-            ),
-          ],
-        ),
-          )
-        ),
+        }
     );
     }
   }
@@ -307,6 +354,7 @@ class Datasearch extends SearchDelegate<String> {
             child : StreamBuilder<QuerySnapshot>(
                 stream: FirebaseFirestore.instance.collection("client").orderBy("groundName").snapshots(),
                 builder: (context,snapshot){
+                  if(snapshot.data == null) return CircularProgressIndicator();
                   List<String> suggestionList = List<String>();
                     for (int i = 0; i < snapshot.data.docs.length; i++) {
                       DocumentSnapshot data = snapshot.data.docs.elementAt(i);
@@ -482,6 +530,48 @@ class Item4 extends StatelessWidget {
 
 
 /*
+
+
+
+
+
+
+
+
+Future verification() async {
+    if (!user.emailVerified) {
+      await user.sendEmailVerification();
+      return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Are you sure?'),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('NO'),
+                onPressed: () {
+                  WidgetsBinding.instance.handlePopRoute();
+                  Navigator.of(context).pop(false);
+                },
+              ),
+              FlatButton(
+                child: Text('YES'),
+                onPressed: () {
+                  SystemNavigator.pop();
+                },
+              ),
+            ],
+          );
+        }
+        );
+  }
+
+
+
+
+
+
+
 final db = FirebaseFirestore.instance.reference().child("places");
     db.once().then((iterable<DataSnapshot> snapshot){
       Map<dynamic, dynamic> values = snapshot.value;
