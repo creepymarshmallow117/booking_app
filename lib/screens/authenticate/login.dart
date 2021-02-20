@@ -33,9 +33,25 @@ class _LoginState extends State<Login> {
     });
   }
 
+
+
+  bool flag = false;
+
   @override
   Widget build(BuildContext context) {
     User user = Provider.of<User>(context);
+    void _verify() {
+      if(flag==false)
+      {
+        user = FirebaseAuth.instance.currentUser;
+        if(user.emailVerified)
+        {
+          setState(() {
+            flag = true;
+          });
+        }
+      }
+    }
     return Scaffold(
           resizeToAvoidBottomPadding: false,
           body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
@@ -121,16 +137,18 @@ class _LoginState extends State<Login> {
                               }
                               else{
                                 User u = result;
+                                _verify();
                                 try {
                                   CollectionReference collection = FirebaseFirestore.instance.collection(
                                       "user");
                                   DocumentSnapshot document = await collection.doc(u.uid).get();
                                   Map<String, Object> map = document.data();
                                   if(map.length > 0){
-                                    if(!user.emailVerified){
+                                    if(flag == false){
                                       setState(() {
                                         error = "Please verify your email";
                                       });
+                                      print(flag);
                                     }
                                     else{
                                       Navigator.push(
