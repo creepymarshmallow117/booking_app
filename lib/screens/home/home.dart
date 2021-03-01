@@ -7,6 +7,7 @@ import 'package:booking_app/services/database.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_image/firebase_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -70,15 +71,31 @@ class _HomeState extends State<Home> {
         });
   }
 
+  String name = "";
+  String email = "";
+  String uid1 = "";
+  String image = "";
+
   @override
   Widget build(BuildContext context) {
     final AuthService auth = AuthService();
     final DatabaseService db = DatabaseService();
     final user = Provider.of<User>(context);
     if(user == null){
-      setState(() => _isVisible = false);
+      setState(() {
+        _isVisible = false;
+        name = "";
+        email = "";
+        uid1 = "none";
+      });
     }else{
-      setState(() => _isVisible = true);
+      setState(() {
+        _isVisible = true;
+        email = user.email;
+        uid1 = user.uid;
+        image = "gs://booking-app-63e61.appspot.com/profileImages/${user.uid}.png";
+        imageCache.clear();
+      });
     }
     return StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection("client").orderBy("groundName").snapshots(),
@@ -115,16 +132,45 @@ class _HomeState extends State<Home> {
               child: ListView(
                 padding: EdgeInsets.zero,
                 children: <Widget>[
-                  DrawerHeader(
-                    decoration: BoxDecoration(
-                      color: Colors.teal,
-                    ),
-                    child: Text('Welcome User',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                      ),
-                    ),
+                  StreamBuilder<DocumentSnapshot>(
+                      stream: FirebaseFirestore.instance.collection("user").doc(uid1).snapshots(),
+                      builder: (context, snapshot) {
+                        if(snapshot.data == null) return Container(
+                            height: 230.0,
+                            child: UserAccountsDrawerHeader(decoration: BoxDecoration(
+                              color: Colors.teal,
+                            ),
+                              accountName: Text("Welcome!", style: TextStyle(
+                                fontSize: 25.0,
+                              ),
+                              ),
+                            )
+                        );
+                        if(user != null){
+                          name = snapshot.data['displayName'];
+                        }
+                        return(_isVisible==false)? Container(
+                          height: 230.0,
+                          child: UserAccountsDrawerHeader(decoration: BoxDecoration(
+                            color: Colors.teal,
+                          ),
+                            accountName: Text("Welcome!", style: TextStyle(
+                              fontSize: 25.0,
+                            ),
+                          ),
+                        )
+                        )
+                            : Container(
+                            height: 230.0,
+                            child : UserAccountsDrawerHeader(decoration: BoxDecoration(
+                              color: Colors.teal,
+                            ),
+                              accountName: Text(name),
+                              accountEmail: Text(email),
+                              currentAccountPicture: CircleAvatar(backgroundImage: FirebaseImage(image)),
+                            )
+                        );
+                      }
                   ),
                   ListTile(
                     leading: Icon(Icons.home, color: Colors.teal),
@@ -152,10 +198,11 @@ class _HomeState extends State<Home> {
                   Visibility(
                     visible: _isVisible,
                     child: ListTile(
-                      leading: Icon(Icons.account_circle, color: Colors.teal),
-                      title: Text('Profile'),
+                      leading: Icon(Icons.settings, color: Colors.teal),
+                      title: Text('Settings'),
                       onTap: () async {
                         if (user != null) {
+                          imageCache.clear();
                           print("Inside here");
                           dynamic result = await db.getDocument(user.uid
                               .toString());
@@ -265,45 +312,370 @@ class _HomeState extends State<Home> {
                           );
                         }),
                       ),
-                      Container(
-                        margin: EdgeInsets.fromLTRB(10, 18, 10, 0),
-                        height: 170,
-                        width: double.maxFinite,
-                        child: Card(
-                          child: Column(
-                            children: [
-                              Text("Ground Zero")
-                            ],
-                          ),
-                          elevation: 5,
-                        ),
+                      StreamBuilder(
+                          stream: user != null ?FirebaseFirestore.instance.collection("user").doc(uid1).snapshots():null,
+                          builder: (context,snapshots){
+                            if(snapshot.data == null) return CircularProgressIndicator();
+                            if(user == null){
+                              return Column(
+                                children: <Widget>[
+                                  Container(
+                                    margin: EdgeInsets.fromLTRB(10, 18, 10, 0),
+                                    height: 170,
+                                    width: double.maxFinite,
+                                    child: Card(
+                                      child: Row(
+                                        children: <Widget>[
+                                          SizedBox(width: 10.0,height: 10.0),
+                                          Column(
+                                            children: [
+                                              Text("Nothing to show")
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      elevation: 5,
+                                    ),
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.fromLTRB(10, 18, 10, 0),
+                                    height: 170,
+                                    width: double.maxFinite,
+                                    child: Card(
+                                      child: Row(
+                                        children: <Widget>[
+                                          SizedBox(width: 10.0,height: 10.0),
+                                          Column(
+                                            children: [
+                                              Text("Nothing to show")
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      elevation: 5,
+                                    ),
+                                  )
+                                  ,
+                                  Container(
+                                    margin: EdgeInsets.fromLTRB(10, 18, 10, 0),
+                                    height: 170,
+                                    width: double.maxFinite,
+                                    child: GestureDetector(
+                                      onTap: (){
+
+                                      },
+                                      child: Card(
+                                        child: Row(
+                                          children: <Widget>[
+                                            SizedBox(width: 10.0,height: 10.0),
+                                            Column(
+                                              children: [
+                                                Text("Nothing to show")
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        elevation: 5,
+                                      ),
+                                    ),
+                                  )
+                                  ,
+                                ],
+                              );
+                            }else{
+                              List visits = List();
+                              List recentVisits = List();
+                              visits = snapshots.data['recentVisits'];
+                              for(int i = visits.length - 1; i > visits.length - 4; i--){
+                                if(i < 0){
+                                  break;
+                                }
+                                recentVisits.add(visits[i]["turfId"]);
+                              }
+                              return Column(
+                                children: <Widget>[
+                                  StreamBuilder<DocumentSnapshot>(
+                                      stream: recentVisits.length > 0 ? FirebaseFirestore.instance.collection("client").doc(recentVisits[0]).snapshots():null,
+                                      builder: (context, snapshot) {
+                                        if(snapshot.data == null){
+                                          return Container(
+                                            margin: EdgeInsets.fromLTRB(10, 18, 10, 0),
+                                            height: 170,
+                                            width: double.maxFinite,
+                                            child: Card(
+                                              child: Column(
+                                                children: [
+                                                  Text("none")
+                                                ],
+                                              ),
+                                              elevation: 5,
+                                            ),
+                                          );
+                                        }else{
+                                          String groundName = snapshot.data["groundName"];
+                                          String address = snapshot.data["address"];
+                                          String contactInfo = snapshot.data["contactInfo"];
+                                          String imageUrl = snapshot.data["groundImages"][0];
+                                          return Container(
+                                            margin: EdgeInsets.fromLTRB(10, 18, 10, 0),
+                                            height: 170,
+                                            width: double.maxFinite,
+                                            child: GestureDetector(
+                                              onTap: (){
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(builder: (context) => Search(id: recentVisits[0])),
+                                                );
+                                              },
+                                              child: Card(
+                                                child: Row(
+                                                  children: <Widget>[
+                                                    SizedBox(width: 10.0,height: 10.0),
+                                                    Image(
+                                                        height: 200.0,
+                                                        width: 200.0,
+                                                        image: NetworkImage(imageUrl)
+                                                    ),
+                                                    Column(
+                                                      children: [
+                                                        SizedBox(height: 15),
+                                                        Align(
+                                                          alignment: Alignment.centerLeft,
+                                                          child : Row(
+                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                            children: <Widget>[
+                                                              Text("Name : ",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold)),
+                                                              Text(
+                                                                groundName,
+                                                                style: TextStyle(fontSize: 15),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        SizedBox(height: 5),
+                                                        Row(
+                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                          children: <Widget>[
+                                                            Text("Contact : ",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold)),
+                                                            Text(
+                                                              contactInfo,
+                                                              style: TextStyle(fontSize: 15),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        SizedBox(height: 5),
+                                                        Row(
+                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                          children: <Widget>[
+                                                            Padding(padding: EdgeInsets.only(left : 3,top: 10,)),
+                                                            Text("Address : ",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold)),
+                                                            Text(
+                                                              address,
+                                                              style: TextStyle(fontSize: 15),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                                elevation: 5,
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                      }
+                                  ),
+                                  StreamBuilder<DocumentSnapshot>(
+                                      stream: recentVisits.length > 1 ? FirebaseFirestore.instance.collection("client").doc(recentVisits[1]).snapshots():null,
+                                      builder: (context, snapshot) {
+                                        if(snapshot.data == null){
+                                          return Container(
+                                            margin: EdgeInsets.fromLTRB(10, 18, 10, 0),
+                                            height: 170,
+                                            width: double.maxFinite,
+                                            child: Card(
+                                              child: Column(
+                                                children: [
+                                                  Text("none")
+                                                ],
+                                              ),
+                                              elevation: 5,
+                                            ),
+                                          );
+                                        }else{
+                                          String groundName = snapshot.data["groundName"];
+                                          String address = snapshot.data["address"];
+                                          String contactInfo = snapshot.data["contactInfo"];
+                                          String imageUrl = snapshot.data["groundImages"][0];
+                                          return Container(
+                                            margin: EdgeInsets.fromLTRB(10, 18, 10, 0),
+                                            height: 170,
+                                            width: double.maxFinite,
+                                            child: GestureDetector(
+                                              onTap: (){
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(builder: (context) => Search(id: recentVisits[1])),
+                                                );
+                                              },
+                                              child: Card(
+                                                child: Row(
+                                                  children: <Widget>[
+                                                    SizedBox(width: 10.0,height: 10.0),
+                                                    Image(
+                                                        height: 200.0,
+                                                        width: 200.0,
+                                                        image: NetworkImage(imageUrl)
+                                                    ),
+                                                    Column(
+                                                      children: [
+                                                        SizedBox(height: 15),
+                                                        Align(
+                                                          alignment: Alignment.centerLeft,
+                                                          child : Row(
+                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                            children: <Widget>[
+                                                              Text("Name : ",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold)),
+                                                              Text(
+                                                                groundName,
+                                                                style: TextStyle(fontSize: 15),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        SizedBox(height: 5),
+                                                        Row(
+                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                          children: <Widget>[
+                                                            Text("Contact : ",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold)),
+                                                            Text(
+                                                              contactInfo,
+                                                              style: TextStyle(fontSize: 15),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        SizedBox(height: 5),
+                                                        Row(
+                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                          children: <Widget>[
+                                                            Padding(padding: EdgeInsets.only(left : 3,top: 10,)),
+                                                            Text("Address : ",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold)),
+                                                            Text(
+                                                              address,
+                                                              style: TextStyle(fontSize: 15),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                                elevation: 5,
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                      }
+                                  ),
+                                  StreamBuilder<DocumentSnapshot>(
+                                      stream: recentVisits.length > 2 ? FirebaseFirestore.instance.collection("client").doc(recentVisits[2]).snapshots():null,
+                                      builder: (context, snapshot) {
+                                        if(snapshot.data == null){
+                                          return Container(
+                                            margin: EdgeInsets.fromLTRB(10, 18, 10, 0),
+                                            height: 170,
+                                            width: double.maxFinite,
+                                            child: Card(
+                                              child: Column(
+                                                children: [
+                                                  Text("none")
+                                                ],
+                                              ),
+                                              elevation: 5,
+                                            ),
+                                          );
+                                        }else{
+                                          String groundName = snapshot.data["groundName"];
+                                          String address = snapshot.data["address"];
+                                          String contactInfo = snapshot.data["contactInfo"];
+                                          String imageUrl = snapshot.data["groundImages"][0];
+                                          return Container(
+                                            margin: EdgeInsets.fromLTRB(10, 18, 10, 0),
+                                            height: 170,
+                                            width: double.maxFinite,
+                                            child: GestureDetector(
+                                              onTap: (){
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(builder: (context) => Search(id: recentVisits[2])),
+                                                );
+                                              },
+                                              child: Card(
+                                                child: Row(
+                                                  children: <Widget>[
+                                                    SizedBox(width: 10.0,height: 10.0),
+                                                    Image(
+                                                        height: 200.0,
+                                                        width: 200.0,
+                                                        image: NetworkImage(imageUrl)
+                                                    ),
+                                                    Column(
+                                                      children: [
+                                                        SizedBox(height: 30),
+                                                        Align(
+                                                          alignment: Alignment.centerLeft,
+                                                          child : Row(
+                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                            children: <Widget>[
+                                                              Text("Name : ",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold)),
+                                                              Text(
+                                                                groundName,
+                                                                style: TextStyle(fontSize: 15),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        SizedBox(height: 5),
+                                                        Row(
+                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                          children: <Widget>[
+                                                            Text("Contact : ",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold)),
+                                                            Text(
+                                                              contactInfo,
+                                                              style: TextStyle(fontSize: 15),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        SizedBox(height: 5),
+                                                        Column(
+                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                          children: <Widget>[
+                                                            Text("Address : ",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold)),
+                                                            Text(
+                                                              address,
+                                                              textAlign: TextAlign.left,
+                                                              style: TextStyle(fontSize: 15),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                                elevation: 5,
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                      }
+                                  ),
+                                ],
+                              );
+                            }
+                          }
                       ),
-                      Container(
-                        margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                        height: 170,
-                        width: double.maxFinite,
-                        child: Card(
-                          child: Column(
-                            children: [
-                              Text("Solaris")
-                            ],
-                          ),
-                          elevation: 5,
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                        height: 170,
-                        width: double.maxFinite,
-                        child: Card(
-                          child: Column(
-                            children: [
-                              Text("Turf 29")
-                            ],
-                          ),
-                          elevation: 5,
-                        ),
-                      ),
+
                     ],
                   ),
                 )
@@ -311,8 +683,8 @@ class _HomeState extends State<Home> {
           );
         }
     );
-    }
   }
+}
 
 
 
