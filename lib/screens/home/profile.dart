@@ -30,6 +30,12 @@ class Profile extends StatefulWidget {
   _ProfileState createState() => _ProfileState();
 }
 
+class Constants{
+  Constants._();
+  static const double padding =20;
+  static const double avatarRadius =45;
+}
+
 class _ProfileState extends State<Profile> {
 
   bool _status = true;
@@ -75,14 +81,14 @@ class _ProfileState extends State<Profile> {
               content: Text('You are going to delete your account'),
               actions: <Widget>[
                 FlatButton(
-                  child: Text('NO'),
+                  child: Text('NO', style: TextStyle(color: Colors.teal)),
                   onPressed: () {
                     WidgetsBinding.instance.handlePopRoute();
                     Navigator.of(context).pop(false);
                   },
                 ),
                 FlatButton(
-                  child: Text('YES'),
+                  child: Text('YES', style: TextStyle(color: Colors.teal)),
                   onPressed: () {
                     user.delete();
                     Navigator.push(context,
@@ -102,26 +108,7 @@ class _ProfileState extends State<Profile> {
     double height = MediaQuery.of(context).size.height;
     var padding = MediaQuery.of(context).padding;
     double height1 = height - padding.top - padding.bottom;
-    DocumentSnapshot userDocument = widget.userDocument;
 
-    Widget _getEditIcon() {
-      return new GestureDetector(
-        child: new CircleAvatar(
-          backgroundColor: Colors.teal,
-          radius: 14.0,
-          child:  Icon(
-            Icons.edit,
-            color: Colors.white,
-            size: 16.0,
-          ),
-        ),
-        onTap: () {
-          Navigator.push(context,
-            MaterialPageRoute(builder: (context) => updatedprofile(userDocument: userDocument)),
-          );
-        },
-      );
-    }
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -183,26 +170,24 @@ class _ProfileState extends State<Profile> {
                                 ),
                                 onPressed: (){
                                   showDialog(context: context, builder: (context){
-                                    return Dialog(
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(50)),
-                                        elevation: 16,
-                                        child: Center(
-                                            child: Column(
-                                              children: [
-                                                RaisedButton(
-                                                    child: Text('Click Image', style: TextStyle(color: Colors.white)),
-                                                    onPressed: () async {
-                                                      _pickImage(ImageSource.camera, user.uid);
-                                                    }),
-                                                RaisedButton(
-                                                    child: Text('Import from gallery'),
-                                                    onPressed: () async {
-                                                      _pickImage(ImageSource.gallery, user.uid);
-                                                    })
-                                              ],
-                                            )
-                                        )
+                                    return AlertDialog(
+                                      elevation: 10,
+                                      title: Text('Are you sure?'),
+                                      content: Text('You are going to change your display picture.'),
+                                      actions: <Widget>[
+                                        FlatButton(
+                                          child: Text('Click Image', style: TextStyle(color: Colors.teal)),
+                                            onPressed: () async {
+                                              _pickImage(ImageSource.camera, user.uid);
+                                            }
+                                        ),
+                                        FlatButton(
+                                          child: Text('Import from gallery', style: TextStyle(color: Colors.teal)),
+                                            onPressed: () async {
+                                              _pickImage(ImageSource.gallery, user.uid);
+                                            }
+                                        ),
+                                      ],
                                     );
                                   });
                                 },
@@ -372,7 +357,6 @@ class _ProfileState extends State<Profile> {
                           ),
                         ),
                               ),
-                                !_status ? _getEditIcon() : new Container(),
                         ],
                       ),
                     )
