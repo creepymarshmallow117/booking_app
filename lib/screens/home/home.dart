@@ -1,5 +1,6 @@
 //This is the User's home page.
 
+
 import 'package:booking_app/screens/authenticate/authenticate.dart';
 import 'package:booking_app/screens/home/search.dart';
 import 'package:booking_app/services/auth.dart';
@@ -16,6 +17,8 @@ import 'file:///D:/College/Project/App/lib/screens/home/profile.dart';
 import 'package:provider/provider.dart';
 import 'package:booking_app/services/database.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';
+
 
 class Home extends StatefulWidget{
   @override
@@ -54,14 +57,14 @@ class _HomeState extends State<Home> {
             content: Text('You are going to exit the application'),
             actions: <Widget>[
               FlatButton(
-                child: Text('NO'),
+                child: Text('NO', style: TextStyle(color: Colors.teal)),
                 onPressed: () {
                   WidgetsBinding.instance.handlePopRoute();
                   Navigator.of(context).pop(false);
                 },
               ),
               FlatButton(
-                child: Text('YES'),
+                child: Text('YES', style: TextStyle(color: Colors.teal)),
                 onPressed: () {
                   SystemNavigator.pop();
                 },
@@ -70,6 +73,15 @@ class _HomeState extends State<Home> {
           );
         });
   }
+
+  final ButtonStyle flatButtonStyle = TextButton.styleFrom(
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.all(Radius.circular(4.0)),
+    ),
+  );
+
+  bool isExpanded = false;
+
 
   String name = "";
   String email = "";
@@ -258,43 +270,43 @@ class _HomeState extends State<Home> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: <Widget>[
-                      CarouselSlider(
-                        options: CarouselOptions(
-                          height: 220.0,
-                          autoPlay: true,
-                          autoPlayInterval: Duration(seconds: 3),
-                          autoPlayAnimationDuration: Duration(
-                              milliseconds: 800),
-                          autoPlayCurve: Curves.fastOutSlowIn,
-                          pauseAutoPlayOnTouch: true,
-                          aspectRatio: 2.0,
-                          onPageChanged: (index, reason) {
-                            setState(() {
-                              _currentIndex = index;
-                            });
-                          },
-                        ),
-                        items: cardList.map((card) {
-                          return Builder(
-                              builder: (BuildContext context) {
-                                return Container(
-                                  height: MediaQuery
-                                      .of(context)
-                                      .size
-                                      .height * 0.30,
-                                  width: MediaQuery
-                                      .of(context)
-                                      .size
-                                      .width,
-                                  child: Card(
-                                    color: Colors.blueAccent,
-                                    child: card,
-                                  ),
-                                );
-                              }
-                          );
-                        }).toList(),
-                      ),
+                          CarouselSlider(
+                            options: CarouselOptions(
+                              height: 220.0,
+                              autoPlay: true,
+                              autoPlayInterval: Duration(seconds: 3),
+                              autoPlayAnimationDuration: Duration(
+                                  milliseconds: 800),
+                              autoPlayCurve: Curves.fastOutSlowIn,
+                              pauseAutoPlayOnTouch: true,
+                              aspectRatio: 2.0,
+                              onPageChanged: (index, reason) {
+                                setState(() {
+                                  _currentIndex = index;
+                                });
+                              },
+                            ),
+                            items: cardList.map((card) {
+                              return Builder(
+                                  builder: (BuildContext context) {
+                                    return Container(
+                                      height: MediaQuery
+                                          .of(context)
+                                          .size
+                                          .height * 0.30,
+                                      width: MediaQuery
+                                          .of(context)
+                                          .size
+                                          .width,
+                                      child: Card(
+                                        color: Colors.blueAccent,
+                                        child: card,
+                                      ),
+                                    );
+                                  }
+                              );
+                            }).toList(),
+                          ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: map<Widget>(cardList, (index, url) {
@@ -312,365 +324,313 @@ class _HomeState extends State<Home> {
                           );
                         }),
                       ),
-                      StreamBuilder(
-                          stream: user != null ?FirebaseFirestore.instance.collection("user").doc(uid1).snapshots():null,
-                          builder: (context,snapshots){
-                            if(snapshot.data == null) return CircularProgressIndicator();
-                            if(user == null){
-                              return Column(
-                                children: <Widget>[
-                                  Container(
-                                    margin: EdgeInsets.fromLTRB(10, 18, 10, 0),
-                                    height: 170,
-                                    width: double.maxFinite,
-                                    child: Card(
-                                      child: Row(
-                                        children: <Widget>[
-                                          SizedBox(width: 10.0,height: 10.0),
-                                          Column(
-                                            children: [
-                                              Text("Nothing to show")
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                      elevation: 5,
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.fromLTRB(10, 18, 10, 0),
-                                    height: 170,
-                                    width: double.maxFinite,
-                                    child: Card(
-                                      child: Row(
-                                        children: <Widget>[
-                                          SizedBox(width: 10.0,height: 10.0),
-                                          Column(
-                                            children: [
-                                              Text("Nothing to show")
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                      elevation: 5,
-                                    ),
-                                  )
-                                  ,
-                                  Container(
-                                    margin: EdgeInsets.fromLTRB(10, 18, 10, 0),
-                                    height: 170,
-                                    width: double.maxFinite,
-                                    child: GestureDetector(
-                                      onTap: (){
-
-                                      },
-                                      child: Card(
+                      StreamBuilder<DocumentSnapshot>(
+                          stream: FirebaseFirestore.instance.collection("topplaces").doc("VEZwlQ3dgtlO8dX6HPe2").snapshots(),
+                          builder: (context,snapshots) {
+                            if (snapshots.data == null)
+                              return CircularProgressIndicator();
+                            else {
+                              List topPlaces = List();
+                              topPlaces = (snapshots.data['top']);
+                              print(topPlaces);
+                              return Container(
+                                child: Column(
+                                  children: <Widget>[
+                                    SizedBox(height: 5,),
+                                    Container(
+                                      child: Padding(
+                                        padding: EdgeInsets.symmetric(horizontal: 20),
                                         child: Row(
-                                          children: <Widget>[
-                                            SizedBox(width: 10.0,height: 10.0),
-                                            Column(
-                                              children: [
-                                                Text("Nothing to show")
-                                              ],
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              "Trending Now",
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold, fontSize: 20,
+                                              ),
                                             ),
                                           ],
                                         ),
-                                        elevation: 5,
                                       ),
                                     ),
-                                  )
-                                  ,
-                                ],
-                              );
-                            }else{
-                              List visits = List();
-                              List recentVisits = List();
-                              visits = snapshots.data['recentVisits'];
-                              for(int i = visits.length - 1; i > visits.length - 4; i--){
-                                if(i < 0){
-                                  break;
-                                }
-                                recentVisits.add(visits[i]["turfId"]);
-                              }
-                              return Column(
-                                children: <Widget>[
-                                  StreamBuilder<DocumentSnapshot>(
-                                      stream: recentVisits.length > 0 ? FirebaseFirestore.instance.collection("client").doc(recentVisits[0]).snapshots():null,
-                                      builder: (context, snapshot) {
-                                        if(snapshot.data == null){
-                                          return Container(
-                                            margin: EdgeInsets.fromLTRB(10, 18, 10, 0),
-                                            height: 170,
-                                            width: double.maxFinite,
-                                            child: Card(
-                                              child: Column(
-                                                children: [
-                                                  Text("none")
-                                                ],
-                                              ),
-                                              elevation: 5,
-                                            ),
-                                          );
-                                        }else{
+                                    StreamBuilder<DocumentSnapshot>(
+                                        stream: topPlaces.length > 0 ? FirebaseFirestore.instance.collection("client").doc(topPlaces[0].toString()).snapshots() : null,
+                                        builder: (context, snapshot) {
+                                          if (snapshot.data == null) return CircularProgressIndicator();
                                           String groundName = snapshot.data["groundName"];
-                                          String address = snapshot.data["address"];
-                                          String contactInfo = snapshot.data["contactInfo"];
+                                          String hours = snapshot.data["hours"];
                                           String imageUrl = snapshot.data["groundImages"][0];
+                                          String description = snapshot.data["description"];
                                           return Container(
                                             margin: EdgeInsets.fromLTRB(10, 18, 10, 0),
-                                            height: 170,
+                                            height: 260,
                                             width: double.maxFinite,
                                             child: GestureDetector(
-                                              onTap: (){
+                                              onTap: () {
                                                 Navigator.push(
                                                   context,
-                                                  MaterialPageRoute(builder: (context) => Search(id: recentVisits[0])),
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          Search(id: topPlaces[0])),
                                                 );
                                               },
-                                              child: Card(
-                                                child: Row(
-                                                  children: <Widget>[
-                                                    SizedBox(width: 10.0,height: 10.0),
-                                                    Image(
-                                                        height: 200.0,
-                                                        width: 200.0,
-                                                        image: NetworkImage(imageUrl)
-                                                    ),
-                                                    Column(
-                                                      children: [
-                                                        SizedBox(height: 15),
-                                                        Align(
-                                                          alignment: Alignment.centerLeft,
-                                                          child : Row(
-                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                              child: Padding(
+                                                padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                                                child: Card(
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Container(
+                                                        height: 190,
+                                                        width: double.maxFinite,
+                                                        decoration: BoxDecoration(
+                                                          borderRadius: BorderRadius.only(
+                                                            topLeft: Radius.circular(5),
+                                                            topRight: Radius.circular(5),
+                                                          ),
+                                                          image: DecorationImage(
+                                                            image: NetworkImage(imageUrl),
+                                                            fit: BoxFit.fill,
+                                                          )
+                                                        ),
+                                                      ),
+                                                      Expanded(
+                                                        child: Container(
+                                                          padding: EdgeInsets.symmetric(horizontal: 10),
+                                                          width: double.maxFinite,
+                                                          decoration: BoxDecoration(
+                                                            borderRadius: BorderRadius.only(
+                                                              topLeft: Radius.circular(5),
+                                                              topRight: Radius.circular(5),
+                                                            ),
+                                                          ),
+                                                          child: Row(
+                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                            mainAxisSize: MainAxisSize.max,
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
                                                             children: <Widget>[
-                                                              Text("Name : ",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold)),
-                                                              Text(
-                                                                groundName,
-                                                                style: TextStyle(fontSize: 15),
-                                                              ),
+                                                              Column(
+                                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                children: <Widget>[
+                                                                  Text(
+                                                                    groundName,
+                                                                    style: TextStyle(
+                                                                      fontWeight: FontWeight.w600,
+                                                                      fontSize: 18,
+                                                                    ),
+                                                                  ),
+                                                                  Text(
+                                                                    hours,
+                                                                    style: TextStyle(
+                                                                      fontSize: 14,
+                                                                      fontWeight: FontWeight.w300,
+                                                                    ),
+                                                                  )
+
+                                                                ],
+                                                              )
+
                                                             ],
                                                           ),
                                                         ),
-                                                        SizedBox(height: 5),
-                                                        Row(
-                                                          mainAxisAlignment: MainAxisAlignment.start,
-                                                          children: <Widget>[
-                                                            Text("Contact : ",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold)),
-                                                            Text(
-                                                              contactInfo,
-                                                              style: TextStyle(fontSize: 15),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        SizedBox(height: 5),
-                                                        Row(
-                                                          mainAxisAlignment: MainAxisAlignment.start,
-                                                          children: <Widget>[
-                                                            Padding(padding: EdgeInsets.only(left : 3,top: 10,)),
-                                                            Text("Address : ",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold)),
-                                                            Text(
-                                                              address,
-                                                              style: TextStyle(fontSize: 15),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ],
+                                                      )
+                                                    ],
+                                                  ),
                                                 ),
-                                                elevation: 5,
                                               ),
                                             ),
                                           );
                                         }
-                                      }
-                                  ),
-                                  StreamBuilder<DocumentSnapshot>(
-                                      stream: recentVisits.length > 1 ? FirebaseFirestore.instance.collection("client").doc(recentVisits[1]).snapshots():null,
-                                      builder: (context, snapshot) {
-                                        if(snapshot.data == null){
-                                          return Container(
-                                            margin: EdgeInsets.fromLTRB(10, 18, 10, 0),
-                                            height: 170,
-                                            width: double.maxFinite,
-                                            child: Card(
-                                              child: Column(
-                                                children: [
-                                                  Text("none")
-                                                ],
-                                              ),
-                                              elevation: 5,
-                                            ),
-                                          );
-                                        }else{
+                                    ),
+                                    StreamBuilder<DocumentSnapshot>(
+                                        stream: topPlaces.length > 1
+                                            ? FirebaseFirestore.instance
+                                            .collection("client").doc(
+                                            topPlaces[1].toString()).snapshots()
+                                            : null,
+                                        builder: (context, snapshot) {
+                                          if (snapshot.data == null)
+                                            return CircularProgressIndicator();
                                           String groundName = snapshot.data["groundName"];
-                                          String address = snapshot.data["address"];
-                                          String contactInfo = snapshot.data["contactInfo"];
+                                          String hours = snapshot.data["hours"];
                                           String imageUrl = snapshot.data["groundImages"][0];
+                                          String description = snapshot.data["description"];
                                           return Container(
                                             margin: EdgeInsets.fromLTRB(10, 18, 10, 0),
-                                            height: 170,
+                                            height: 260,
                                             width: double.maxFinite,
                                             child: GestureDetector(
-                                              onTap: (){
+                                              onTap: () {
                                                 Navigator.push(
                                                   context,
-                                                  MaterialPageRoute(builder: (context) => Search(id: recentVisits[1])),
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          Search(id: topPlaces[1])),
                                                 );
                                               },
-                                              child: Card(
-                                                child: Row(
-                                                  children: <Widget>[
-                                                    SizedBox(width: 10.0,height: 10.0),
-                                                    Image(
-                                                        height: 200.0,
-                                                        width: 200.0,
-                                                        image: NetworkImage(imageUrl)
-                                                    ),
-                                                    Column(
-                                                      children: [
-                                                        SizedBox(height: 15),
-                                                        Align(
-                                                          alignment: Alignment.centerLeft,
-                                                          child : Row(
-                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                              child: Padding(
+                                                padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                                                child: Card(
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Container(
+                                                        height: 190,
+                                                        width: double.maxFinite,
+                                                        decoration: BoxDecoration(
+                                                            borderRadius: BorderRadius.only(
+                                                              topLeft: Radius.circular(5),
+                                                              topRight: Radius.circular(5),
+                                                            ),
+                                                            image: DecorationImage(
+                                                              image: NetworkImage(imageUrl),
+                                                              fit: BoxFit.fill,
+                                                            )
+                                                        ),
+                                                      ),
+                                                      Expanded(
+                                                        child: Container(
+                                                          padding: EdgeInsets.symmetric(horizontal: 10),
+                                                          width: double.maxFinite,
+                                                          decoration: BoxDecoration(
+                                                            borderRadius: BorderRadius.only(
+                                                              topLeft: Radius.circular(5),
+                                                              topRight: Radius.circular(5),
+                                                            ),
+                                                          ),
+                                                          child: Row(
+                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                            mainAxisSize: MainAxisSize.max,
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
                                                             children: <Widget>[
-                                                              Text("Name : ",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold)),
-                                                              Text(
-                                                                groundName,
-                                                                style: TextStyle(fontSize: 15),
-                                                              ),
+                                                              Column(
+                                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                children: <Widget>[
+                                                                  Text(
+                                                                    groundName,
+                                                                    style: TextStyle(
+                                                                      fontWeight: FontWeight.w600,
+                                                                      fontSize: 18,
+                                                                    ),
+                                                                  ),
+                                                                  Text(
+                                                                    hours,
+                                                                    style: TextStyle(
+                                                                      fontSize: 14,
+                                                                      fontWeight: FontWeight.w300,
+                                                                    ),
+                                                                  )
+
+                                                                ],
+                                                              )
+
                                                             ],
                                                           ),
                                                         ),
-                                                        SizedBox(height: 5),
-                                                        Row(
-                                                          mainAxisAlignment: MainAxisAlignment.start,
-                                                          children: <Widget>[
-                                                            Text("Contact : ",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold)),
-                                                            Text(
-                                                              contactInfo,
-                                                              style: TextStyle(fontSize: 15),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        SizedBox(height: 5),
-                                                        Row(
-                                                          mainAxisAlignment: MainAxisAlignment.start,
-                                                          children: <Widget>[
-                                                            Padding(padding: EdgeInsets.only(left : 3,top: 10,)),
-                                                            Text("Address : ",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold)),
-                                                            Text(
-                                                              address,
-                                                              style: TextStyle(fontSize: 15),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ],
+                                                      )
+                                                    ],
+                                                  ),
                                                 ),
-                                                elevation: 5,
                                               ),
                                             ),
                                           );
                                         }
-                                      }
-                                  ),
-                                  StreamBuilder<DocumentSnapshot>(
-                                      stream: recentVisits.length > 2 ? FirebaseFirestore.instance.collection("client").doc(recentVisits[2]).snapshots():null,
-                                      builder: (context, snapshot) {
-                                        if(snapshot.data == null){
-                                          return Container(
-                                            margin: EdgeInsets.fromLTRB(10, 18, 10, 0),
-                                            height: 170,
-                                            width: double.maxFinite,
-                                            child: Card(
-                                              child: Column(
-                                                children: [
-                                                  Text("none")
-                                                ],
-                                              ),
-                                              elevation: 5,
-                                            ),
-                                          );
-                                        }else{
+                                    ),
+                                    StreamBuilder<DocumentSnapshot>(
+                                        stream: topPlaces.length > 2 ? FirebaseFirestore.instance.collection("client").doc(topPlaces[2].toString()).snapshots()
+                                            : null,
+                                        builder: (context, snapshot) {
+                                          if (snapshot.data == null) return CircularProgressIndicator();
                                           String groundName = snapshot.data["groundName"];
-                                          String address = snapshot.data["address"];
-                                          String contactInfo = snapshot.data["contactInfo"];
+                                          String hours = snapshot.data["hours"];
                                           String imageUrl = snapshot.data["groundImages"][0];
+                                          String description = snapshot.data["description"];
                                           return Container(
                                             margin: EdgeInsets.fromLTRB(10, 18, 10, 0),
-                                            height: 170,
+                                            height: 260,
                                             width: double.maxFinite,
                                             child: GestureDetector(
-                                              onTap: (){
+                                              onTap: () {
                                                 Navigator.push(
                                                   context,
-                                                  MaterialPageRoute(builder: (context) => Search(id: recentVisits[2])),
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          Search(id: topPlaces[2])),
                                                 );
                                               },
-                                              child: Card(
-                                                child: Row(
-                                                  children: <Widget>[
-                                                    SizedBox(width: 10.0,height: 10.0),
-                                                    Image(
-                                                        height: 200.0,
-                                                        width: 200.0,
-                                                        image: NetworkImage(imageUrl)
-                                                    ),
-                                                    Column(
-                                                      children: [
-                                                        SizedBox(height: 30),
-                                                        Align(
-                                                          alignment: Alignment.centerLeft,
-                                                          child : Row(
-                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                              child: Padding(
+                                                padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                                                child: Card(
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Container(
+                                                        height: 190,
+                                                        width: double.maxFinite,
+                                                        decoration: BoxDecoration(
+                                                            borderRadius: BorderRadius.only(
+                                                              topLeft: Radius.circular(5),
+                                                              topRight: Radius.circular(5),
+                                                            ),
+                                                            image: DecorationImage(
+                                                              image: NetworkImage(imageUrl),
+                                                              fit: BoxFit.fill,
+                                                            )
+                                                        ),
+                                                      ),
+                                                      Expanded(
+                                                        child: Container(
+                                                          padding: EdgeInsets.symmetric(horizontal: 10),
+                                                          width: double.maxFinite,
+                                                          decoration: BoxDecoration(
+                                                            borderRadius: BorderRadius.only(
+                                                              topLeft: Radius.circular(5),
+                                                              topRight: Radius.circular(5),
+                                                            ),
+                                                          ),
+                                                          child: Row(
+                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                            mainAxisSize: MainAxisSize.max,
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
                                                             children: <Widget>[
-                                                              Text("Name : ",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold)),
-                                                              Text(
-                                                                groundName,
-                                                                style: TextStyle(fontSize: 15),
-                                                              ),
+                                                              Column(
+                                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                children: <Widget>[
+                                                                  Text(
+                                                                    groundName,
+                                                                    style: TextStyle(
+                                                                      fontWeight: FontWeight.w600,
+                                                                      fontSize: 18,
+                                                                    ),
+                                                                  ),
+                                                                  Text(
+                                                                    hours,
+                                                                    style: TextStyle(
+                                                                      fontSize: 14,
+                                                                      fontWeight: FontWeight.w300,
+                                                                    ),
+                                                                  )
+
+                                                                ],
+                                                              )
+
                                                             ],
                                                           ),
                                                         ),
-                                                        SizedBox(height: 5),
-                                                        Row(
-                                                          mainAxisAlignment: MainAxisAlignment.start,
-                                                          children: <Widget>[
-                                                            Text("Contact : ",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold)),
-                                                            Text(
-                                                              contactInfo,
-                                                              style: TextStyle(fontSize: 15),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        SizedBox(height: 5),
-                                                        Column(
-                                                          mainAxisAlignment: MainAxisAlignment.start,
-                                                          children: <Widget>[
-                                                            Text("Address : ",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold)),
-                                                            Text(
-                                                              address,
-                                                              textAlign: TextAlign.left,
-                                                              style: TextStyle(fontSize: 15),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ],
+                                                      )
+                                                    ],
+                                                  ),
                                                 ),
-                                                elevation: 5,
                                               ),
                                             ),
                                           );
                                         }
-                                      }
-                                  ),
-                                ],
+                                    ),
+                                  ],
+                                ),
                               );
                             }
                           }
@@ -905,7 +865,60 @@ class Item4 extends StatelessWidget {
 
 
 
-
+Card(
+                                                child: Row(
+                                                  children: <Widget>[
+                                                    SizedBox(width: 10.0,height: 10.0),
+                                                    Image(
+                                                        height: 150.0,
+                                                        width: 180.0,
+                                                        image: NetworkImage(imageUrl)
+                                                    ),
+                                                    Column(
+                                                      children: [
+                                                        SizedBox(height: 15),
+                                                        Align(
+                                                          alignment: Alignment.centerLeft,
+                                                          child : Row(
+                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                            children: <Widget>[
+                                                              Text("Name : ",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold)),
+                                                              Text(
+                                                                groundName,
+                                                                style: TextStyle(fontSize: 15),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        SizedBox(height: 5),
+                                                        Row(
+                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                          children: <Widget>[
+                                                            Text("Contact : ",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold)),
+                                                            Text(
+                                                              contactInfo,
+                                                              style: TextStyle(fontSize: 15),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        SizedBox(height: 5),
+                                                        Row(
+                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                          children: <Widget>[
+                                                            Padding(padding: EdgeInsets.only(left : 3,top: 10,)),
+                                                            Text("Hours : ",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold)),
+                                                            Text(
+                                                              hours,
+                                                              style: TextStyle(fontSize: 15),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                                elevation: 5,
+                                              ),
 
 
 
