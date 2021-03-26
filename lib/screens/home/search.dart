@@ -19,6 +19,7 @@ import 'file:///D:/College/Project/App/lib/screens/home/profile.dart';
 import 'file:///D:/College/Project/App/lib/screens/home/orders.dart';
 import 'file:///D:/College/Project/App/lib/screens/home/cart.dart';
 import 'package:provider/provider.dart';
+import 'package:getwidget/getwidget.dart';
 
 
 class Search extends StatefulWidget {
@@ -85,6 +86,8 @@ class _SearchState extends State<Search> {
           String hours = data.data()["hours"];
           String startHour = data.data()["startHour"];
           String endHour = data.data()["endHour"];
+          String morningPrice = data.data()["morningPrice"];
+          String eveningPrice = data.data()["eveningPrice"];
           List groundImages = data.data()["groundImages"];
           print(groundName);
           print(groundContactInfo);
@@ -235,41 +238,29 @@ class _SearchState extends State<Search> {
                   height: height1,
                   child : Column(
                     children: <Widget>[
-                      CarouselSlider(
-                        options: CarouselOptions(
-                          height: 220.0,
-                          autoPlay: true,
-                          autoPlayInterval: Duration(seconds: 3),
-                          autoPlayAnimationDuration: Duration(milliseconds: 800),
-                          autoPlayCurve: Curves.fastOutSlowIn,
-                          pauseAutoPlayOnTouch: true,
-                          aspectRatio: 2.0,
-                          onPageChanged: (index, reason) {
-                            setState(() {
-                              _currentIndex = index;
-                            });
+                      GFCarousel(
+                        autoPlay: true,
+                        height: 210,
+                        items: groundImages.map(
+                              (url) {
+                            return Container(
+                              margin: EdgeInsets.all(3.0),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                                child: Image.network(
+                                  url,
+                                  fit: BoxFit.cover,
+                                  width: 1000.0,
+                                ),
+                              ),
+                            );
                           },
-                        ),
-                        items: cardList.map((card) {
-                          return Builder(
-                              builder: (BuildContext context) {
-                                return Container(
-                                  height: MediaQuery
-                                      .of(context)
-                                      .size
-                                      .height * 0.30,
-                                  width: MediaQuery
-                                      .of(context)
-                                      .size
-                                      .width,
-                                  child: Card(
-                                    color: Colors.blueAccent,
-                                    child: card,
-                                  ),
-                                );
-                              }
-                          );
-                        }).toList(),
+                        ).toList(),
+                        onPageChanged: (index) {
+                          setState(() {
+                            index;
+                          });
+                        },
                       ),
                       SizedBox(height: 10),
                       Row(
@@ -380,7 +371,10 @@ class _SearchState extends State<Search> {
                                       MaterialPageRoute(builder: (context) =>
                                           Slots(startHour: startHour,
                                               endHour: endHour,
-                                              uid: widget.id)),
+                                              uid: widget.id,
+                                            morningPrice: morningPrice,
+                                            eveningPrice: eveningPrice,
+                                          )),
                                     );
                                   }
                                   else {

@@ -18,6 +18,7 @@ import 'package:provider/provider.dart';
 import 'package:booking_app/services/database.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:getwidget/getwidget.dart';
 
 
 class Home extends StatefulWidget{
@@ -87,6 +88,14 @@ class _HomeState extends State<Home> {
   String email = "";
   String uid1 = "";
   String image = "";
+
+  final List<String> imageList = [
+    "https://cdn.pixabay.com/photo/2017/12/03/18/04/christmas-balls-2995437_960_720.jpg",
+    "https://cdn.pixabay.com/photo/2017/12/13/00/23/christmas-3015776_960_720.jpg",
+    "https://cdn.pixabay.com/photo/2019/12/19/10/55/christmas-market-4705877_960_720.jpg",
+    "https://cdn.pixabay.com/photo/2019/12/22/04/18/x-mas-4711785__340.jpg",
+    "https://cdn.pixabay.com/photo/2016/11/22/07/09/spruce-1848543__340.jpg"
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -197,7 +206,7 @@ class _HomeState extends State<Home> {
                   Visibility(
                     visible: _isVisible,
                     child: ListTile(
-                      leading: Icon(Icons.message, color: Colors.teal),
+                      leading: Icon(Icons.shopping_cart_rounded, color: Colors.teal),
                       title: Text('Your Orders'),
                       onTap: () {
                         Navigator.pop(context);
@@ -270,60 +279,32 @@ class _HomeState extends State<Home> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: <Widget>[
-                          CarouselSlider(
-                            options: CarouselOptions(
-                              height: 220.0,
-                              autoPlay: true,
-                              autoPlayInterval: Duration(seconds: 3),
-                              autoPlayAnimationDuration: Duration(
-                                  milliseconds: 800),
-                              autoPlayCurve: Curves.fastOutSlowIn,
-                              pauseAutoPlayOnTouch: true,
-                              aspectRatio: 2.0,
-                              onPageChanged: (index, reason) {
-                                setState(() {
-                                  _currentIndex = index;
-                                });
-                              },
-                            ),
-                            items: cardList.map((card) {
-                              return Builder(
-                                  builder: (BuildContext context) {
-                                    return Container(
-                                      height: MediaQuery
-                                          .of(context)
-                                          .size
-                                          .height * 0.30,
-                                      width: MediaQuery
-                                          .of(context)
-                                          .size
-                                          .width,
-                                      child: Card(
-                                        color: Colors.blueAccent,
-                                        child: card,
-                                      ),
-                                    );
-                                  }
-                              );
-                            }).toList(),
-                          ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: map<Widget>(cardList, (index, url) {
-                          return Container(
-                            width: 10.0,
-                            height: 10.0,
-                            margin: EdgeInsets.symmetric(
-                                vertical: 10.0, horizontal: 2.0),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: _currentIndex == index
-                                  ? Colors.teal
-                                  : Colors.grey,
-                            ),
-                          );
-                        }),
+                      GFCarousel(
+                        autoPlay: true,
+                        height: 210,
+                        items: imageList.map(
+                              (url) {
+                            return Container(
+                              margin: EdgeInsets.all(7.0),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                                child: Image.network(
+                                    url,
+                                    fit: BoxFit.cover,
+                                    width: 1000.0,
+                                ),
+                              ),
+                            );
+                          },
+                        ).toList(),
+                        onPageChanged: (index) {
+                          setState(() {
+                            index;
+                          });
+                        },
+                        enlargeMainPage: true,
                       ),
+                      SizedBox(height: 20.0,),
                       StreamBuilder<DocumentSnapshot>(
                           stream: FirebaseFirestore.instance.collection("topplaces").doc("VEZwlQ3dgtlO8dX6HPe2").snapshots(),
                           builder: (context,snapshots) {
@@ -346,7 +327,7 @@ class _HomeState extends State<Home> {
                                             Text(
                                               "Trending Now",
                                               style: TextStyle(
-                                                fontWeight: FontWeight.bold, fontSize: 20,
+                                                fontWeight: FontWeight.w600, fontSize: 20,
                                               ),
                                             ),
                                           ],
@@ -377,6 +358,7 @@ class _HomeState extends State<Home> {
                                               child: Padding(
                                                 padding: const EdgeInsets.symmetric(horizontal: 2.0),
                                                 child: Card(
+                                                  elevation: 5.0,
                                                   child: Column(
                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
@@ -472,6 +454,7 @@ class _HomeState extends State<Home> {
                                               child: Padding(
                                                 padding: const EdgeInsets.symmetric(horizontal: 2.0),
                                                 child: Card(
+                                                  elevation: 5.0,
                                                   child: Column(
                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
@@ -563,6 +546,7 @@ class _HomeState extends State<Home> {
                                               child: Padding(
                                                 padding: const EdgeInsets.symmetric(horizontal: 2.0),
                                                 child: Card(
+                                                  elevation: 5.0,
                                                   child: Column(
                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [

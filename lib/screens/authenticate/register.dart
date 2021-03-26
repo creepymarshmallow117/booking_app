@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loading_animations/loading_animations.dart';
 import 'package:flutter/animation.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 
 class Register extends StatefulWidget {
@@ -177,6 +178,8 @@ class _RegisterState extends State<Register> {
                                   User user = FirebaseAuth.instance.currentUser;
                                   if (!user.emailVerified) {
                                     await user.sendEmailVerification();
+                                    Fluttertoast.showToast(
+                                        msg: "A verification link has been sent to your email. Please verify your email");
                                   }
                                     Navigator.push(
                                       context,
