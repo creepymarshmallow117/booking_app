@@ -6,11 +6,13 @@ import 'package:fluttertoast/fluttertoast.dart';
 class Checkout extends StatefulWidget {
   final String clientId;
   final String customerId;
+  final String customerName;
+  final String groundName;
   final String time;
   final String date;
   final String price;
 
-  const Checkout({Key key, this.clientId, this.customerId, this.time, this.date, this.price}) : super(key: key);
+  const Checkout({Key key, this.clientId, this.customerId, this.customerName, this.groundName,this.time, this.date, this.price}) : super(key: key);
   @override
   _CheckoutState createState() => _CheckoutState();
 }
@@ -19,6 +21,7 @@ class _CheckoutState extends State<Checkout> {
 
 
   String radioItem = '';
+  final GlobalKey<State> _keyLoader = new GlobalKey<State>();
 
   @override
   Widget build(BuildContext context) {
@@ -64,18 +67,21 @@ class _CheckoutState extends State<Checkout> {
                     ],
                   ),
                 ),
-                SizedBox(height: 15.0,),
+                SizedBox(height: 20.0,),
                 Container(
-                  height: 400,
-                  width: 350,
+                  height: 600,
+                  width: 400,
                   child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Padding(
                           padding: EdgeInsets.only(top: 10.0),
                           child: Text(
-                            "Order Details",
+                            "Order Summary",
                             style: TextStyle(
                               fontWeight: FontWeight.w600, fontSize: 20,
                             ),
@@ -154,10 +160,13 @@ class _CheckoutState extends State<Checkout> {
                       elevation: 5.0,
                       child: GestureDetector(
                         onTap: () async{
+                          Dialogs.showLoadingDialog(context, _keyLoader);
                           final CollectionReference collection = FirebaseFirestore.instance.collection("bookingRecords");
                           await collection.doc().set({
                             'client_id': widget.clientId,
                             'customer_id': widget.customerId,
+                            'customer_name': widget.customerName,
+                            'ground_name': widget.groundName,
                             'date' : widget.date,
                             'time' : widget.time,
                             'price' : widget.price,
@@ -189,5 +198,32 @@ class _CheckoutState extends State<Checkout> {
       ),
       ),
     );
+  }
+}
+
+class Dialogs {
+  static Future<void> showLoadingDialog(
+      BuildContext context, GlobalKey key) async {
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return new WillPopScope(
+              onWillPop: () async => false,
+              child: SimpleDialog(
+                  key: key,
+                  backgroundColor: Colors.white,
+                  children: <Widget>[
+                    Center(
+                      child: Column(children: [
+                        CircularProgressIndicator(
+                         valueColor: new AlwaysStoppedAnimation<Color>(Colors.teal),
+                        ),
+                        SizedBox(height: 10,),
+                        Text("Please Wait....",style: TextStyle(color: Colors.black),)
+                      ]),
+                    )
+                  ]));
+        });
   }
 }

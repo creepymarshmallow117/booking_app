@@ -23,11 +23,12 @@ import 'orders.dart';
 
 class Slots extends StatefulWidget {
   final String uid;
+  final String groundName;
   final String startHour;
   final String endHour;
   final String morningPrice;
   final String eveningPrice;
-  const Slots({Key key, this.startHour, this.endHour, this.uid, this.morningPrice, this.eveningPrice}) : super(key: key);
+  const Slots({Key key, this.startHour, this.groundName,this.endHour, this.uid, this.morningPrice, this.eveningPrice}) : super(key: key);
 
   @override
   _SlotsState createState() => _SlotsState();
@@ -44,6 +45,8 @@ class _SlotsState extends State<Slots> {
   DateFormat formatter = DateFormat("dd-MM-yyy");
   String currentDate;
   String selectedDate;
+  String name;
+  String currentTime;
 
   void _onDaySelected(DateTime date) {
     setState(() {
@@ -56,6 +59,7 @@ class _SlotsState extends State<Slots> {
   void initState() {
     super.initState();
     _controller = CalendarController();
+    _onDaySelected(today);
   }
 
   @override
@@ -70,6 +74,8 @@ class _SlotsState extends State<Slots> {
       setState(() => _isVisible = true);
     }
 
+    currentTime = DateFormat.H().format(today);
+
     currentDate = formatter.format(today);
     endDate = today.add(Duration(days: 7));
 
@@ -81,8 +87,6 @@ class _SlotsState extends State<Slots> {
     double height = MediaQuery.of(context).size.height;
     var padding = MediaQuery.of(context).padding;
     double height1 = height - padding.top - padding.bottom;
-
-
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -122,38 +126,52 @@ class _SlotsState extends State<Slots> {
                 SizedBox(height: 15.0,),
                 Column(
                     children: [
-                      TableCalendar(
-                        calendarController: _controller,
-                        initialCalendarFormat: CalendarFormat.week,
-                        startDay: today,
-                        startingDayOfWeek: StartingDayOfWeek.monday,
-                        initialSelectedDay: today,
-                        calendarStyle: CalendarStyle(
-                          todayColor: Colors.teal,
-                          selectedColor: Colors.teal.shade100,
-                        ),
-                        headerStyle: HeaderStyle(
-                            centerHeaderTitle: true,
-                            rightChevronVisible: false,
-                            leftChevronVisible: false,
-                            formatButtonVisible: false,
-                            headerPadding: EdgeInsets.only(bottom: 15.0),
-                            titleTextStyle: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            )
-                        ),
-                        onDaySelected: (DateTime date, List event1, List event2) {
-                          _onDaySelected(date);
-                        },
+                    StreamBuilder<DocumentSnapshot>(
+                    stream: FirebaseFirestore.instance.collection("user").doc(user.uid).snapshots(),
+                    builder: (context, snapshot) {
+                        if(snapshot.data == null) return CircularProgressIndicator(
+                          valueColor: new AlwaysStoppedAnimation<Color>(Colors.teal),
+                        );
+                        else {
+                          name = snapshot.data['displayName'];
+                          return TableCalendar(
+                            calendarController: _controller,
+                            initialCalendarFormat: CalendarFormat.week,
+                            startDay: today,
+                            startingDayOfWeek: StartingDayOfWeek.monday,
+                            initialSelectedDay: today,
+                            calendarStyle: CalendarStyle(
+                              todayColor: Colors.teal,
+                              selectedColor: Colors.teal.shade100,
+                            ),
+                            headerStyle: HeaderStyle(
+                                centerHeaderTitle: true,
+                                rightChevronVisible: false,
+                                leftChevronVisible: false,
+                                formatButtonVisible: false,
+                                headerPadding: EdgeInsets.only(bottom: 15.0),
+                                titleTextStyle: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                )
+                            ),
+                            onDaySelected: (DateTime date, List event1,
+                                List event2) {
+                              _onDaySelected(date);
+                            },
+                          );
+                        }
+                      }
                       ),
                       Container(
-                        height: 650,
+                        height: 670,
                         child: StreamBuilder<QuerySnapshot>(
                             stream: FirebaseFirestore.instance.collection("bookingRecords").where("date", isEqualTo: selectedDate).where("client_id", isEqualTo: widget.uid).snapshots(),
                             builder: (context, snapshot) {
                               print(selectedDate);
-                              if(snapshot.data == null) return CircularProgressIndicator();
+                              if(snapshot.data == null) return CircularProgressIndicator(
+                                valueColor: new AlwaysStoppedAnimation<Color>(Colors.teal),
+                              );
                               else{
                                 List availSlots= List();
                                 List availSlotsInternal = List();
@@ -163,10 +181,11 @@ class _SlotsState extends State<Slots> {
                                   DocumentSnapshot doc = snapshot.data.docs.elementAt(i);
                                   bookedSlots.add(int.parse(doc.data()["time"]));
                                 }
-                                for(int i = int.parse(widget.startHour); i < int.parse(widget.endHour); i++){
+                                for(int i = selectedDate==currentDate ? int.parse(currentTime)+1 : int.parse(widget.startHour); i < int.parse(widget.endHour); i++){
                                   if(bookedSlots.contains(i)){
                                     continue;
-                                  }else{
+                                  }
+                                  else{
                                     int i1 = i+1;
                                     availSlotsInternal.add(i.toString());
                                     availSlots.add(i.toString()+":00"+" : "+i1.toString()+":00");
@@ -205,10 +224,11 @@ class _SlotsState extends State<Slots> {
                                                   print(availSlotsInternal.elementAt(index));
                                                   print(widget.uid);
                                                   print(selectedDate);
+                                                  print("Name : "+name);
                                                 Navigator.push(context,
                                                 MaterialPageRoute(
                                                 builder: (context) =>
-                                                Checkout(clientId: widget.uid, customerId: user.uid, time: availSlotsInternal.elementAt(index), date: selectedDate==null ? currentDate : selectedDate, price: int.parse(availSlotsInternal.elementAt(index))<17 ? widget.morningPrice : widget.eveningPrice)));
+                                                Checkout(clientId: widget.uid, customerId: user.uid, customerName: name ,groundName: widget.groundName ,time: availSlotsInternal.elementAt(index), date: selectedDate==null ? currentDate : selectedDate, price: int.parse(availSlotsInternal.elementAt(index))<17 ? widget.morningPrice : widget.eveningPrice)));
                                                 },
                                               ),
                                             );
@@ -217,6 +237,7 @@ class _SlotsState extends State<Slots> {
                             }
                         ),
                       ),
+
                     ],
                   ),
             ],

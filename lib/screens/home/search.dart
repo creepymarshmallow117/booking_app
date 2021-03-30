@@ -24,7 +24,8 @@ import 'package:getwidget/getwidget.dart';
 
 class Search extends StatefulWidget {
   final String id;
-  const Search({Key key, this.id}) : super(key: key);
+  final String customer_name;
+  const Search({Key key, this.id, this.customer_name}) : super(key: key);
   @override
   _SearchState createState() => _SearchState();
 }
@@ -77,7 +78,9 @@ class _SearchState extends State<Search> {
     return StreamBuilder<DocumentSnapshot>(
         stream: FirebaseFirestore.instance.collection("client").doc(widget.id).snapshots(),
         builder: (context, snapshot) {
-          if(snapshot.data == null) return CircularProgressIndicator();
+          if(snapshot.data == null) return CircularProgressIndicator(
+            valueColor: new AlwaysStoppedAnimation<Color>(Colors.teal),
+          );
           DocumentSnapshot data = snapshot.data;
           String groundName = data.data()["groundName"];
           String groundAddress = data.data()["address"];
@@ -89,12 +92,6 @@ class _SearchState extends State<Search> {
           String morningPrice = data.data()["morningPrice"];
           String eveningPrice = data.data()["eveningPrice"];
           List groundImages = data.data()["groundImages"];
-          print(groundName);
-          print(groundContactInfo);
-          print(groundDescription);
-          print(groundAddress);
-          print(hours);
-          print(groundImages);
           List cardList=[
             Item1(image : groundImages[0]),
             Item2(image : groundImages[1]),
@@ -374,6 +371,7 @@ class _SearchState extends State<Search> {
                                               uid: widget.id,
                                             morningPrice: morningPrice,
                                             eveningPrice: eveningPrice,
+                                            groundName: groundName,
                                           )),
                                     );
                                   }

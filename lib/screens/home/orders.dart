@@ -29,6 +29,7 @@ class _OrdersState extends State<Orders> {
               child: Container(
                 color: Colors.white,
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Padding(padding: EdgeInsets.only(left: 20.0, top: 20.0),
                       child: new Row(
@@ -62,10 +63,14 @@ class _OrdersState extends State<Orders> {
                       child: StreamBuilder<QuerySnapshot>(
                         stream: FirebaseFirestore.instance.collection("bookingRecords").where("customer_id", isEqualTo: widget.uid).snapshots(),
                         builder: (context,snapshot) {
+                          List orders = List();
                           if (snapshot.data == null)
-                            return CircularProgressIndicator();
+                            {
+                              return Container(
+
+                              );
+                            }
                           else {
-                            List orders = List();
                             for (int i = 0; i < snapshot.data.docs.length; i++) {
                               DocumentSnapshot doc = snapshot.data.docs.elementAt(i);
                               orders.add([
@@ -76,22 +81,60 @@ class _OrdersState extends State<Orders> {
                                 doc.data()["payment_mode"],
                               ]);
                             }
-                            print("This is shit"+orders[0][0]);
                             return ListView.builder(
                                 itemCount: orders.length,
                                 itemBuilder: (context, index) {
                                   return Card(
                                     child: ListTile(
                                         title: Container(
-                                          height: 100,
+                                          height: 110,
                                           child: Column(
                                             mainAxisAlignment: MainAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
-                                              Text(orders[index][0]),
-                                              Text(orders[index][1]),
-                                              Text(orders[index][2]),
-                                              Text(orders[index][3]),
-                                              Text(orders[index][4]),
+                                              Text(orders[index][0], style: TextStyle(
+                                                  fontWeight: FontWeight.w600, fontSize: 18
+                                              ),),
+                                              SizedBox(height: 5.0,),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Text("Date : ",style: TextStyle(fontSize: 15,fontWeight: FontWeight.w600)),
+                                                  Text(orders[index][1], style: TextStyle(
+                                                      fontWeight: FontWeight.w300, fontSize: 15
+                                                  ),),
+                                                ],
+                                              ),
+                                              SizedBox(height: 2.0,),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Text("Price : ",style: TextStyle(fontSize: 15,fontWeight: FontWeight.w600)),
+                                                  Text(orders[index][2], style: TextStyle(
+                                                      fontWeight: FontWeight.w300, fontSize: 15
+                                                  ),),
+                                                ],
+                                              ),
+                                              SizedBox(height: 2.0,),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Text("Time : ",style: TextStyle(fontSize: 15,fontWeight: FontWeight.w600)),
+                                                  Text(orders[index][3], style: TextStyle(
+                                                      fontWeight: FontWeight.w300, fontSize: 15
+                                                  ),),
+                                                ],
+                                              ),
+                                              SizedBox(height: 2.0,),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Text("Payment : ",style: TextStyle(fontSize: 15,fontWeight: FontWeight.w600)),
+                                                  Text(orders[index][4], style: TextStyle(
+                                                      fontWeight: FontWeight.w300, fontSize: 15
+                                                  ),),
+                                                ],
+                                              ),
                                             ],
                                           ),
                                         )

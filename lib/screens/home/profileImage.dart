@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:booking_app/screens/home/profile.dart';
 import 'package:booking_app/services/auth.dart';
 import 'package:booking_app/services/database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -23,9 +24,10 @@ class _ProfileImageState extends State<ProfileImage> {
   final FirebaseStorage _storage = FirebaseStorage.instanceFor(bucket: 'gs://booking-app-63e61.appspot.com');
   UploadTask _storageUploadTask;
 
+
   PickedFile _imageFile;
   bool showPickImage = false;
-  Future<void> _pickImage(ImageSource source) async{ //Function to pick image from camera or gallery
+  Future<void> _pickImage(ImageSource source, uid) async{ //Function to pick image from camera or gallery
     final picker = ImagePicker();
     PickedFile selected = await picker.getImage(source: source);
     if(selected != null){
@@ -38,7 +40,32 @@ class _ProfileImageState extends State<ProfileImage> {
 
   Future<void> _cropImage() async{//Function to crop image
     File cropped = await ImageCropper.cropImage(
-        sourcePath: _imageFile.path);
+        sourcePath: _imageFile.path,
+      aspectRatioPresets: Platform.isAndroid
+          ? [
+        CropAspectRatioPreset.square,
+        CropAspectRatioPreset.ratio3x2,
+        CropAspectRatioPreset.original,
+        CropAspectRatioPreset.ratio4x3,
+        CropAspectRatioPreset.ratio16x9
+      ]
+          : [
+        CropAspectRatioPreset.original,
+        CropAspectRatioPreset.square,
+        CropAspectRatioPreset.ratio3x2,
+        CropAspectRatioPreset.ratio4x3,
+        CropAspectRatioPreset.ratio5x3,
+        CropAspectRatioPreset.ratio5x4,
+        CropAspectRatioPreset.ratio7x5,
+        CropAspectRatioPreset.ratio16x9
+      ],
+      androidUiSettings: AndroidUiSettings(
+        activeControlsWidgetColor: Colors.teal,
+          toolbarWidgetColor: Colors.teal,
+          initAspectRatio: CropAspectRatioPreset.original,
+          lockAspectRatio: false
+      ),
+    );
     print(cropped.path);
     setState(() {
       _imageFile = PickedFile(cropped.path) ?? _imageFile;
@@ -46,12 +73,57 @@ class _ProfileImageState extends State<ProfileImage> {
     });
   }
 
-  void _clearImage() async{//Function to clear image selection
-    setState(() {
-      _imageFile = null;
-      showPickImage = true;
-    });
+  Future<bool> _clearImage() {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Are you sure?'),
+            content: Text('You are going to clear this image'),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('NO', style: TextStyle(color: Colors.teal)),
+                onPressed: () {
+                  WidgetsBinding.instance.handlePopRoute();
+                  Navigator.of(context).pop(false);
+                },
+              ),
+              FlatButton(
+                child: Text('YES', style: TextStyle(color: Colors.teal)),
+                onPressed: () {
+                  WidgetsBinding.instance.handlePopRoute();
+                  Navigator.of(context).pop(false);
+                showDialog(context: context, builder: (context){
+                  return AlertDialog(
+                    title: Text('Are you sure?'),
+                    actions: <Widget>[
+                    FlatButton(
+                      child: Text('Click Image', style: TextStyle(color: Colors.teal)),
+                      onPressed: () async {
+                        _pickImage(ImageSource.camera, widget.uid);
+                        WidgetsBinding.instance.handlePopRoute();
+                        Navigator.of(context).pop(false);
+                        }
+                      ),
+                    FlatButton(
+                      child: Text('Import from gallery', style: TextStyle(color: Colors.teal)),
+                        onPressed: () async {
+                        _pickImage(ImageSource.gallery, widget.uid);
+                        WidgetsBinding.instance.handlePopRoute();
+                        Navigator.of(context).pop(false);
+                        }
+                      ),
+                    ],
+                    );
+                  },
+                  );
+                },
+              ),
+            ],
+          );
+        });
   }
+
 
   void startUpload(){//Function to upload image to firebase storage
     print('inside startUpload');
@@ -73,6 +145,9 @@ class _ProfileImageState extends State<ProfileImage> {
         _imageFile = widget.imageFile;
       });
     }
+    double height = MediaQuery.of(context).size.height;
+    var padding = MediaQuery.of(context).padding;
+    double height1 = height - padding.top - padding.bottom;
 
     if(_storageUploadTask != null){
       _storageUploadTask.whenComplete(() async{
@@ -96,69 +171,157 @@ class _ProfileImageState extends State<ProfileImage> {
       });
     }
     return Scaffold(
-      appBar: AppBar(),
-      body:
-      Center(
+      body: SingleChildScrollView(
+      child: SafeArea(
+      child : Container(
+        height: height1,
+          color: Colors.white,
           child: Column(
            children: [
-              Visibility(
-                visible: !showPickImage,
-                child: Image.file(
-                  File(_imageFile.path),
-                  height: 400,
-                  width: 400,
-                ),
-              ),
+             Container(
+             color: Colors.white,
+              child: Column(
+                children: <Widget>[
+                  Padding(padding: EdgeInsets.only(left: 20.0, top: 20.0),
+                  child: new Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    GestureDetector(
+                      child: new Icon(
+                      Icons.arrow_back_ios,
+                      color: Colors.teal,
+                      size: 22.0,
+                      ),
+                    onTap: () {
+                      Navigator.pop(context);
+                      },
+                    ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 25.0),
+                      child: new Text('UPDATE',
+                      style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20.0,
+                      fontFamily: 'sans-serif-light',
+                      color: Colors.teal)),
+                      )
+                    ],
+                    ),
+                  ),
+                  SizedBox(height: 15.0),
+                  Visibility(
+                    visible: !showPickImage,
+                    child: Image.file(
+                      File(_imageFile.path),
+                      height: 400,
+                      width: 400,
+                    ),
+                  ),
               Row(
                  children: [
                    Visibility(
                      visible: !showPickImage,
-                     child: RaisedButton(
-                         child: Text('Crop Image'),
-                         onPressed: () {
-                           _cropImage();
-                         }),
+                     child: Padding(
+                       padding: const EdgeInsets.only(top: 30.0, left: 30.0, right: 50.0),
+                       child: Container(
+                         height: 40.0,
+                         width: 150.0,
+                         child: Material(
+                           borderRadius: BorderRadius.circular(20.0),
+                           shadowColor: Colors.tealAccent,
+                           color: Colors.teal,
+                           elevation: 5.0,
+                           child: GestureDetector(
+                             onTap: () async{
+                               _cropImage();
+                             },
+                             child: Container(
+                               padding: EdgeInsets.symmetric(vertical: 12.0),
+                               child : Text('CROP IMAGE', textAlign: TextAlign.center,
+                                 style: TextStyle(
+                                   color: Colors.white,
+                                   fontWeight: FontWeight.bold,
+                                   fontFamily: 'Montserrat',
+                                 ),
+                               ),
+                             ),
+                           ),
+                         ),
+                       ),
+                     ),
                    ),
                    Visibility(
                      visible: !showPickImage,
-                     child: RaisedButton(
-                         child: Text('Clear image'),
-                         onPressed: () {
-                           _clearImage();
-                         }),
+                     child: Padding(
+                       padding: const EdgeInsets.only(top: 30.0),
+                       child: Container(
+                         height: 40.0,
+                         width: 150.0,
+                         child: Material(
+                           borderRadius: BorderRadius.circular(20.0),
+                           shadowColor: Colors.tealAccent,
+                           color: Colors.teal,
+                           elevation: 5.0,
+                           child: GestureDetector(
+                             onTap: () async{
+                               _clearImage();
+                             },
+                             child: Container(
+                               padding: EdgeInsets.symmetric(vertical: 12.0),
+                               child : Text('CLEAR IMAGE', textAlign: TextAlign.center,
+                                 style: TextStyle(
+                                   color: Colors.white,
+                                   fontWeight: FontWeight.bold,
+                                   fontFamily: 'Montserrat',
+                                 ),
+                               ),
+                             ),
+                           ),
+                         ),
+                       ),
+                     ),
                    ),
                  ],
                ),
-              Row(
-                 children:[
-                   Visibility(
-                     visible: showPickImage,
-                     child: RaisedButton(
-                       child: Text('Click an image'),
-                       onPressed: (){
-                         _pickImage(ImageSource.camera);
-                       },
-                     ),
-                   ),
-                   Visibility(
-                     visible: showPickImage,
-                     child: RaisedButton(
-                       child: Text('Import from gallery'),
-                       onPressed: (){
-                         _pickImage(ImageSource.gallery);
-                       },
-                     ),
-                   )
-                   ]
-               ),
-             RaisedButton(
-               child: Text('Upload Image'),
-               onPressed: (){
-                startUpload();
-             },),
+                  Visibility(
+                    visible: !showPickImage,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 30.0),
+                      child: Container(
+                        height: 40.0,
+                        width: 200.0,
+                        child: Material(
+                          borderRadius: BorderRadius.circular(20.0),
+                          shadowColor: Colors.tealAccent,
+                          color: Colors.teal,
+                          elevation: 5.0,
+                          child: GestureDetector(
+                            onTap: () async{
+                              startUpload();
+                            },
+                            child: Container(
+                              padding: EdgeInsets.symmetric(vertical: 12.0),
+                              child : Text('UPLOAD IMAGE', textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Montserrat',
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
            ],
          )
-       ), 
+       ),
+    ],
+      ),
+    ),
+    ),
+      ),
       );
   }
 }

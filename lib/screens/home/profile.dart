@@ -1,7 +1,10 @@
 //This is the profiles page.
 
+import 'dart:async';
 import 'dart:io';
 
+import 'package:booking_app/Animation/animation.dart';
+import 'package:booking_app/Animation/animation1.dart';
 import 'package:booking_app/screens/authenticate/authenticate.dart';
 import 'package:booking_app/screens/authenticate/login.dart';
 import 'package:booking_app/screens/home/forgotpassword.dart';
@@ -108,6 +111,7 @@ class _ProfileState extends State<Profile> {
     double height = MediaQuery.of(context).size.height;
     var padding = MediaQuery.of(context).padding;
     double height1 = height - padding.top - padding.bottom;
+    String profileImage = 'gs://booking-app-63e61.appspot.com/profileImages/${user.uid}.png';
 
 
     return Scaffold(
@@ -149,13 +153,24 @@ class _ProfileState extends State<Profile> {
                           ),
                           ),
                           SizedBox(height: 15.0),
-                          CircleAvatar(
+                          profileImage == null ? new Stack(
+                            children: <Widget>[
+                              new Center(
+                                child: new CircleAvatar(
+                                  radius: 80.0,
+                                  backgroundColor: const Color(0xFF778899),
+                                ),
+                              ),
+                              new Center(
+                                child: new Image.asset("assets/photo_camera.png"),
+                              ),
+                            ],
+                          ) :  CircleAvatar(
+                            backgroundColor: Colors.black,
                             radius: 75.0,
-                            backgroundImage:
-                            FirebaseImage('gs://booking-app-63e61.appspot.com/profileImages/${user.uid}.png',
+                            backgroundImage: FirebaseImage(profileImage,
                                 maxSizeBytes: 5000 * 1000,
                                 shouldCache: false,
-                                cacheRefreshStrategy: CacheRefreshStrategy.BY_METADATA_DATE
                             ),
                             child: Align(
                               alignment: Alignment.bottomRight,
@@ -170,24 +185,47 @@ class _ProfileState extends State<Profile> {
                                 ),
                                 onPressed: (){
                                   showDialog(context: context, builder: (context){
-                                    return AlertDialog(
-                                      elevation: 10,
-                                      title: Text('Are you sure?'),
-                                      content: Text('You are going to change your display picture.'),
-                                      actions: <Widget>[
-                                        FlatButton(
-                                          child: Text('Click Image', style: TextStyle(color: Colors.teal)),
-                                            onPressed: () async {
-                                              _pickImage(ImageSource.camera, user.uid);
-                                            }
+                                    return FadeAnimation1(
+                                      0.1, Container(
+                                        child: Padding(
+                                          padding: EdgeInsets.fromLTRB(30.0, 0.0, 30.0, 20.0),
+                                          child : Column(
+                                          mainAxisSize: MainAxisSize.max,
+                                          mainAxisAlignment: MainAxisAlignment.end,
+                                          children: [
+                                            new GestureDetector(
+                                              onTap: () => _pickImage(ImageSource.camera, user.uid),
+                                              child: roundedButton(
+                                                  "CAMERA",
+                                                  EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
+                                                  const Color(0xFF167F67),
+                                                  const Color(0xFFFFFFFF)),
+                                            ),
+                                            SizedBox(height: 10.0),
+                                            new GestureDetector(
+                                              onTap: () => _pickImage(ImageSource.gallery, user.uid),
+                                              child: roundedButton(
+                                                  "GALLERY",
+                                                  EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
+                                                  const Color(0xFF167F67),
+                                                  const Color(0xFFFFFFFF)),
+                                            ),
+                                            SizedBox(height: 25.0),
+                                            new GestureDetector(
+                                              onTap: () => Navigator.pop(context),
+                                              child: new Padding(
+                                                padding: EdgeInsets.fromLTRB(30.0, 0.0, 30.0, 0.0),
+                                                child: roundedButton(
+                                                    "CANCEL",
+                                                    EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
+                                                    const Color(0xFF167F67),
+                                                    const Color(0xFFFFFFFF)),
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        FlatButton(
-                                          child: Text('Import from gallery', style: TextStyle(color: Colors.teal)),
-                                            onPressed: () async {
-                                              _pickImage(ImageSource.gallery, user.uid);
-                                            }
                                         ),
-                                      ],
+                                      ),
                                     );
                                   });
                                 },
@@ -263,9 +301,9 @@ class _ProfileState extends State<Profile> {
                                 ],
                               )),
                                 Padding(
-                              padding: EdgeInsets.only(
+                                padding: EdgeInsets.only(
                                   left: 25.0, right: 25.0, top: 25.0),
-                              child: new Row(
+                                child: new Row(
                                 mainAxisSize: MainAxisSize.max,
                                 children: <Widget>[
                                   new Column(
@@ -372,5 +410,51 @@ class _ProfileState extends State<Profile> {
       )
     );
   }
+  Widget roundedButton(
+      String buttonLabel, EdgeInsets margin, Color bgColor, Color textColor) {
+      var Btn = new Container(
+        height: 45.0,
+        width: 300.0,
+        child: Material(
+          borderRadius: BorderRadius.circular(100.0),
+          shadowColor: Colors.grey,
+          color: Colors.teal,
+          elevation: 5.0,
+          child: Container(
+            alignment: FractionalOffset.center,
+            padding: EdgeInsets.symmetric(horizontal: 12.0),
+              child : Text(buttonLabel, textAlign: TextAlign.center,
+                style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Montserrat',
+              ),
+            ),
+          ),
+        ),
+      );
+    return Btn;
+  }
 }
 
+/*
+AlertDialog(
+                                      elevation: 10,
+                                      title: Text('Are you sure?'),
+                                      content: Text('You are going to change your display picture.'),
+                                      actions: <Widget>[
+                                        FlatButton(
+                                          child: Text('Click Image', style: TextStyle(color: Colors.teal)),
+                                            onPressed: () async {
+                                              _pickImage(ImageSource.camera, user.uid);
+                                            }
+                                        ),
+                                        FlatButton(
+                                          child: Text('Import from gallery', style: TextStyle(color: Colors.teal)),
+                                            onPressed: () async {
+                                              _pickImage(ImageSource.gallery, user.uid);
+                                            }
+                                        ),
+                                      ],
+                                    );
+ */

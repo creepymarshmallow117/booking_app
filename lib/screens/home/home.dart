@@ -7,6 +7,7 @@ import 'package:booking_app/services/auth.dart';
 import 'package:booking_app/services/database.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dots_indicator/dots_indicator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_image/firebase_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,6 +20,7 @@ import 'package:booking_app/services/database.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:hexcolor/hexcolor.dart';
 
 
 class Home extends StatefulWidget{
@@ -88,6 +90,7 @@ class _HomeState extends State<Home> {
   String email = "";
   String uid1 = "";
   String image = "";
+  int _current;
 
   final List<String> imageList = [
     "https://cdn.pixabay.com/photo/2017/12/03/18/04/christmas-balls-2995437_960_720.jpg",
@@ -121,7 +124,9 @@ class _HomeState extends State<Home> {
     return StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection("client").orderBy("groundName").snapshots(),
         builder: (context,snapshot) {
-          if(snapshot.data == null) return CircularProgressIndicator();
+          if(snapshot.data == null) return CircularProgressIndicator(
+            valueColor: new AlwaysStoppedAnimation<Color>(Colors.teal),
+          );
           List<String> suggestionList = List<String>();
           for (int i = 0; i < snapshot.data.docs.length; i++) {
             DocumentSnapshot data = snapshot.data.docs.elementAt(i);
@@ -188,7 +193,7 @@ class _HomeState extends State<Home> {
                             ),
                               accountName: Text(name),
                               accountEmail: Text(email),
-                              currentAccountPicture: CircleAvatar(backgroundImage: FirebaseImage(image)),
+                              currentAccountPicture: CircleAvatar(backgroundImage: FirebaseImage(image), backgroundColor: Colors.teal,),
                             )
                         );
                       }
@@ -207,11 +212,11 @@ class _HomeState extends State<Home> {
                     visible: _isVisible,
                     child: ListTile(
                       leading: Icon(Icons.shopping_cart_rounded, color: Colors.teal),
-                      title: Text('Your Orders'),
+                      title: Text('Orders'),
                       onTap: () {
                         Navigator.pop(context);
                         Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => Orders()),
+                          MaterialPageRoute(builder: (context) => Orders(uid: uid1)),
                         );
                       },
                     ),
@@ -277,191 +282,117 @@ class _HomeState extends State<Home> {
             body: WillPopScope(
                 onWillPop: _onBackPressed,
                 child: SingleChildScrollView(
-                  child: Column(
-                    children: <Widget>[
-                      GFCarousel(
-                        autoPlay: true,
-                        height: 210,
-                        items: imageList.map(
-                              (url) {
-                            return Container(
-                              margin: EdgeInsets.all(7.0),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                                child: Image.network(
-                                    url,
-                                    fit: BoxFit.cover,
-                                    width: 1000.0,
+                  child: Container(
+                    child: Column(
+                      children: <Widget>[
+                        GFCarousel(
+                          autoPlay: true,
+                          height: 210,
+                          items: imageList.map(
+                                (url) {
+                              return Container(
+                                margin: EdgeInsets.all(5.0),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                                  child: Image.network(
+                                      url,
+                                      fit: BoxFit.cover,
+                                      width: 1000.0,
+                                  ),
                                 ),
+                              );
+                            },
+                          ).toList(),
+                          onPageChanged: (index) {
+                            setState(() {
+                              _current = index;
+                            });
+                          },
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: imageList.map((image) {
+                            int index=imageList.indexOf(image);
+                            return Container(
+                              width: 8.0,
+                              height: 8.0,
+                              margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: _current == index
+                                      ? Colors.teal
+                                      : Colors.grey
                               ),
                             );
                           },
-                        ).toList(),
-                        onPageChanged: (index) {
-                          setState(() {
-                            index;
-                          });
-                        },
-                        enlargeMainPage: true,
-                      ),
-                      SizedBox(height: 20.0,),
-                      StreamBuilder<DocumentSnapshot>(
-                          stream: FirebaseFirestore.instance.collection("topplaces").doc("VEZwlQ3dgtlO8dX6HPe2").snapshots(),
-                          builder: (context,snapshots) {
-                            if (snapshots.data == null)
-                              return CircularProgressIndicator();
-                            else {
-                              List topPlaces = List();
-                              topPlaces = (snapshots.data['top']);
-                              print(topPlaces);
-                              return Container(
-                                child: Column(
-                                  children: <Widget>[
-                                    SizedBox(height: 5,),
-                                    Container(
-                                      child: Padding(
-                                        padding: EdgeInsets.symmetric(horizontal: 20),
-                                        child: Row(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              "Trending Now",
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.w600, fontSize: 20,
+                          ).toList(), // this was the part the I had to add
+                        ),
+                        SizedBox(height: 5.0,),
+                        StreamBuilder<DocumentSnapshot>(
+                            stream: FirebaseFirestore.instance.collection("topplaces").doc("VEZwlQ3dgtlO8dX6HPe2").snapshots(),
+                            builder: (context,snapshots) {
+                              if (snapshots.data == null)
+                                return CircularProgressIndicator(
+                                  valueColor: new AlwaysStoppedAnimation<Color>(Colors.teal),
+                                );
+                              else {
+                                List topPlaces = List();
+                                topPlaces = (snapshots.data['top']);
+                                print(topPlaces);
+                                return Container(
+                                  child: Column(
+                                    children: <Widget>[
+                                      SizedBox(height: 5,),
+                                      Container(
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(horizontal: 20),
+                                          child: Row(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                "Trending Now",
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w600, fontSize: 20,
+                                                ),
                                               ),
-                                            ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    StreamBuilder<DocumentSnapshot>(
-                                        stream: topPlaces.length > 0 ? FirebaseFirestore.instance.collection("client").doc(topPlaces[0].toString()).snapshots() : null,
-                                        builder: (context, snapshot) {
-                                          if (snapshot.data == null) return CircularProgressIndicator();
-                                          String groundName = snapshot.data["groundName"];
-                                          String hours = snapshot.data["hours"];
-                                          String imageUrl = snapshot.data["groundImages"][0];
-                                          String description = snapshot.data["description"];
-                                          return Container(
-                                            margin: EdgeInsets.fromLTRB(10, 18, 10, 0),
-                                            height: 260,
-                                            width: double.maxFinite,
-                                            child: GestureDetector(
-                                              onTap: () {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          Search(id: topPlaces[0])),
-                                                );
-                                              },
-                                              child: Padding(
-                                                padding: const EdgeInsets.symmetric(horizontal: 2.0),
-                                                child: Card(
-                                                  elevation: 5.0,
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      Container(
-                                                        height: 190,
-                                                        width: double.maxFinite,
-                                                        decoration: BoxDecoration(
-                                                          borderRadius: BorderRadius.only(
-                                                            topLeft: Radius.circular(5),
-                                                            topRight: Radius.circular(5),
-                                                          ),
-                                                          image: DecorationImage(
-                                                            image: NetworkImage(imageUrl),
-                                                            fit: BoxFit.fill,
-                                                          )
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Container(
-                                                          padding: EdgeInsets.symmetric(horizontal: 10),
+                                      StreamBuilder<DocumentSnapshot>(
+                                          stream: topPlaces.length > 0 ? FirebaseFirestore.instance.collection("client").doc(topPlaces[0].toString()).snapshots() : null,
+                                          builder: (context, snapshot) {
+                                            if (snapshot.data == null) return CircularProgressIndicator(
+                                              valueColor: new AlwaysStoppedAnimation<Color>(Colors.teal),
+                                            );
+                                            String groundName = snapshot.data["groundName"];
+                                            String hours = snapshot.data["hours"];
+                                            String imageUrl = snapshot.data["groundImages"][0];
+                                            String description = snapshot.data["description"];
+                                            return Container(
+                                              margin: EdgeInsets.fromLTRB(10, 18, 10, 0),
+                                              height: 260,
+                                              width: double.maxFinite,
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            Search(id: topPlaces[0],customer_name: name)),
+                                                  );
+                                                },
+                                                child: Padding(
+                                                  padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                                                  child: Card(
+                                                    elevation: 5.0,
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        Container(
+                                                          height: 190,
                                                           width: double.maxFinite,
                                                           decoration: BoxDecoration(
-                                                            borderRadius: BorderRadius.only(
-                                                              topLeft: Radius.circular(5),
-                                                              topRight: Radius.circular(5),
-                                                            ),
-                                                          ),
-                                                          child: Row(
-                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                            mainAxisSize: MainAxisSize.max,
-                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                            children: <Widget>[
-                                                              Column(
-                                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                children: <Widget>[
-                                                                  Text(
-                                                                    groundName,
-                                                                    style: TextStyle(
-                                                                      fontWeight: FontWeight.w600,
-                                                                      fontSize: 18,
-                                                                    ),
-                                                                  ),
-                                                                  Text(
-                                                                    hours,
-                                                                    style: TextStyle(
-                                                                      fontSize: 14,
-                                                                      fontWeight: FontWeight.w300,
-                                                                    ),
-                                                                  )
-
-                                                                ],
-                                                              )
-
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          );
-                                        }
-                                    ),
-                                    StreamBuilder<DocumentSnapshot>(
-                                        stream: topPlaces.length > 1
-                                            ? FirebaseFirestore.instance
-                                            .collection("client").doc(
-                                            topPlaces[1].toString()).snapshots()
-                                            : null,
-                                        builder: (context, snapshot) {
-                                          if (snapshot.data == null)
-                                            return CircularProgressIndicator();
-                                          String groundName = snapshot.data["groundName"];
-                                          String hours = snapshot.data["hours"];
-                                          String imageUrl = snapshot.data["groundImages"][0];
-                                          String description = snapshot.data["description"];
-                                          return Container(
-                                            margin: EdgeInsets.fromLTRB(10, 18, 10, 0),
-                                            height: 260,
-                                            width: double.maxFinite,
-                                            child: GestureDetector(
-                                              onTap: () {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          Search(id: topPlaces[1])),
-                                                );
-                                              },
-                                              child: Padding(
-                                                padding: const EdgeInsets.symmetric(horizontal: 2.0),
-                                                child: Card(
-                                                  elevation: 5.0,
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      Container(
-                                                        height: 190,
-                                                        width: double.maxFinite,
-                                                        decoration: BoxDecoration(
                                                             borderRadius: BorderRadius.only(
                                                               topLeft: Radius.circular(5),
                                                               topRight: Radius.circular(5),
@@ -470,157 +401,258 @@ class _HomeState extends State<Home> {
                                                               image: NetworkImage(imageUrl),
                                                               fit: BoxFit.fill,
                                                             )
+                                                          ),
                                                         ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Container(
-                                                          padding: EdgeInsets.symmetric(horizontal: 10),
-                                                          width: double.maxFinite,
-                                                          decoration: BoxDecoration(
-                                                            borderRadius: BorderRadius.only(
-                                                              topLeft: Radius.circular(5),
-                                                              topRight: Radius.circular(5),
+                                                        Expanded(
+                                                          child: Container(
+                                                            padding: EdgeInsets.symmetric(horizontal: 10),
+                                                            width: double.maxFinite,
+                                                            decoration: BoxDecoration(
+                                                              borderRadius: BorderRadius.only(
+                                                                topLeft: Radius.circular(5),
+                                                                topRight: Radius.circular(5),
+                                                              ),
+                                                            ),
+                                                            child: Row(
+                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                              mainAxisSize: MainAxisSize.max,
+                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                              children: <Widget>[
+                                                                Column(
+                                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                  children: <Widget>[
+                                                                    Text(
+                                                                      groundName,
+                                                                      style: TextStyle(
+                                                                        fontWeight: FontWeight.w600,
+                                                                        fontSize: 18,
+                                                                      ),
+                                                                    ),
+                                                                    Text(
+                                                                      hours,
+                                                                      style: TextStyle(
+                                                                        fontSize: 14,
+                                                                        fontWeight: FontWeight.w300,
+                                                                      ),
+                                                                    )
+
+                                                                  ],
+                                                                )
+
+                                                              ],
                                                             ),
                                                           ),
-                                                          child: Row(
-                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                            mainAxisSize: MainAxisSize.max,
-                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                            children: <Widget>[
-                                                              Column(
-                                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                children: <Widget>[
-                                                                  Text(
-                                                                    groundName,
-                                                                    style: TextStyle(
-                                                                      fontWeight: FontWeight.w600,
-                                                                      fontSize: 18,
-                                                                    ),
-                                                                  ),
-                                                                  Text(
-                                                                    hours,
-                                                                    style: TextStyle(
-                                                                      fontSize: 14,
-                                                                      fontWeight: FontWeight.w300,
-                                                                    ),
-                                                                  )
-
-                                                                ],
-                                                              )
-
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      )
-                                                    ],
+                                                        )
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                          );
-                                        }
-                                    ),
-                                    StreamBuilder<DocumentSnapshot>(
-                                        stream: topPlaces.length > 2 ? FirebaseFirestore.instance.collection("client").doc(topPlaces[2].toString()).snapshots()
-                                            : null,
-                                        builder: (context, snapshot) {
-                                          if (snapshot.data == null) return CircularProgressIndicator();
-                                          String groundName = snapshot.data["groundName"];
-                                          String hours = snapshot.data["hours"];
-                                          String imageUrl = snapshot.data["groundImages"][0];
-                                          String description = snapshot.data["description"];
-                                          return Container(
-                                            margin: EdgeInsets.fromLTRB(10, 18, 10, 0),
-                                            height: 260,
-                                            width: double.maxFinite,
-                                            child: GestureDetector(
-                                              onTap: () {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          Search(id: topPlaces[2])),
-                                                );
-                                              },
-                                              child: Padding(
-                                                padding: const EdgeInsets.symmetric(horizontal: 2.0),
-                                                child: Card(
-                                                  elevation: 5.0,
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      Container(
-                                                        height: 190,
-                                                        width: double.maxFinite,
-                                                        decoration: BoxDecoration(
-                                                            borderRadius: BorderRadius.only(
-                                                              topLeft: Radius.circular(5),
-                                                              topRight: Radius.circular(5),
-                                                            ),
-                                                            image: DecorationImage(
-                                                              image: NetworkImage(imageUrl),
-                                                              fit: BoxFit.fill,
-                                                            )
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Container(
-                                                          padding: EdgeInsets.symmetric(horizontal: 10),
+                                            );
+                                          }
+                                      ),
+                                      StreamBuilder<DocumentSnapshot>(
+                                          stream: topPlaces.length > 1
+                                              ? FirebaseFirestore.instance
+                                              .collection("client").doc(
+                                              topPlaces[1].toString()).snapshots()
+                                              : null,
+                                          builder: (context, snapshot) {
+                                            if (snapshot.data == null)
+                                              return CircularProgressIndicator(
+                                                valueColor: new AlwaysStoppedAnimation<Color>(Colors.teal),
+                                              );
+                                            String groundName = snapshot.data["groundName"];
+                                            String hours = snapshot.data["hours"];
+                                            String imageUrl = snapshot.data["groundImages"][0];
+                                            String description = snapshot.data["description"];
+                                            return Container(
+                                              margin: EdgeInsets.fromLTRB(10, 18, 10, 0),
+                                              height: 260,
+                                              width: double.maxFinite,
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            Search(id: topPlaces[1], customer_name: name)),
+                                                  );
+                                                },
+                                                child: Padding(
+                                                  padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                                                  child: Card(
+                                                    elevation: 5.0,
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        Container(
+                                                          height: 190,
                                                           width: double.maxFinite,
                                                           decoration: BoxDecoration(
-                                                            borderRadius: BorderRadius.only(
-                                                              topLeft: Radius.circular(5),
-                                                              topRight: Radius.circular(5),
-                                                            ),
-                                                          ),
-                                                          child: Row(
-                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                            mainAxisSize: MainAxisSize.max,
-                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                            children: <Widget>[
-                                                              Column(
-                                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                children: <Widget>[
-                                                                  Text(
-                                                                    groundName,
-                                                                    style: TextStyle(
-                                                                      fontWeight: FontWeight.w600,
-                                                                      fontSize: 18,
-                                                                    ),
-                                                                  ),
-                                                                  Text(
-                                                                    hours,
-                                                                    style: TextStyle(
-                                                                      fontSize: 14,
-                                                                      fontWeight: FontWeight.w300,
-                                                                    ),
-                                                                  )
-
-                                                                ],
+                                                              borderRadius: BorderRadius.only(
+                                                                topLeft: Radius.circular(5),
+                                                                topRight: Radius.circular(5),
+                                                              ),
+                                                              image: DecorationImage(
+                                                                image: NetworkImage(imageUrl),
+                                                                fit: BoxFit.fill,
                                                               )
-
-                                                            ],
                                                           ),
                                                         ),
-                                                      )
-                                                    ],
+                                                        Expanded(
+                                                          child: Container(
+                                                            padding: EdgeInsets.symmetric(horizontal: 10),
+                                                            width: double.maxFinite,
+                                                            decoration: BoxDecoration(
+                                                              borderRadius: BorderRadius.only(
+                                                                topLeft: Radius.circular(5),
+                                                                topRight: Radius.circular(5),
+                                                              ),
+                                                            ),
+                                                            child: Row(
+                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                              mainAxisSize: MainAxisSize.max,
+                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                              children: <Widget>[
+                                                                Column(
+                                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                  children: <Widget>[
+                                                                    Text(
+                                                                      groundName,
+                                                                      style: TextStyle(
+                                                                        fontWeight: FontWeight.w600,
+                                                                        fontSize: 18,
+                                                                      ),
+                                                                    ),
+                                                                    Text(
+                                                                      hours,
+                                                                      style: TextStyle(
+                                                                        fontSize: 14,
+                                                                        fontWeight: FontWeight.w300,
+                                                                      ),
+                                                                    )
+
+                                                                  ],
+                                                                )
+
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                          );
-                                        }
-                                    ),
-                                  ],
-                                ),
-                              );
+                                            );
+                                          }
+                                      ),
+                                      StreamBuilder<DocumentSnapshot>(
+                                          stream: topPlaces.length > 2 ? FirebaseFirestore.instance.collection("client").doc(topPlaces[2].toString()).snapshots()
+                                              : null,
+                                          builder: (context, snapshot) {
+                                            if (snapshot.data == null) return CircularProgressIndicator(
+                                              valueColor: new AlwaysStoppedAnimation<Color>(Colors.teal),
+                                            );
+                                            String groundName = snapshot.data["groundName"];
+                                            String hours = snapshot.data["hours"];
+                                            String imageUrl = snapshot.data["groundImages"][0];
+                                            String description = snapshot.data["description"];
+                                            return Container(
+                                              margin: EdgeInsets.fromLTRB(10, 18, 10, 0),
+                                              height: 260,
+                                              width: double.maxFinite,
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            Search(id: topPlaces[2], customer_name: name)),
+                                                  );
+                                                },
+                                                child: Padding(
+                                                  padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                                                  child: Card(
+                                                    elevation: 5.0,
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        Container(
+                                                          height: 190,
+                                                          width: double.maxFinite,
+                                                          decoration: BoxDecoration(
+                                                              borderRadius: BorderRadius.only(
+                                                                topLeft: Radius.circular(5),
+                                                                topRight: Radius.circular(5),
+                                                              ),
+                                                              image: DecorationImage(
+                                                                image: NetworkImage(imageUrl),
+                                                                fit: BoxFit.fill,
+                                                              )
+                                                          ),
+                                                        ),
+                                                        Expanded(
+                                                          child: Container(
+                                                            padding: EdgeInsets.symmetric(horizontal: 10),
+                                                            width: double.maxFinite,
+                                                            decoration: BoxDecoration(
+                                                              borderRadius: BorderRadius.only(
+                                                                topLeft: Radius.circular(5),
+                                                                topRight: Radius.circular(5),
+                                                              ),
+                                                            ),
+                                                            child: Row(
+                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                              mainAxisSize: MainAxisSize.max,
+                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                              children: <Widget>[
+                                                                Column(
+                                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                  children: <Widget>[
+                                                                    Text(
+                                                                      groundName,
+                                                                      style: TextStyle(
+                                                                        fontWeight: FontWeight.w600,
+                                                                        fontSize: 18,
+                                                                      ),
+                                                                    ),
+                                                                    Text(
+                                                                      hours,
+                                                                      style: TextStyle(
+                                                                        fontSize: 14,
+                                                                        fontWeight: FontWeight.w300,
+                                                                      ),
+                                                                    )
+
+                                                                  ],
+                                                                )
+
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            );
+                                          }
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }
                             }
-                          }
-                      ),
+                        ),
 
-                    ],
+                      ],
+                    ),
                   ),
                 )
             ),
@@ -635,6 +667,7 @@ class _HomeState extends State<Home> {
 class Datasearch extends SearchDelegate<String> {
 
   final DatabaseService data = DatabaseService();
+
 
 
   @override
@@ -670,7 +703,9 @@ class Datasearch extends SearchDelegate<String> {
             child : StreamBuilder<QuerySnapshot>(
                 stream: FirebaseFirestore.instance.collection("client").orderBy("groundName").snapshots(),
                 builder: (context,snapshot){
-                  if(snapshot.data == null) return CircularProgressIndicator();
+                  if(snapshot.data == null) return CircularProgressIndicator(
+                    valueColor: new AlwaysStoppedAnimation<Color>(Colors.teal),
+                  );
                   List<String> suggestionList = List<String>();
                     for (int i = 0; i < snapshot.data.docs.length; i++) {
                       DocumentSnapshot data = snapshot.data.docs.elementAt(i);
@@ -694,7 +729,9 @@ class Datasearch extends SearchDelegate<String> {
                       }
                     }
                   return (snapshot.connectionState == ConnectionState.waiting)
-                      ? Center(child: CircularProgressIndicator())
+                      ? Center(child: CircularProgressIndicator(
+                    valueColor: new AlwaysStoppedAnimation<Color>(Colors.teal),
+                  ))
                       :ListView.builder(
                       itemCount: searchList.length,
                       itemBuilder: (context,index){
@@ -706,7 +743,7 @@ class Datasearch extends SearchDelegate<String> {
                             print(id);
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => Search(id: idList.elementAt(index))),
+                              MaterialPageRoute(builder: (context) => Search(id: idList.elementAt(index),)),
                             );
                         },
                         );
@@ -717,9 +754,6 @@ class Datasearch extends SearchDelegate<String> {
     );
   }
 }
-
-
-
 
 
 class Item1 extends StatelessWidget {

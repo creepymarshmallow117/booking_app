@@ -41,6 +41,7 @@ class _LoginState extends State<Login> {
 
 
   bool flag = false;
+  final GlobalKey<State> _keyLoader = new GlobalKey<State>();
 
   @override
   Widget build(BuildContext context) {
@@ -189,19 +190,17 @@ class _LoginState extends State<Login> {
                                   User u = result;
                                   _verify();
                                   try {
+                                    Dialogs.showLoadingDialog(context, _keyLoader);
                                     CollectionReference collection = FirebaseFirestore.instance.collection(
                                         "user");
                                     DocumentSnapshot document = await collection.doc(u.uid).get();
                                     Map<String, Object> map = document.data();
                                     if(map.length > 0){
                                       if(flag == false){
+                                        Dialogs.showLoadingDialog(context, _keyLoader);
                                         setState(() {
                                           error = "Please verify your email";
                                         });
-                                        return LoadingBouncingGrid.circle(
-                                          size: 30,
-                                          backgroundColor: Colors.white,
-                                        );
                                         print(flag);
                                       }
                                       else{
@@ -266,7 +265,7 @@ class _LoginState extends State<Login> {
                                     color: Colors.teal,
                                     fontFamily: 'Montserrat',
                                     fontWeight: FontWeight.bold,
-                                    decoration: TextDecoration.underline)),
+                                    decoration: TextDecoration.none)),
                           ),
                         ],
                       ),
@@ -284,5 +283,32 @@ class _LoginState extends State<Login> {
     ]
           ),
     );
+  }
+}
+
+class Dialogs {
+  static Future<void> showLoadingDialog(
+      BuildContext context, GlobalKey key) async {
+    return showDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return new WillPopScope(
+              onWillPop: () async => false,
+              child: SimpleDialog(
+                  key: key,
+                  backgroundColor: Colors.white,
+                  children: <Widget>[
+                    Center(
+                      child: Column(children: [
+                        CircularProgressIndicator(
+                          valueColor: new AlwaysStoppedAnimation<Color>(Colors.teal),
+                        ),
+                        SizedBox(height: 10,),
+                        Text("Please Wait....",style: TextStyle(color: Colors.black),)
+                      ]),
+                    )
+                  ]));
+        });
   }
 }

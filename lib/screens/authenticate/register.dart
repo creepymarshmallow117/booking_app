@@ -32,6 +32,7 @@ class _RegisterState extends State<Register> {
   String password = '';
   String displayName = '';
   String error = '';
+  final GlobalKey<State> _keyLoader = new GlobalKey<State>();
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +88,7 @@ class _RegisterState extends State<Register> {
                       TextFormField(
                         validator: (val) => displayName.isEmpty ? "A display name is required": null,
                         decoration: new InputDecoration(
-                            hintText: 'Enter Display Name',
+                            hintText: 'Enter Full Name',
                             labelStyle: TextStyle(
                                 fontFamily: 'Montserrat',
                                 fontWeight: FontWeight.bold,
@@ -177,6 +178,7 @@ class _RegisterState extends State<Register> {
                                 else{
                                   User user = FirebaseAuth.instance.currentUser;
                                   if (!user.emailVerified) {
+                                    Dialogs.showLoadingDialog(context, _keyLoader);
                                     await user.sendEmailVerification();
                                     Fluttertoast.showToast(
                                         msg: "A verification link has been sent to your email. Please verify your email");
@@ -226,7 +228,7 @@ class _RegisterState extends State<Register> {
                                     color: Colors.teal,
                                     fontFamily: 'Montserrat',
                                     fontWeight: FontWeight.bold,
-                                   decoration: TextDecoration.underline)),
+                                   decoration: TextDecoration.none)),
                         ),
                       ],
                       ),
@@ -245,5 +247,32 @@ class _RegisterState extends State<Register> {
     ]
       )
     );
+  }
+}
+
+class Dialogs {
+  static Future<void> showLoadingDialog(
+      BuildContext context, GlobalKey key) async {
+    return showDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return new WillPopScope(
+              onWillPop: () async => false,
+              child: SimpleDialog(
+                  key: key,
+                  backgroundColor: Colors.black54,
+                  children: <Widget>[
+                    Center(
+                      child: Column(children: [
+                        CircularProgressIndicator(
+                          valueColor: new AlwaysStoppedAnimation<Color>(Colors.teal),
+                        ),
+                        SizedBox(height: 10,),
+                        Text("Please Wait....",style: TextStyle(color: Colors.black),)
+                      ]),
+                    )
+                  ]));
+        });
   }
 }
