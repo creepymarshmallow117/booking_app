@@ -31,6 +31,7 @@ class _LoginState extends State<Login> {
   String error = '';
 
   bool _obscureText = true;
+  bool _clicked = true;
 
   void _toggle() {
     setState(() {
@@ -179,55 +180,57 @@ class _LoginState extends State<Login> {
                         elevation: 7.0,
                         child: GestureDetector(
                           onTap: () async{
-                              if(_formKey.currentState.validate() ) {
+                            if(_clicked == true) {
+                              setState(() {
+                                _clicked = false;
+                              });
+                              if (_formKey.currentState.validate()) {
                                 dynamic result = await _auth.signInWithEmail(email, password);
                                 if (result == null) {
-                                  setState((){
+                                  setState(() {
                                     error = 'Invalid Credentials';
+                                    _clicked = true;
                                   });
                                 }
-                                else{
+                                else {
                                   User u = result;
                                   _verify();
                                   try {
                                     Dialogs.showLoadingDialog(context, _keyLoader);
-                                    CollectionReference collection = FirebaseFirestore.instance.collection(
-                                        "user");
+                                    CollectionReference collection = FirebaseFirestore.instance.collection("user");
                                     DocumentSnapshot document = await collection.doc(u.uid).get();
                                     Map<String, Object> map = document.data();
-                                    if(map.length > 0){
-                                      if(flag == false){
+                                    if (map.length > 0) {
+                                      if (flag == false) {
                                         Dialogs.showLoadingDialog(context, _keyLoader);
                                         setState(() {
                                           error = "Please verify your email";
                                         });
                                         print(flag);
                                       }
-                                      else{
-                                        Navigator.push(
-                                          context,
+                                      else {
+                                        Navigator.push(context,
                                           MaterialPageRoute(builder: (context) => Home()),
                                         );
                                       }
                                     }
-                                  }on NoSuchMethodError{
-                                    CollectionReference collection = FirebaseFirestore.instance.collection(
-                                        "client");
+                                  } on NoSuchMethodError {
+                                    CollectionReference collection = FirebaseFirestore.instance.collection("client");
                                     DocumentSnapshot document = await collection.doc(u.uid).get();
                                     Map<String, Object> map = document.data();
-                                    if(map.length > 0){
+                                    if (map.length > 0) {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(builder: (context) => Home1()),
                                       );
                                     }
                                   }
-                                  catch(e){
+                                  catch (e) {
                                     print(e.toString());
                                   }
-
                                 }
                               }
+                            }
                           },
                           child: Container(
                           padding: EdgeInsets.symmetric(vertical: 12.0),

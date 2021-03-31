@@ -47,6 +47,7 @@ class _ProfileState extends State<Profile> {
   Widget appBarTitle = new Text("Home");
   Icon searchIcon = new Icon(Icons.search);
   int _currentIndex=0;
+  String profileImage;
 
 
   Future<void> _pickImage(ImageSource source , String uid) async{
@@ -63,6 +64,8 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
+    imageCache.clear();
+    imageCache.clearLiveImages();
     final AuthService auth = AuthService();
     final DatabaseService db = DatabaseService();
     final user = Provider.of<User>(context);
@@ -72,9 +75,7 @@ class _ProfileState extends State<Profile> {
       setState(() {
         _isVisible = true;
       });
-
     }
-
     Future<bool> _onDeletePressed() {
       return showDialog(
           context: context,
@@ -111,7 +112,10 @@ class _ProfileState extends State<Profile> {
     double height = MediaQuery.of(context).size.height;
     var padding = MediaQuery.of(context).padding;
     double height1 = height - padding.top - padding.bottom;
-    String profileImage = 'gs://booking-app-63e61.appspot.com/profileImages/${user.uid}.png';
+    profileImage = 'gs://booking-app-63e61.appspot.com/profileImages/${user.uid}.png';
+    imageCache.clear();
+    imageCache.clearLiveImages();
+
 
 
     return Scaffold(
@@ -170,7 +174,8 @@ class _ProfileState extends State<Profile> {
                             radius: 75.0,
                             backgroundImage: FirebaseImage(profileImage,
                                 maxSizeBytes: 5000 * 1000,
-                                shouldCache: false,
+                                shouldCache: true,
+                              cacheRefreshStrategy: CacheRefreshStrategy.BY_METADATA_DATE,
                             ),
                             child: Align(
                               alignment: Alignment.bottomRight,
@@ -203,7 +208,7 @@ class _ProfileState extends State<Profile> {
                                             ),
                                             SizedBox(height: 10.0),
                                             new GestureDetector(
-                                              onTap: () => _pickImage(ImageSource.gallery, user.uid),
+                                              onTap: () =>  _pickImage(ImageSource.gallery, user.uid),
                                               child: roundedButton(
                                                   "GALLERY",
                                                   EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),

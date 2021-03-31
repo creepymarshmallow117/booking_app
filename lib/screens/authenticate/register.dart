@@ -32,6 +32,7 @@ class _RegisterState extends State<Register> {
   String password = '';
   String displayName = '';
   String error = '';
+  bool _clicked = true;
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
 
   @override
@@ -164,29 +165,35 @@ class _RegisterState extends State<Register> {
                           color: Colors.teal,
                           elevation: 7.0,
                           child: GestureDetector(
-                            onTap: () async{
-                              print(email);
-                              print(password);
-                              if (formKey.currentState.validate()){
-                                dynamic result = await auth.registerWithEmail(email, password, displayName);
-                                print(result);
-                                if(result == null){
-                                  setState((){
-                                    error = 'Email Address already exists';
-                                  });
-                                }
-                                else{
-                                  User user = FirebaseAuth.instance.currentUser;
-                                  if (!user.emailVerified) {
-                                    Dialogs.showLoadingDialog(context, _keyLoader);
-                                    await user.sendEmailVerification();
-                                    Fluttertoast.showToast(
-                                        msg: "A verification link has been sent to your email. Please verify your email");
+                            onTap: () async {
+                              if (_clicked == true) {
+                                setState(() {
+                                  _clicked = false;
+                                });
+                                if (formKey.currentState.validate()) {
+                                  dynamic result = await auth.registerWithEmail(
+                                      email, password, displayName);
+                                  if (result == null) {
+                                    setState(() {
+                                      error = 'Email Address already exists';
+                                    });
                                   }
+                                  else {
+                                    User user = FirebaseAuth.instance
+                                        .currentUser;
+                                    if (!user.emailVerified) {
+                                      Dialogs.showLoadingDialog(
+                                          context, _keyLoader);
+                                      await user.sendEmailVerification();
+                                      Fluttertoast.showToast(
+                                          msg: "A verification link has been sent to your email. Please verify your email");
+                                    }
                                     Navigator.push(
                                       context,
-                                      MaterialPageRoute(builder: (context) => Login()),
+                                      MaterialPageRoute(
+                                          builder: (context) => Login()),
                                     );
+                                  }
                                 }
                               }
                             },
@@ -261,7 +268,7 @@ class Dialogs {
               onWillPop: () async => false,
               child: SimpleDialog(
                   key: key,
-                  backgroundColor: Colors.black54,
+                  backgroundColor: Colors.white,
                   children: <Widget>[
                     Center(
                       child: Column(children: [

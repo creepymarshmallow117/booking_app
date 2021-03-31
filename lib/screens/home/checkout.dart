@@ -21,6 +21,7 @@ class _CheckoutState extends State<Checkout> {
 
 
   String radioItem = '';
+  bool _clicked = true;
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
 
   @override
@@ -159,23 +160,29 @@ class _CheckoutState extends State<Checkout> {
                       color: Colors.teal,
                       elevation: 5.0,
                       child: GestureDetector(
-                        onTap: () async{
-                          Dialogs.showLoadingDialog(context, _keyLoader);
-                          final CollectionReference collection = FirebaseFirestore.instance.collection("bookingRecords");
-                          await collection.doc().set({
-                            'client_id': widget.clientId,
-                            'customer_id': widget.customerId,
-                            'customer_name': widget.customerName,
-                            'ground_name': widget.groundName,
-                            'date' : widget.date,
-                            'time' : widget.time,
-                            'price' : widget.price,
-                            'payment_mode' : radioItem,
-                          });
-                          Fluttertoast.showToast(msg: "Booking Successfull");
-                          Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => Home()),
-                          );
+                        onTap: () async {
+                          if (_clicked == true) {
+                            setState(() {
+                              _clicked = false;
+                            });
+                            Dialogs.showLoadingDialog(context, _keyLoader);
+                            final CollectionReference collection = FirebaseFirestore
+                                .instance.collection("bookingRecords");
+                            await collection.doc().set({
+                              'client_id': widget.clientId,
+                              'customer_id': widget.customerId,
+                              'customer_name': widget.customerName,
+                              'ground_name': widget.groundName,
+                              'date': widget.date,
+                              'time': widget.time,
+                              'price': widget.price,
+                              'payment_mode': radioItem,
+                            });
+                            Fluttertoast.showToast(msg: "Booking Successfull");
+                            Navigator.push(context,
+                              MaterialPageRoute(builder: (context) => Home()),
+                            );
+                          }
                         },
                         child: Container(
                           padding: EdgeInsets.symmetric(vertical: 12.0),

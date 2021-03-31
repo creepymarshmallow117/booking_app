@@ -1,5 +1,5 @@
 import 'package:booking_app/screens/wrapper.dart';
-import 'file:///C:/Users/Aditya/AndroidStudioProjects/booking_app/lib/screens/home/home.dart';
+import 'file:///D:/College/Project/App/lib/screens/home/home.dart';
 import 'package:booking_app/services/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -15,10 +15,13 @@ void main() async{
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    imageCache.clear();
+    imageCache.clearLiveImages();
     return StreamProvider<User>.value(
       value: AuthService().user,
       child: MaterialApp(
-        home: Home()
+        debugShowCheckedModeBanner: false,
+        home: Wrapper()
       ),
     );
   }

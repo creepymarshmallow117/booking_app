@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -27,6 +28,7 @@ class _ProfileImageState extends State<ProfileImage> {
 
   PickedFile _imageFile;
   bool showPickImage = false;
+  bool _clicked = true;
   Future<void> _pickImage(ImageSource source, uid) async{ //Function to pick image from camera or gallery
     final picker = ImagePicker();
     PickedFile selected = await picker.getImage(source: source);
@@ -158,11 +160,19 @@ class _ProfileImageState extends State<ProfileImage> {
             print("this is a problem");
           }
           else {
+            imageCache.clear();
+            imageCache.clearLiveImages();
             print(result);
+            Fluttertoast.showToast(
+                msg: "Profile Image updated Successfully"
+            );
             Navigator.pop(context);
             Navigator.push(context,
               MaterialPageRoute(builder: (context) => Profile(userDocument: result)),
             );
+            Navigator.pop(context);
+            Navigator.pop(context);
+
           }
         }
         else{
@@ -297,7 +307,12 @@ class _ProfileImageState extends State<ProfileImage> {
                           elevation: 5.0,
                           child: GestureDetector(
                             onTap: () async{
+                            if (_clicked == true) {
+                              setState(() {
+                                _clicked = false;
+                              });
                               startUpload();
+                            }
                             },
                             child: Container(
                               padding: EdgeInsets.symmetric(vertical: 12.0),
