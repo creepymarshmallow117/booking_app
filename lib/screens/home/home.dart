@@ -57,11 +57,15 @@ class _HomeState extends State<Home> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Are you sure?'),
-            content: Text('You are going to exit the application'),
+            title: Text('Are you sure?', style: TextStyle(
+                fontFamily: "Kallektif"
+            ),),
+            content: Text('You are going to exit the application',style: TextStyle(
+                fontFamily: "Kallektif-Bold"
+            ),),
             actions: <Widget>[
               FlatButton(
-                child: Text('NO', style: TextStyle(color: Colors.teal)),
+                child: Text('NO', style: TextStyle(color: Colors.teal, fontFamily: "Kallektif-Bold")),
                 onPressed: () {
                   WidgetsBinding.instance.handlePopRoute();
                   Navigator.of(context).pop(false);
@@ -70,7 +74,7 @@ class _HomeState extends State<Home> {
                 },
               ),
               FlatButton(
-                child: Text('YES', style: TextStyle(color: Colors.teal)),
+                child: Text('YES', style: TextStyle(color: Colors.teal,fontFamily: "Kallektif-Bold")),
                 onPressed: () {
                   SystemNavigator.pop();
                 },
@@ -146,7 +150,7 @@ class _HomeState extends State<Home> {
           return Scaffold(
             appBar: AppBar(
               backgroundColor: Colors.teal,
-              title: Text("Home", style: TextStyle(color: Colors.white)),
+              title: Text("Home", style: TextStyle(color: Colors.white, fontFamily: 'Kollektif', fontSize: 22)),
               actions: <Widget>[
                 IconButton(icon: Icon(Icons.search, color: Colors.white,),
                     iconSize: 30,
@@ -168,6 +172,7 @@ class _HomeState extends State<Home> {
                               color: Colors.teal,
                             ),
                               accountName: Text("Welcome!", style: TextStyle(
+                                fontFamily: 'Kollektif',
                                 fontSize: 25.0,
                               ),
                               ),
@@ -182,6 +187,7 @@ class _HomeState extends State<Home> {
                             color: Colors.teal,
                           ),
                             accountName: Text("Welcome!", style: TextStyle(
+                              fontFamily: 'Kollektif',
                               fontSize: 25.0,
                             ),
                           ),
@@ -192,8 +198,8 @@ class _HomeState extends State<Home> {
                             child : UserAccountsDrawerHeader(decoration: BoxDecoration(
                               color: Colors.teal,
                             ),
-                              accountName: Text(name),
-                              accountEmail: Text(email),
+                              accountName: Text(name, style: TextStyle(fontFamily: 'Kollektif',),),
+                              accountEmail: Text(email, style: TextStyle(fontFamily: 'Kollektif',),),
                               currentAccountPicture: CircleAvatar(backgroundImage: FirebaseImage(image), backgroundColor: Colors.teal,),
                             )
                         );
@@ -201,7 +207,7 @@ class _HomeState extends State<Home> {
                   ),
                   ListTile(
                     leading: Icon(Icons.home, color: Colors.teal),
-                    title: Text('Home'),
+                    title: Text('Home', style: TextStyle(fontFamily: 'Kollektif'),),
                     onTap: () {
                       Navigator.pop(context);
                       Navigator.push(context,
@@ -213,7 +219,7 @@ class _HomeState extends State<Home> {
                     visible: _isVisible,
                     child: ListTile(
                       leading: Icon(Icons.shopping_cart_rounded, color: Colors.teal),
-                      title: Text('Orders'),
+                      title: Text('Orders', style: TextStyle(fontFamily: 'Kollektif')),
                       onTap: () {
                         Navigator.pop(context);
                         Navigator.push(context,
@@ -226,7 +232,7 @@ class _HomeState extends State<Home> {
                     visible: _isVisible,
                     child: ListTile(
                       leading: Icon(Icons.settings, color: Colors.teal),
-                      title: Text('Settings'),
+                      title: Text('Settings', style: TextStyle(fontFamily: 'Kollektif')),
                       onTap: () async {
                         if (user != null) {
                           imageCache.clear();
@@ -255,7 +261,7 @@ class _HomeState extends State<Home> {
                     visible: _isVisible,
                     child: ListTile(
                       leading: Icon(Icons.logout, color: Colors.teal),
-                      title: Text('Log Out'),
+                      title: Text('Log Out',style: TextStyle(fontFamily: 'Kollektif')),
                       onTap: () {
                         Navigator.pop(context);
                         auth.signOut();
@@ -266,7 +272,7 @@ class _HomeState extends State<Home> {
                     visible: !_isVisible,
                     child: ListTile(
                       leading: Icon(Icons.account_circle, color: Colors.teal),
-                      title: Text('Login/Sign up'),
+                      title: Text('Login/Sign up', style: TextStyle(fontFamily: 'Kollektif')),
                       onTap: () {
                         Navigator.pop(context);
                         Navigator.push(
@@ -353,7 +359,7 @@ class _HomeState extends State<Home> {
                                               Text(
                                                 "Trending Now",
                                                 style: TextStyle(
-                                                  fontWeight: FontWeight.w600, fontSize: 20,
+                                                  fontFamily: 'Kollektif', fontSize: 20,
                                                 ),
                                               ),
                                             ],
@@ -426,7 +432,7 @@ class _HomeState extends State<Home> {
                                                                     Text(
                                                                       groundName,
                                                                       style: TextStyle(
-                                                                        fontWeight: FontWeight.w600,
+                                                                        fontFamily: 'Kollektif',
                                                                         fontSize: 18,
                                                                       ),
                                                                     ),
@@ -434,7 +440,7 @@ class _HomeState extends State<Home> {
                                                                       hours,
                                                                       style: TextStyle(
                                                                         fontSize: 14,
-                                                                        fontWeight: FontWeight.w300,
+                                                                        fontFamily: 'Kollektif-Bold',
                                                                       ),
                                                                     )
 
@@ -524,7 +530,7 @@ class _HomeState extends State<Home> {
                                                                     Text(
                                                                       groundName,
                                                                       style: TextStyle(
-                                                                        fontWeight: FontWeight.w600,
+                                                                        fontFamily: 'Kollektif',
                                                                         fontSize: 18,
                                                                       ),
                                                                     ),
@@ -532,7 +538,7 @@ class _HomeState extends State<Home> {
                                                                       hours,
                                                                       style: TextStyle(
                                                                         fontSize: 14,
-                                                                        fontWeight: FontWeight.w300,
+                                                                        fontFamily: 'Kollektif-Bold',
                                                                       ),
                                                                     )
 
@@ -618,7 +624,7 @@ class _HomeState extends State<Home> {
                                                                     Text(
                                                                       groundName,
                                                                       style: TextStyle(
-                                                                        fontWeight: FontWeight.w600,
+                                                                        fontFamily: 'Kollektif',
                                                                         fontSize: 18,
                                                                       ),
                                                                     ),
@@ -626,7 +632,7 @@ class _HomeState extends State<Home> {
                                                                       hours,
                                                                       style: TextStyle(
                                                                         fontSize: 14,
-                                                                        fontWeight: FontWeight.w300,
+                                                                        fontFamily: 'Kollektif-Bold',
                                                                       ),
                                                                     )
 
@@ -737,7 +743,7 @@ class Datasearch extends SearchDelegate<String> {
                       itemCount: searchList.length,
                       itemBuilder: (context,index){
                         return ListTile(
-                          title: Text(searchList.elementAt(index)),
+                          title: Text(searchList.elementAt(index), style: TextStyle(fontFamily: 'Kollektif',),),
                           onTap: (){
                             String id = snapshot.data.docs.elementAt(index).id;
                             print(index);

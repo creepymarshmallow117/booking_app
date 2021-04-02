@@ -148,9 +148,8 @@ class _ProfileState extends State<Profile> {
                                   padding: EdgeInsets.only(left: 25.0),
                                   child: new Text('SETTINGS',
                                       style: TextStyle(
-                                          fontWeight: FontWeight.bold,
                                           fontSize: 20.0,
-                                          fontFamily: 'sans-serif-light',
+                                          fontFamily: 'Kollektif',
                                           color: Colors.teal)),
                                 )
                               ],
@@ -261,7 +260,8 @@ class _ProfileState extends State<Profile> {
                                             'Personal Information',
                                             style: TextStyle(
                                                 fontSize: 18.0,
-                                                fontWeight: FontWeight.bold),
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: 'Kollektif',),
                                           ),
                                         ],
                                       ),
@@ -281,7 +281,8 @@ class _ProfileState extends State<Profile> {
                                         'Name',
                                         style: TextStyle(
                                             fontSize: 17.0,
-                                            fontWeight: FontWeight.bold),
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: 'Kollektif',),
                                       ),
                                     ],
                                   ),
@@ -297,7 +298,7 @@ class _ProfileState extends State<Profile> {
                                     child: TextFormField(
                                       decoration: new InputDecoration(
                                         hintText: name,
-                                        hintStyle: TextStyle(color: Colors.black),
+                                        hintStyle: TextStyle(color: Colors.black, fontFamily: 'Kollektif-Bold',),
                                       ),
                                       enabled: !_status,
                                       autofocus: !_status,
@@ -319,7 +320,8 @@ class _ProfileState extends State<Profile> {
                                         'Email ID',
                                         style: TextStyle(
                                             fontSize: 17.0,
-                                            fontWeight: FontWeight.bold),
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: 'Kollektif',),
                                       ),
                                     ],
                                   ),
@@ -335,7 +337,7 @@ class _ProfileState extends State<Profile> {
                                     child: new TextFormField(
                                       decoration: new InputDecoration(
                                           hintText: email,
-                                      hintStyle: TextStyle(color: Colors.black),
+                                      hintStyle: TextStyle(color: Colors.black, fontFamily: 'Kollektif-Bold',),
                                          ),
                                       enabled: !_status,
                                     ),
@@ -364,7 +366,7 @@ class _ProfileState extends State<Profile> {
                                             style: TextStyle(
                                               color: Colors.white,
                                               fontWeight: FontWeight.bold,
-                                              fontFamily: 'Montserrat',
+                                              fontFamily: 'Kollektif',
                                             ),
                                           ),
                                         ),
@@ -392,7 +394,7 @@ class _ProfileState extends State<Profile> {
                                         style: TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold,
-                                        fontFamily: 'Montserrat',
+                                          fontFamily: 'Kollektif',
                                       ),
                                     ),
                                   ),
@@ -432,7 +434,7 @@ class _ProfileState extends State<Profile> {
                 style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
-                fontFamily: 'Montserrat',
+                fontFamily: 'Kollektif',
               ),
             ),
           ),

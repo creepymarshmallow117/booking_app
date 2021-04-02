@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:booking_app/Animation/animation1.dart';
 import 'package:booking_app/screens/home/profile.dart';
 import 'package:booking_app/services/auth.dart';
 import 'package:booking_app/services/database.dart';
@@ -80,43 +81,68 @@ class _ProfileImageState extends State<ProfileImage> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Are you sure?'),
-            content: Text('You are going to clear this image'),
+            title: Text('Are you sure?', style: TextStyle(
+              fontFamily: "Kallektif"
+            ),),
+            content: Text('You are going to clear this image', style: TextStyle(
+              fontFamily: 'Kollektif-Bold',
+            ),),
             actions: <Widget>[
               FlatButton(
-                child: Text('NO', style: TextStyle(color: Colors.teal)),
+                child: Text('NO', style: TextStyle(color: Colors.teal,fontFamily: 'Kollektif-Bold',)),
                 onPressed: () {
                   WidgetsBinding.instance.handlePopRoute();
                   Navigator.of(context).pop(false);
                 },
               ),
               FlatButton(
-                child: Text('YES', style: TextStyle(color: Colors.teal)),
+                child: Text('YES', style: TextStyle(color: Colors.teal, fontFamily: 'Kollektif-Bold',)),
                 onPressed: () {
                   WidgetsBinding.instance.handlePopRoute();
                   Navigator.of(context).pop(false);
                 showDialog(context: context, builder: (context){
-                  return AlertDialog(
-                    title: Text('Are you sure?'),
-                    actions: <Widget>[
-                    FlatButton(
-                      child: Text('Click Image', style: TextStyle(color: Colors.teal)),
-                      onPressed: () async {
-                        _pickImage(ImageSource.camera, widget.uid);
-                        WidgetsBinding.instance.handlePopRoute();
-                        Navigator.of(context).pop(false);
-                        }
+                  return FadeAnimation1(
+                    0.1, Container(
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(30.0, 0.0, 30.0, 20.0),
+                      child : Column(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          new GestureDetector(
+                            onTap: () => _pickImage(ImageSource.camera, widget.uid),
+                            child: roundedButton(
+                                "CAMERA",
+                                EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
+                                const Color(0xFF167F67),
+                                const Color(0xFFFFFFFF)),
+                          ),
+                          SizedBox(height: 10.0),
+                          new GestureDetector(
+                            onTap: () =>  _pickImage(ImageSource.gallery, widget.uid),
+                            child: roundedButton(
+                                "GALLERY",
+                                EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
+                                const Color(0xFF167F67),
+                                const Color(0xFFFFFFFF)),
+                          ),
+                          SizedBox(height: 25.0),
+                          new GestureDetector(
+                            onTap: () => Navigator.pop(context),
+                            child: new Padding(
+                              padding: EdgeInsets.fromLTRB(30.0, 0.0, 30.0, 0.0),
+                              child: roundedButton(
+                                  "CANCEL",
+                                  EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
+                                  const Color(0xFF167F67),
+                                  const Color(0xFFFFFFFF)),
+                            ),
+                          ),
+                        ],
                       ),
-                    FlatButton(
-                      child: Text('Import from gallery', style: TextStyle(color: Colors.teal)),
-                        onPressed: () async {
-                        _pickImage(ImageSource.gallery, widget.uid);
-                        WidgetsBinding.instance.handlePopRoute();
-                        Navigator.of(context).pop(false);
-                        }
-                      ),
-                    ],
-                    );
+                    ),
+                  ),
+                  );
                   },
                   );
                 },
@@ -210,9 +236,8 @@ class _ProfileImageState extends State<ProfileImage> {
                     padding: EdgeInsets.only(left: 25.0),
                       child: new Text('UPDATE',
                       style: TextStyle(
-                      fontWeight: FontWeight.bold,
                       fontSize: 20.0,
-                      fontFamily: 'sans-serif-light',
+                          fontFamily: 'Kollektif',
                       color: Colors.teal)),
                       )
                     ],
@@ -251,7 +276,7 @@ class _ProfileImageState extends State<ProfileImage> {
                                  style: TextStyle(
                                    color: Colors.white,
                                    fontWeight: FontWeight.bold,
-                                   fontFamily: 'Montserrat',
+                                   fontFamily: 'Kollektif',
                                  ),
                                ),
                              ),
@@ -282,7 +307,7 @@ class _ProfileImageState extends State<ProfileImage> {
                                  style: TextStyle(
                                    color: Colors.white,
                                    fontWeight: FontWeight.bold,
-                                   fontFamily: 'Montserrat',
+                                   fontFamily: 'Kollektif',
                                  ),
                                ),
                              ),
@@ -320,7 +345,7 @@ class _ProfileImageState extends State<ProfileImage> {
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
-                                  fontFamily: 'Montserrat',
+                                  fontFamily: 'Kollektif',
                                 ),
                               ),
                             ),
@@ -338,5 +363,30 @@ class _ProfileImageState extends State<ProfileImage> {
     ),
       ),
       );
+  }
+  Widget roundedButton(
+      String buttonLabel, EdgeInsets margin, Color bgColor, Color textColor) {
+    var Btn = new Container(
+      height: 45.0,
+      width: 300.0,
+      child: Material(
+        borderRadius: BorderRadius.circular(100.0),
+        shadowColor: Colors.grey,
+        color: Colors.teal,
+        elevation: 5.0,
+        child: Container(
+          alignment: FractionalOffset.center,
+          padding: EdgeInsets.symmetric(horizontal: 12.0),
+          child : Text(buttonLabel, textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'Kollektif',
+            ),
+          ),
+        ),
+      ),
+    );
+    return Btn;
   }
 }

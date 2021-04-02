@@ -49,9 +49,8 @@ class _OrdersState extends State<Orders> {
                             padding: EdgeInsets.only(left: 25.0),
                             child: new Text('ORDERS',
                                 style: TextStyle(
-                                    fontWeight: FontWeight.bold,
                                     fontSize: 20.0,
-                                    fontFamily: 'sans-serif-light',
+                                    fontFamily: 'Kollektif',
                                     color: Colors.teal)),
                           ),
                         ],
@@ -73,11 +72,33 @@ class _OrdersState extends State<Orders> {
                           else {
                             for (int i = 0; i < snapshot.data.docs.length; i++) {
                               DocumentSnapshot doc = snapshot.data.docs.elementAt(i);
+                              int rawTime = int.parse(doc.data()['time']);
+                              String time = '';
+                              String time1 = '';
+                              if(rawTime < 12){
+                                time = rawTime.toString() +':00 AM';
+                                time1 = (rawTime+1).toString() + ':00 AM';
+                                if(rawTime+1 == 12){
+                                  time1 = '12:00 PM';
+                                }
+                              }else if (rawTime == 12){
+                                time = '12:00 PM';
+                                time1 = (1).toString() + ':00 PM';
+                              }
+                              else if(rawTime > 12){
+                                if(rawTime == 24){
+                                  time = '12:00 AM';
+                                  time1 = (1).toString() + ':00 AM';
+                                }else{
+                                  time = (rawTime-12).toString() + ':00 PM';
+                                  time1 = ((rawTime-12)+1).toString() + ':00 PM';
+                                }
+                              }
                               orders.add([
                                 doc.data()["ground_name"],
                                 doc.data()["date"],
                                 doc.data()["price"],
-                                doc.data()["time"]+":00 - "+(int.parse(doc.data()["time"])+1).toString()+":00",
+                                time + " - " + time1,
                                 doc.data()["payment_mode"],
                               ]);
                             }
@@ -93,15 +114,15 @@ class _OrdersState extends State<Orders> {
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
                                               Text(orders[index][0], style: TextStyle(
-                                                  fontWeight: FontWeight.w600, fontSize: 18
+                                                  fontFamily: 'Kollektif', fontSize: 18
                                               ),),
                                               SizedBox(height: 5.0,),
                                               Row(
                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                 children: <Widget>[
-                                                  Text("Date : ",style: TextStyle(fontSize: 15,fontWeight: FontWeight.w600)),
+                                                  Text("Date : ",style: TextStyle(fontSize: 15,fontFamily: 'Kollektif',)),
                                                   Text(orders[index][1], style: TextStyle(
-                                                      fontWeight: FontWeight.w300, fontSize: 15
+                                                      fontFamily: 'Kollektif-Bold', fontSize: 15
                                                   ),),
                                                 ],
                                               ),
@@ -109,9 +130,9 @@ class _OrdersState extends State<Orders> {
                                               Row(
                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                 children: <Widget>[
-                                                  Text("Price : ",style: TextStyle(fontSize: 15,fontWeight: FontWeight.w600)),
+                                                  Text("Price : ",style: TextStyle(fontSize: 15,fontFamily: 'Kollektif',)),
                                                   Text(orders[index][2], style: TextStyle(
-                                                      fontWeight: FontWeight.w300, fontSize: 15
+                                                      fontFamily: 'Kollektif-Bold', fontSize: 15
                                                   ),),
                                                 ],
                                               ),
@@ -119,9 +140,9 @@ class _OrdersState extends State<Orders> {
                                               Row(
                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                 children: <Widget>[
-                                                  Text("Time : ",style: TextStyle(fontSize: 15,fontWeight: FontWeight.w600)),
+                                                  Text("Time : ",style: TextStyle(fontSize: 15,fontFamily: 'Kollektif',)),
                                                   Text(orders[index][3], style: TextStyle(
-                                                      fontWeight: FontWeight.w300, fontSize: 15
+                                                      fontFamily: 'Kollektif-Bold', fontSize: 15
                                                   ),),
                                                 ],
                                               ),
@@ -129,9 +150,9 @@ class _OrdersState extends State<Orders> {
                                               Row(
                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                 children: <Widget>[
-                                                  Text("Payment : ",style: TextStyle(fontSize: 15,fontWeight: FontWeight.w600)),
+                                                  Text("Payment : ",style: TextStyle(fontSize: 15,fontFamily: 'Kollektif',)),
                                                   Text(orders[index][4], style: TextStyle(
-                                                      fontWeight: FontWeight.w300, fontSize: 15
+                                                      fontFamily: 'Kollektif-Bold', fontSize: 15
                                                   ),),
                                                 ],
                                               ),

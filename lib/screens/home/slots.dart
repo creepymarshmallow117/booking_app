@@ -47,6 +47,8 @@ class _SlotsState extends State<Slots> {
   String selectedDate;
   String name;
   String currentTime;
+  String time1;
+  String time2;
 
   void _onDaySelected(DateTime date) {
     setState(() {
@@ -73,6 +75,7 @@ class _SlotsState extends State<Slots> {
     }else{
       setState(() => _isVisible = true);
     }
+
 
     currentTime = DateFormat.H().format(today);
 
@@ -114,9 +117,8 @@ class _SlotsState extends State<Slots> {
                         padding: EdgeInsets.only(left: 25.0),
                           child: new Text('SLOTS',
                             style: TextStyle(
-                            fontWeight: FontWeight.bold,
                             fontSize: 20.0,
-                            fontFamily: 'sans-serif-light',
+                            fontFamily: 'Kollektif',
                             color: Colors.teal)),
                           )
                       ],
@@ -141,6 +143,15 @@ class _SlotsState extends State<Slots> {
                             startingDayOfWeek: StartingDayOfWeek.monday,
                             initialSelectedDay: today,
                             calendarStyle: CalendarStyle(
+                              weekdayStyle: TextStyle(
+                                fontFamily: 'Kollektif',
+                              ),
+                              weekendStyle: TextStyle(
+                                fontFamily: 'Kollektif',
+                              ),
+                              eventDayStyle: TextStyle(
+                                fontFamily: 'Kollektif',
+                              ),
                               todayColor: Colors.teal,
                               selectedColor: Colors.teal.shade100,
                             ),
@@ -152,6 +163,7 @@ class _SlotsState extends State<Slots> {
                                 headerPadding: EdgeInsets.only(bottom: 15.0),
                                 titleTextStyle: TextStyle(
                                   fontSize: 20,
+                                  fontFamily: 'Kollektif',
                                   fontWeight: FontWeight.bold,
                                 )
                             ),
@@ -186,9 +198,30 @@ class _SlotsState extends State<Slots> {
                                     continue;
                                   }
                                   else{
+                                    String time = '';
+                                    String time1 = '';
+                                    if(i < 12){
+                                      time = i.toString() +':00 AM';
+                                      time1 = (i+1).toString() + ':00 AM';
+                                      if(i+1 == 12){
+                                        time1 = '12:00 PM';
+                                      }
+                                    }else if (i == 12){
+                                      time = '12:00 PM';
+                                      time1 = (1).toString() + ':00 PM';
+                                    }
+                                    else if(i > 12){
+                                      if(i == 24){
+                                        time = '12:00 AM';
+                                        time1 = (1).toString() + ':00 AM';
+                                      }else{
+                                        time = (i-12).toString() + ':00 PM';
+                                        time1 = ((i-12)+1).toString() + ':00 PM';
+                                      }
+                                    }
                                     int i1 = i+1;
                                     availSlotsInternal.add(i.toString());
-                                    availSlots.add(i.toString()+":00"+" : "+i1.toString()+":00");
+                                    availSlots.add(time + " - "+ time1);
                                   }
                                 }
                                 for(int i = 0; i < availSlots.length; i++){
@@ -219,12 +252,8 @@ class _SlotsState extends State<Slots> {
                                               color: Colors.teal,
                                               margin: EdgeInsets.fromLTRB(20, 6, 20, 0),
                                               child: ListTile(
-                                                title: Text(availSlots.elementAt(index), style: TextStyle(color: Colors.white),),
+                                                title: Text(availSlots.elementAt(index), style: TextStyle(color: Colors.white,fontFamily: 'Kollektif'),),
                                                 onTap: () {
-                                                  print(availSlotsInternal.elementAt(index));
-                                                  print(widget.uid);
-                                                  print(selectedDate);
-                                                  print("Name : "+name);
                                                 Navigator.push(context,
                                                 MaterialPageRoute(
                                                 builder: (context) =>

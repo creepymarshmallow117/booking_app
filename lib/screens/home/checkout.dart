@@ -21,6 +21,7 @@ class _CheckoutState extends State<Checkout> {
 
 
   String radioItem = '';
+  String error = '';
   bool _clicked = true;
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
 
@@ -31,8 +32,31 @@ class _CheckoutState extends State<Checkout> {
     var padding = MediaQuery.of(context).padding;
     double height1 = height - padding.top - padding.bottom;
 
-    String time = widget.time;
-    int time1 = int.parse(time) + 1;
+    int time = int.parse(widget.time);
+    String time1;
+    String time2;
+    if(time < 12)
+      {
+        time1 = time.toString()+':00 AM';
+        time2 = (time+1).toString() + ':00 AM';
+        if(time+1 == 12)
+          {
+            time2 = '12:00 PM';
+          }
+      }else if (time == 12){
+      time1 = '12:00 PM';
+      time2 = (1).toString() + ':00 PM';
+    }
+    else if(time > 12){
+      if(time == 24){
+        time1 = '12:00 AM';
+        time2 = (1).toString() + ':00 AM';
+      }else{
+        time1 = (time-12).toString() + ':00 PM';
+        time2 = ((time-12)+1).toString() + ':00 PM';
+      }
+    }
+
 
 
     return Scaffold(
@@ -60,9 +84,8 @@ class _CheckoutState extends State<Checkout> {
                         padding: EdgeInsets.only(left: 25.0),
                         child: new Text('CHECKOUT',
                             style: TextStyle(
-                                fontWeight: FontWeight.bold,
                                 fontSize: 20.0,
-                                fontFamily: 'sans-serif-light',
+                                fontFamily: 'Kollektif',
                                 color: Colors.teal)),
                       ),
                     ],
@@ -70,7 +93,7 @@ class _CheckoutState extends State<Checkout> {
                 ),
                 SizedBox(height: 20.0,),
                 Container(
-                  height: 600,
+                  height: 350,
                   width: 400,
                   child: Card(
                     shape: RoundedRectangleBorder(
@@ -82,35 +105,72 @@ class _CheckoutState extends State<Checkout> {
                         Padding(
                           padding: EdgeInsets.only(top: 10.0),
                           child: Text(
-                            "Order Summary",
+                            "Order Details",
                             style: TextStyle(
-                              fontWeight: FontWeight.w600, fontSize: 20,
+                              fontFamily: 'Kollektif', fontSize: 20,
                             ),
                           ),
                         ),
                         SizedBox(height: 10.0,),
                         Row(
-                          children: [
-                            Padding(padding: EdgeInsets.only(left: 5.0)),
-                            Text("Date : ",style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18)),
-                            Text(widget.date,style: TextStyle(fontWeight: FontWeight.w300, fontSize: 18)),
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            Padding(padding: EdgeInsets.only(left: 5)),
+                            Text("Place Name ".toUpperCase(),style: TextStyle(fontSize: 18, fontFamily: 'Kollektif')),
                           ],
                         ),
                         Row(
                           children: [
                             Padding(padding: EdgeInsets.only(left: 5.0)),
-                            Text("Time : ",style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18)),
-                            Text(time+":00 - "+time1.toString()+":00",style: TextStyle(fontWeight: FontWeight.w300, fontSize: 18)),
+                            Text(widget.groundName,style: TextStyle(fontFamily: 'Kollektif-Bold', fontSize: 15)),
+                          ],
+                        ),
+                        SizedBox(height: 10.0),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            Padding(padding: EdgeInsets.only(left: 5)),
+                            Text("Date ".toUpperCase(),style: TextStyle(fontSize: 18,fontFamily: 'Kollektif',)),
                           ],
                         ),
                         Row(
                           children: [
                             Padding(padding: EdgeInsets.only(left: 5.0)),
-                            Text("Price : ",style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18)),
-                            Text(widget.price,style: TextStyle(fontWeight: FontWeight.w300, fontSize: 18)),
+                            Text(widget.date,style: TextStyle(fontFamily: 'Kollektif-Bold', fontSize: 15)),
+                          ],
+                        ),
+                        SizedBox(height: 10.0),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            Padding(padding: EdgeInsets.only(left: 5)),
+                            Text("Time ".toUpperCase(),style: TextStyle(fontSize: 18,fontFamily: 'Kollektif',)),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Padding(padding: EdgeInsets.only(left: 5.0)),
+                            Text(time1+" - "+time2,style: TextStyle(fontFamily: 'Kollektif-Bold', fontSize: 15)),
+                          ],
+                        ),
+                        SizedBox(height: 10.0),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            Padding(padding: EdgeInsets.only(left: 5)),
+                            Text("Price ".toUpperCase(),style: TextStyle(fontSize: 18,fontFamily: 'Kollektif',)),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Padding(padding: EdgeInsets.only(left: 5.0)),
+                            Text(widget.price,style: TextStyle(fontFamily: 'Kollektif-Bold', fontSize: 15)),
                           ],
                         ),
                         SizedBox(height: 5.0,),
+                        Divider(
+                          color: Colors.grey,
+                        ),
                         Padding(
                           padding: EdgeInsets.only(top: 5.0, left: 5.0),
                           child: Row(
@@ -119,32 +179,50 @@ class _CheckoutState extends State<Checkout> {
                                Text(
                                  "Payment Options",
                                  style: TextStyle(
-                                   fontWeight: FontWeight.w600, fontSize: 18,
+                                   fontFamily: 'Kollektif', fontSize: 18,
                                  ),
                                )
                              ],
                           ),
                         ),
-                        SizedBox(height: 5.0,),
-                        RadioListTile(
-                            title: Text("Cash"),
-                            value: "Cash",
-                            groupValue: radioItem,
-                            onChanged: (val) {
-                              setState(() {
-                                radioItem = val;
-                              });
-                            }
+                        SizedBox(height: 15.0,),
+                        Container(
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Flexible(
+                                    fit: FlexFit.loose,
+                                    child: RadioListTile(
+                                        title: Text("Cash", style: TextStyle(fontFamily: 'Kollektif',),),
+                                        activeColor: Colors.teal,
+                                        value: "Cash",
+                                        groupValue: radioItem,
+                                        onChanged: (val) {
+                                          setState(() {
+                                            radioItem = val;
+                                          });
+                                        }
+                                    ),
+                                  ),
+                                  Flexible(
+                                    fit: FlexFit.loose,
+                                    child: RadioListTile(
+                                      selected: false,
+                                      title: Text("Online Payment", style: TextStyle(color: Colors.grey, fontFamily: 'Kollektif',),),
+                                      value: "Online Payment",
+                                      groupValue: radioItem,
+                                      onChanged: (val) {
+                                        Fluttertoast.showToast(msg: "Coming Soon");
+                                      }
+                                    ),
+                                  ),
+                                ],
+                              )
+                            ],
+                          )
                         ),
-                        RadioListTile(
-                            selected: false,
-                              title: Text("Online Payment", style: TextStyle(color: Colors.grey),),
-                              value: "Online Payment",
-                              groupValue: radioItem,
-                              onChanged: (val) {
-                                Fluttertoast.showToast(msg: "Coming Soon");
-                            }
-                        ),
+
                       ],
                     ),
                   ),
@@ -165,23 +243,31 @@ class _CheckoutState extends State<Checkout> {
                             setState(() {
                               _clicked = false;
                             });
-                            Dialogs.showLoadingDialog(context, _keyLoader);
-                            final CollectionReference collection = FirebaseFirestore
-                                .instance.collection("bookingRecords");
-                            await collection.doc().set({
-                              'client_id': widget.clientId,
-                              'customer_id': widget.customerId,
-                              'customer_name': widget.customerName,
-                              'ground_name': widget.groundName,
-                              'date': widget.date,
-                              'time': widget.time,
-                              'price': widget.price,
-                              'payment_mode': radioItem,
-                            });
-                            Fluttertoast.showToast(msg: "Booking Successfull");
-                            Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => Home()),
-                            );
+                            if (radioItem == '') {
+                              setState(() {
+                                error = "Please select payment mode";
+                                _clicked = true;
+                              });
+                            }
+                            else {
+                              Dialogs.showLoadingDialog(context, _keyLoader);
+                              final CollectionReference collection = FirebaseFirestore.instance.collection("bookingRecords");
+                              await collection.doc().set({
+                                'client_id': widget.clientId,
+                                'customer_id': widget.customerId,
+                                'customer_name': widget.customerName,
+                                'ground_name': widget.groundName,
+                                'date': widget.date,
+                                'time': widget.time,
+                                'price': widget.price,
+                                'payment_mode': radioItem,
+                              });
+                              Fluttertoast.showToast(
+                                  msg: "Booking Successfull");
+                              Navigator.push(context,
+                                MaterialPageRoute(builder: (context) => Home()),
+                              );
+                            }
                           }
                         },
                         child: Container(
@@ -190,7 +276,7 @@ class _CheckoutState extends State<Checkout> {
                             style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
-                              fontFamily: 'Montserrat',
+                              fontFamily: 'Kollektif',
                             ),
                           ),
                         ),
@@ -198,7 +284,11 @@ class _CheckoutState extends State<Checkout> {
                     ),
                   ),
                 ),
-
+                SizedBox(height: 15.0,),
+                Text(
+                  error,
+                  style: TextStyle(color: Colors.red, fontSize: 14.0, fontFamily: 'Kollektif',),
+                ),
               ],
             )
         ),
@@ -234,3 +324,35 @@ class Dialogs {
         });
   }
 }
+
+/*
+Container(
+                              width: 50,
+                              child: RadioListTile(
+                                  title: Text("Cash"),
+                                  value: "Cash",
+                                  groupValue: radioItem,
+                                  onChanged: (val) {
+                                    setState(() {
+                                      radioItem = val;
+                                    });
+                                  }
+                              ),
+                            ),
+                            Container(
+                              width: 50,
+                              child: RadioListTile(
+                                  selected: false,
+                                  title: Text("Online Payment", style: TextStyle(color: Colors.grey),),
+                                  value: "Online Payment",
+                                  groupValue: radioItem,
+                                  onChanged: (val) {
+                                    Fluttertoast.showToast(msg: "Coming Soon");
+                                  }
+                              ),
+                            ),
+
+
+
+
+ */

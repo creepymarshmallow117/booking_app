@@ -101,7 +101,7 @@ class _SearchState extends State<Search> {
           return Scaffold(
             appBar: AppBar(
               backgroundColor: Colors.teal,
-              title: Text(groundName),
+              title: Text(groundName, style: TextStyle(fontFamily: 'Kollektif'),),
               actions: <Widget>[
                 IconButton(icon: Icon(Icons.search, color: Colors.white,),iconSize : 30,onPressed:() {
                   showSearch(context: context, delegate: Datasearch());
@@ -145,8 +145,8 @@ class _SearchState extends State<Search> {
                             child : UserAccountsDrawerHeader(decoration: BoxDecoration(
                               color: Colors.teal,
                             ),
-                              accountName: Text(name),
-                              accountEmail: Text(email),
+                              accountName: Text(name, style: TextStyle(fontFamily: 'Kollektif')),
+                              accountEmail: Text(email, style: TextStyle(fontFamily: 'Kollektif')),
                               currentAccountPicture: CircleAvatar(backgroundImage: FirebaseImage(image)),
                             )
                         );
@@ -154,7 +154,7 @@ class _SearchState extends State<Search> {
                   ),
                   ListTile(
                     leading: Icon(Icons.home, color: Colors.teal),
-                    title: Text('Home'),
+                    title: Text('Home',style: TextStyle(fontFamily: 'Kollektif')),
                     onTap: () {
                       Navigator.pop(context);
                       Navigator.push(context,
@@ -166,7 +166,7 @@ class _SearchState extends State<Search> {
                     visible: _isVisible,
                     child: ListTile(
                       leading: Icon(Icons.message, color: Colors.teal),
-                      title: Text('Your Orders'),
+                      title: Text('Your Orders',style: TextStyle(fontFamily: 'Kollektif')),
                       onTap: () {
                         Navigator.pop(context);
                         Navigator.push( context,
@@ -179,7 +179,7 @@ class _SearchState extends State<Search> {
                     visible: _isVisible,
                     child: ListTile(
                       leading: Icon(Icons.settings, color: Colors.teal),
-                      title: Text('Settings'),
+                      title: Text('Settings',style: TextStyle(fontFamily: 'Kollektif')),
                       onTap: () async{
                         if(user != null) {
                           print("Inside here");
@@ -205,7 +205,7 @@ class _SearchState extends State<Search> {
                     visible: _isVisible,
                     child: ListTile(
                       leading: Icon(Icons.logout, color: Colors.teal),
-                      title: Text('Log Out'),
+                      title: Text('Log Out',style: TextStyle(fontFamily: 'Kollektif')),
                       onTap: () {
                         Navigator.pop(context);
                         auth.signOut();
@@ -216,7 +216,7 @@ class _SearchState extends State<Search> {
                     visible: !_isVisible,
                     child: ListTile(
                       leading: Icon(Icons.account_circle,color: Colors.teal),
-                      title: Text('Login/Sign up'),
+                      title: Text('Login/Sign up',style: TextStyle(fontFamily: 'Kollektif')),
                       onTap: () {
                         Navigator.pop(context);
                         Navigator.push(
@@ -266,8 +266,8 @@ class _SearchState extends State<Search> {
                           Padding(padding: EdgeInsets.only(left: 5)),
                           Expanded(
                             child: Text("Description".toUpperCase(), style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16
+                                fontFamily: 'Kollektif',
+                                fontSize: 18
                             ),
                           ),
                           ),
@@ -282,7 +282,7 @@ class _SearchState extends State<Search> {
                             child: Text(
                               groundDescription,
                               textAlign: TextAlign.justify,
-                              style: TextStyle(fontSize: 15,fontWeight : FontWeight.w300,),
+                              style: TextStyle(fontSize: 15,fontFamily: 'Kollektif-Bold'),
                             ),
                           ),
                         ],
@@ -292,7 +292,7 @@ class _SearchState extends State<Search> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
                           Padding(padding: EdgeInsets.only(left: 5)),
-                          Text("Hours ".toUpperCase(),style: TextStyle(fontSize: 15,fontWeight: FontWeight.w600)),
+                          Text("Hours ".toUpperCase(),style: TextStyle(fontSize: 18,fontFamily: 'Kollektif')),
                         ],
                       ),
                       SizedBox(height: 10),
@@ -302,7 +302,7 @@ class _SearchState extends State<Search> {
                           Padding(padding: EdgeInsets.only(left: 5)),
                           Text(
                             hours,
-                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w300),
+                            style: TextStyle(fontSize: 15, fontFamily: 'Kollektif-Bold'),
                           ),
                         ],
                       ),
@@ -311,7 +311,7 @@ class _SearchState extends State<Search> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
                           Padding(padding: EdgeInsets.only(left: 5)),
-                          Text("Contact ".toUpperCase(),style: TextStyle(fontSize: 15,fontWeight: FontWeight.w600)),
+                          Text("Contact ".toUpperCase(),style: TextStyle(fontSize: 18,fontFamily: 'Kollektif')),
                         ],
                       ),
                       SizedBox(height: 10),
@@ -321,7 +321,7 @@ class _SearchState extends State<Search> {
                           Padding(padding: EdgeInsets.only(left: 5)),
                           Text(
                             groundContactInfo,
-                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w300),
+                            style: TextStyle(fontSize: 15, fontFamily: 'Kollektif-Bold'),
                           ),
                         ],
                       ),
@@ -330,7 +330,7 @@ class _SearchState extends State<Search> {
                         child : Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            Text("Address ".toUpperCase(),style: TextStyle(fontSize: 15,fontWeight: FontWeight.w600)),
+                            Text("Address ".toUpperCase(),style: TextStyle(fontSize: 18,fontFamily: 'Kollektif')),
                           ],
                         ),
                       ),
@@ -342,12 +342,13 @@ class _SearchState extends State<Search> {
                             Expanded(child: Text(
                               groundAddress,
                               textAlign: TextAlign.justify,
-                              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w300,),
+                              style: TextStyle(fontSize: 15, fontFamily: 'Kollektif-Bold'),
                             ),
                             ),
                           ],
                         ),
                       ),
+                      Divider(color: Colors.grey),
                       SizedBox(height: 15,),
                       Container(
                         child: Align(
@@ -389,7 +390,7 @@ class _SearchState extends State<Search> {
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
-                                      fontFamily: 'Montserrat',
+                                      fontFamily: 'Kollektif-Bold',
                                     ),
                                   ),
                                 ),
