@@ -157,8 +157,6 @@ class _SlotsState extends State<Slots> {
                             ),
                             headerStyle: HeaderStyle(
                                 centerHeaderTitle: true,
-                                rightChevronVisible: false,
-                                leftChevronVisible: false,
                                 formatButtonVisible: false,
                                 headerPadding: EdgeInsets.only(bottom: 15.0),
                                 titleTextStyle: TextStyle(
@@ -176,7 +174,7 @@ class _SlotsState extends State<Slots> {
                       }
                       ),
                       Container(
-                        height: 670,
+                        height: 650,
                         child: StreamBuilder<QuerySnapshot>(
                             stream: FirebaseFirestore.instance.collection("bookingRecords").where("date", isEqualTo: selectedDate).where("client_id", isEqualTo: widget.uid).snapshots(),
                             builder: (context, snapshot) {
@@ -277,6 +275,33 @@ class _SlotsState extends State<Slots> {
     );
       }
 }
+class Dialogs {
+  static Future<void> showLoadingDialog(
+      BuildContext context, GlobalKey key) async {
+    return showDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return new WillPopScope(
+              onWillPop: () async => false,
+              child: SimpleDialog(
+                  key: key,
+                  backgroundColor: Colors.white,
+                  children: <Widget>[
+                    Center(
+                      child: Column(children: [
+                        CircularProgressIndicator(
+                          valueColor: new AlwaysStoppedAnimation<Color>(Colors.teal),
+                        ),
+                        SizedBox(height: 10,),
+                        Text("Please Wait....",style: TextStyle(color: Colors.black),)
+                      ]),
+                    )
+                  ]));
+        });
+  }
+}
+
 
 
 /*
