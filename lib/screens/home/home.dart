@@ -220,10 +220,11 @@ class _HomeState extends State<Home> {
                     child: ListTile(
                       leading: Icon(Icons.shopping_cart_rounded, color: Colors.teal),
                       title: Text('Orders', style: TextStyle(fontFamily: 'Kollektif')),
-                      onTap: () {
+                      onTap: () async{
+                        DocumentSnapshot doc = await db.getDocument(user.uid);
                         Navigator.pop(context);
-                        Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => Orders(uid: uid1)),
+                        Navigator.push( context,
+                          MaterialPageRoute(builder: (context) => Orders(uid: user.uid, userDoc: doc,)),
                         );
                       },
                     ),
@@ -366,6 +367,14 @@ class _HomeState extends State<Home> {
                                           ),
                                         ),
                                       ),
+                                      SizedBox(
+                                        height: 15,
+                                      ),
+                                      Divider(
+                                        color: Colors.grey,
+                                        indent: 20,
+                                        endIndent: 20,
+                                      ),
                                       StreamBuilder<DocumentSnapshot>(
                                           stream: topPlaces.length > 0 ? FirebaseFirestore.instance.collection("client").doc(topPlaces[0].toString()).snapshots() : null,
                                           builder: (context, snapshot) {
@@ -377,7 +386,7 @@ class _HomeState extends State<Home> {
                                             String imageUrl = snapshot.data["groundImages"][0];
                                             String description = snapshot.data["description"];
                                             return Container(
-                                              margin: EdgeInsets.fromLTRB(10, 18, 10, 0),
+                                              margin: EdgeInsets.fromLTRB(10, 15, 10, 0),
                                               height: 260,
                                               width: double.maxFinite,
                                               child: GestureDetector(

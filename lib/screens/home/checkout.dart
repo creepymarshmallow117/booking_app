@@ -64,6 +64,7 @@ class _CheckoutState extends State<Checkout> {
         child: SafeArea(
           child : Container(
               height: height1,
+            color: Colors.white,
             child: Column(
               children: <Widget>[
                 Padding(padding: EdgeInsets.only(left: 20.0, top: 20.0),
@@ -81,7 +82,7 @@ class _CheckoutState extends State<Checkout> {
                         },
                       ),
                       Padding(
-                        padding: EdgeInsets.only(left: 25.0),
+                        padding: EdgeInsets.only(left: 20.0, top: 2.0),
                         child: new Text('CHECKOUT',
                             style: TextStyle(
                                 fontSize: 20.0,
@@ -96,12 +97,16 @@ class _CheckoutState extends State<Checkout> {
                   height: 350,
                   width: 400,
                   child: Card(
+                    color: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
+                        SizedBox(
+                          height: 5,
+                        ),
                         Padding(
                           padding: EdgeInsets.only(top: 10.0),
                           child: Text(
@@ -153,18 +158,17 @@ class _CheckoutState extends State<Checkout> {
                             Text(time1+" - "+time2,style: TextStyle(fontFamily: 'Kollektif-Bold', fontSize: 15)),
                           ],
                         ),
-                        SizedBox(height: 10.0),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            Padding(padding: EdgeInsets.only(left: 5)),
-                            Text("Price ".toUpperCase(),style: TextStyle(fontSize: 18,fontFamily: 'Kollektif',)),
-                          ],
+                        Divider(
+                          color: Colors.grey,
                         ),
+                        SizedBox(height: 5.0,),
                         Row(
                           children: [
                             Padding(padding: EdgeInsets.only(left: 5.0)),
-                            Text(widget.price,style: TextStyle(fontFamily: 'Kollektif-Bold', fontSize: 15)),
+                            Text("Total ".toUpperCase(),style: TextStyle(fontSize: 18,fontFamily: 'Kollektif',)),
+                            Spacer(),
+                            Padding(padding : EdgeInsets.only(right: 5.0),
+                                child: Text(widget.price,style: TextStyle(fontFamily: 'Kollektif-Bold', fontSize: 15))),
                           ],
                         ),
                         SizedBox(height: 5.0,),

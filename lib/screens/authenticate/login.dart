@@ -90,7 +90,7 @@ class _LoginState extends State<Login> {
                   padding: EdgeInsets.fromLTRB(15.0, 0.0, 0.0, 0.0),
                     child: Text('Login', textAlign: TextAlign.center,
                     style:
-                      TextStyle(fontSize: 50.0, fontWeight: FontWeight.bold),
+                      TextStyle(fontSize: 50.0,fontFamily: 'Kollektif', fontWeight: FontWeight.bold),
                     ),
                   ),
                 ],
@@ -115,8 +115,8 @@ class _LoginState extends State<Login> {
                           decoration: InputDecoration(
                           hintText: 'Enter Email',
                           labelStyle: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Kollektif-Bold',
+                              fontWeight: FontWeight.bold,
                           color: Colors.grey),
                           // hintText: 'EMAIL',
                           // hintStyle: ,
@@ -139,7 +139,7 @@ class _LoginState extends State<Login> {
                             ),
 
                         labelStyle: TextStyle(
-                        fontFamily: 'Montserrat',
+                        fontFamily: 'Kollektif-Bold',
                         fontWeight: FontWeight.bold,
                         color: Colors.grey),
                         // hintText: 'EMAIL',
@@ -163,7 +163,7 @@ class _LoginState extends State<Login> {
                             child: Text('Forgot Password?',
                                 style: TextStyle(
                                     color: Colors.teal,
-                                    fontFamily: 'Montserrat',
+                                    fontFamily: 'Kollektif-Bold',
                                     fontWeight: FontWeight.bold,
                                     decoration: TextDecoration.underline)),
                           ),
@@ -238,7 +238,7 @@ class _LoginState extends State<Login> {
                             style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
-                                fontFamily: 'Montserrat',
+                              fontFamily: 'Kollektif-Bold',
                               ),
                             ),
                           ),
@@ -252,7 +252,7 @@ class _LoginState extends State<Login> {
                           Text(
                             "Don't have an account?",
                             style: TextStyle(
-                              fontFamily: 'Montserrat',
+                              fontFamily: 'Kollektif-Bold',
                             ),
                           ),
                           SizedBox(width: 5.0),
@@ -266,7 +266,7 @@ class _LoginState extends State<Login> {
                             child: Text('Signup',
                                 style: TextStyle(
                                     color: Colors.teal,
-                                    fontFamily: 'Montserrat',
+                                    fontFamily: 'Kollektif-Bold',
                                     fontWeight: FontWeight.bold,
                                     decoration: TextDecoration.none)),
                           ),
@@ -275,7 +275,7 @@ class _LoginState extends State<Login> {
                       SizedBox(height : 10.0),
                       Text(
                         error,
-                        style: TextStyle(color: Colors.red, fontSize: 14.0),
+                        style: TextStyle(color: Colors.red, fontSize: 14.0, fontFamily: 'Kollektif-Bold',),
                       ),
                     ]
                 )

@@ -81,18 +81,18 @@ class _ProfileState extends State<Profile> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('Are you sure?'),
-              content: Text('You are going to delete your account'),
+              title: Text('Are you sure?',style: TextStyle(fontFamily: "Kollektif")),
+              content: Text('You are going to delete your account', style: TextStyle(fontFamily: "Kollektif-Bold")),
               actions: <Widget>[
                 FlatButton(
-                  child: Text('NO', style: TextStyle(color: Colors.teal)),
+                  child: Text('NO', style: TextStyle(color: Colors.teal, fontFamily: "Kollektif-Bold")),
                   onPressed: () {
                     WidgetsBinding.instance.handlePopRoute();
                     Navigator.of(context).pop(false);
                   },
                 ),
                 FlatButton(
-                  child: Text('YES', style: TextStyle(color: Colors.teal)),
+                  child: Text('YES', style: TextStyle(color: Colors.teal, fontFamily: "Kollektif-Bold")),
                   onPressed: () {
                     user.delete();
                     Navigator.push(context,
@@ -145,7 +145,7 @@ class _ProfileState extends State<Profile> {
                                   },
                                 ),
                                 Padding(
-                                  padding: EdgeInsets.only(left: 25.0),
+                                  padding: EdgeInsets.only(left: 20.0, top: 2.0),
                                   child: new Text('SETTINGS',
                                       style: TextStyle(
                                           fontSize: 20.0,

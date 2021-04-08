@@ -9,8 +9,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'file:///D:/College/Project/App/lib/screens/home/orders.dart';
-import 'file:///D:/College/Project/App/lib/screens/home/profile.dart';
+import 'package:intl/intl.dart';
+import 'orders.dart';
+import 'clientProfile.dart';
 import 'package:provider/provider.dart';
 
 
@@ -21,7 +22,7 @@ class Home1 extends StatefulWidget{
 
 class _Home1State extends State<Home1> {
   bool _isVisible = false;
-  Widget appBarTitle = new Text("Home");
+  Widget appBarTitle = new Text("Home",style: TextStyle(fontFamily: "Kallektif"));
   int _currentIndex=0;
 
 
@@ -30,18 +31,18 @@ class _Home1State extends State<Home1> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Are you sure?'),
-            content: Text('You are going to exit the application'),
+            title: Text('Are you sure?', style: TextStyle(fontFamily: "Kallektif")),
+            content: Text('You are going to exit the application',style: TextStyle(fontFamily: "Kallektif-Bold")),
             actions: <Widget>[
               FlatButton(
-                child: Text('NO'),
+                child: Text('NO', style: TextStyle(color: Colors.teal,fontFamily: "Kallektif-Bold")),
                 onPressed: () {
                   WidgetsBinding.instance.handlePopRoute();
                   Navigator.of(context).pop(false);
                 },
               ),
               FlatButton(
-                child: Text('YES'),
+                child: Text('YES', style: TextStyle(color: Colors.teal,fontFamily: "Kallektif-Bold"),),
                 onPressed: () {
                   SystemNavigator.pop();
                 },
@@ -61,35 +62,55 @@ class _Home1State extends State<Home1> {
     }else{
       setState(() => _isVisible = true);
     }
+
+    DateTime today = DateTime.now();
+    DateFormat formatter = DateFormat("dd-MM-yyy");
+    String todayDate = formatter.format(today);
+
+    String currentTime = DateFormat.H().format(today);
+
+    double height = MediaQuery.of(context).size.height;
+    var padding = MediaQuery.of(context).padding;
+    double height1 = height - padding.top - padding.bottom;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.teal,
-        title: Text("Home", style: TextStyle(color: Colors.white)),
+        title: Text("Home", style: TextStyle(color: Colors.white, fontFamily: 'Kollektif', fontSize: 22)),
       ),
       drawer : Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
-            DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.teal,
+            UserAccountsDrawerHeader(decoration: BoxDecoration(
+              color: Colors.teal,
+            ),
+              accountName: Text("Welcome!", style: TextStyle(
+                fontFamily: 'Kollektif',
+                fontSize: 25.0,
               ),
-              child: Text('Welcome Client',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
               ),
+            ),
+            ListTile(
+              leading: Icon(Icons.home, color: Colors.teal),
+              title: Text('Home', style: TextStyle(fontFamily: 'Kollektif'),),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => Home1()),
+                );
+              },
             ),
             Visibility(
               visible: _isVisible,
               child: ListTile(
-                leading: Icon(Icons.message, color: Colors.teal),
-                title: Text('Orders'),
-                onTap: () {
+                leading: Icon(Icons.shopping_cart_rounded, color: Colors.teal),
+                title: Text('Orders', style: TextStyle(fontFamily: 'Kollektif')),
+                onTap: () async{
+                  DocumentSnapshot doc = await db.getDocument(user.uid);
                   Navigator.pop(context);
                   Navigator.push( context,
-                    MaterialPageRoute(builder: (context) => Orders()),
+                    MaterialPageRoute(builder: (context) => Orders(uid: user.uid, userDoc: doc,)),
                   );
                 },
               ),
@@ -97,12 +118,14 @@ class _Home1State extends State<Home1> {
             Visibility(
               visible: _isVisible,
               child: ListTile(
-                leading: Icon(Icons.account_circle, color: Colors.teal),
-                title: Text('Profile'),
-                onTap: () async{
-                  if(user != null) {
+                leading: Icon(Icons.settings, color: Colors.teal),
+                title: Text('Settings', style: TextStyle(fontFamily: 'Kollektif')),
+                onTap: () async {
+                  if (user != null) {
+                    imageCache.clear();
                     print("Inside here");
-                    dynamic result =  await db.getDocument(user.uid.toString());
+                    dynamic result = await db.getDocument(user.uid
+                        .toString());
                     if (result == null) {
                       print("This is a problem");
                     }
@@ -110,11 +133,12 @@ class _Home1State extends State<Home1> {
                       print(result);
                       Navigator.pop(context);
                       Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => Profile(userDocument: result)),
+                        MaterialPageRoute(builder: (context) =>
+                            ClientProfile(userDocument: result)),
                       );
                     }
                   }
-                  else{
+                  else {
                     print("This is a big problem");
                   }
                 },
@@ -124,7 +148,7 @@ class _Home1State extends State<Home1> {
               visible: _isVisible,
               child: ListTile(
                 leading: Icon(Icons.logout, color: Colors.teal),
-                title: Text('Log Out'),
+                title: Text('Log Out',style: TextStyle(fontFamily: 'Kollektif')),
                 onTap: () {
                   Navigator.push(
                     context,
@@ -137,13 +161,14 @@ class _Home1State extends State<Home1> {
             Visibility(
               visible: !_isVisible,
               child: ListTile(
-                leading: Icon(Icons.account_circle,color: Colors.teal),
-                title: Text('Login/Sign up'),
+                leading: Icon(Icons.account_circle, color: Colors.teal),
+                title: Text('Login/Sign up', style: TextStyle(fontFamily: 'Kollektif')),
                 onTap: () {
                   Navigator.pop(context);
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Authenticate()),
+                    MaterialPageRoute(builder: (context) =>
+                        Authenticate()),
                   );
                 },
               ),
@@ -156,7 +181,106 @@ class _Home1State extends State<Home1> {
           child : SingleChildScrollView(
             child: Column(
               children: <Widget>[
+                  Container(
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Container(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Today's Orders",
+                                  style: TextStyle(
+                                    fontFamily: 'Kollektif', fontSize: 20,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Divider(
+                          color: Colors.grey,
+                          indent: 20,
+                          endIndent: 20,
+                        ),
+                        Container(
+                          child: StreamBuilder<DocumentSnapshot>(
+                            stream: user != null ?FirebaseFirestore.instance.collection("client").doc(user.uid).snapshots() : null,
+                            builder: (context,snapshot){
+                              DocumentSnapshot data = snapshot.data;
+                              return StreamBuilder<QuerySnapshot>(
+                                  stream: user != null? FirebaseFirestore.instance.collection("bookingRecords").where("date", isEqualTo: todayDate).where("client_id", isEqualTo: user.uid).snapshots(): null,
+                                  builder: (context, snapshot1){
+                                    if(snapshot.data != null && snapshot1.data != null){
+                                      List bookedSlots = List();
+                                      List bookedSlotsDisplay = List();
+                                      for(int i = 0; i < snapshot1.data.docs.length; i++){
+                                        DocumentSnapshot doc = snapshot1.data.docs.elementAt(i);
+                                        bookedSlots.add(int.parse(doc.data()["time"]));
+                                      }
+                                      for(int i = int.parse(currentTime)+1; i <= int.parse(data['endHour']); i++){
+                                        if(bookedSlots.contains(i)){
+                                          String time = '';
+                                          String time1 = '';
+                                          if(i < 12){
+                                            time = i.toString() +':00 AM';
+                                            time1 = (i+1).toString() + ':00 AM';
+                                            if(i+1 == 12){
+                                              time1 = '12:00 PM';
+                                            }
+                                          }else if (i == 12){
+                                            time = '12:00 PM';
+                                            time1 = (1).toString() + ':00 PM';
+                                          }
+                                          else if(i > 12){
+                                            if(i == 24){
+                                              time = '12:00 AM';
+                                              time1 = (1).toString() + ':00 AM';
+                                            }else{
+                                              time = (i-12).toString() + ':00 PM';
+                                              time1 = ((i-12)+1).toString() + ':00 PM';
+                                            }
+                                          }
+                                          int i1 = i+1;
+                                          bookedSlotsDisplay.add(time + " - "+ time1);
+                                        }
+                                        for(int i = 0; i < bookedSlotsDisplay.length; i++){
+                                          print(bookedSlotsDisplay.elementAt(i));
+                                        }
+                                      }
+                                      return ListView.builder(
+                                          itemCount: bookedSlotsDisplay.length,
+                                          itemBuilder: (context,index){
+                                            return Card(
+                                              color: Colors.teal,
+                                              margin: EdgeInsets.fromLTRB(20, 6, 20, 0),
+                                              child: ListTile(
+                                                title: Text(bookedSlotsDisplay.elementAt(index), style: TextStyle(color: Colors.white),),
+                                                onTap: () {
 
+                                                },
+                                              ),
+                                            );
+                                          });
+                                    }else{
+                                      return CircularProgressIndicator(
+                                        valueColor: new AlwaysStoppedAnimation<Color>(Colors.teal),
+                                      );
+                                    }
+                                  }
+                              );
+                          },
+
+                          ),
+                        ),
+                      ],
+                    )
+                  )
                 ]
             ),
           )
@@ -169,359 +293,3 @@ class _Home1State extends State<Home1> {
 
 
 
-/*
-
-class Datasearch extends SearchDelegate<String> {
-
-  final DatabaseService data = DatabaseService();
-
-
-  @override
-  List<Widget> buildActions(BuildContext context) {
-    return [IconButton(icon: Icon(Icons.clear), onPressed: () {
-      query = "";
-    })
-    ];
-  }
-
-  @override
-  Widget buildLeading(BuildContext context) {
-    return IconButton(
-        icon: AnimatedIcon(
-          icon: AnimatedIcons.menu_arrow,
-          progress: transitionAnimation,
-        ), onPressed: () {
-      close(context, null);
-    }
-    );
-  }
-
-  @override
-  Widget buildResults(BuildContext context) {
-    return Container(
-
-    );
-  }
-
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    return Container(
-      child : StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance.collection("client").orderBy("groundName").snapshots(),
-          builder: (context,snapshot){
-            List<String> suggestionList = List<String>();
-            for (int i = 0; i < snapshot.data.docs.length; i++) {
-              DocumentSnapshot data = snapshot.data.docs.elementAt(i);
-              suggestionList.add(data.data()['groundName']);
-            }
-            String query1 = toBeginningOfSentenceCase(query);
-            print(query1);
-            print(query);
-            List<String> searchList = suggestionList.where((element) =>
-                element.startsWith(query1)).toList();
-            print(suggestionList);
-            print(searchList);
-            List<String> idList = List<String>();
-            for (int i = 0; i < snapshot.data.docs.length; i++) {
-              DocumentSnapshot data = snapshot.data.docs.elementAt(i);
-              for (int j = 0; j < searchList.length; j++) {
-                if (data.data()['groundName'] ==
-                    searchList.elementAt(j)) {
-                  idList.add(data.id);
-                }
-              }
-            }
-            return (snapshot.connectionState == ConnectionState.waiting)
-                ? Center(child: CircularProgressIndicator())
-                :ListView.builder(
-                itemCount: searchList.length,
-                itemBuilder: (context,index){
-                  return ListTile(
-                    title: Text(searchList.elementAt(index)),
-                    onTap: (){
-                      String id = snapshot.data.docs.elementAt(index).id;
-                      print(index);
-                      print(id);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Search(id: idList.elementAt(index))),
-                      );
-                    },
-                  );
-                }
-            );
-          }
-      ),
-    );
-  }
-}
-
-
-
-
-
-class Item1 extends StatelessWidget {
-  const Item1({Key key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.grey[800],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Icon(Icons.local_offer, size: 40, color: Colors.white,),
-          SizedBox(height: 20),
-          Text(
-              "Great Offers Coming Soon!",
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold
-              )
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class Item2 extends StatelessWidget {
-  const Item2({Key key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            stops: [0.3, 1],
-            colors: [Color(0xff5f2c82), Color(0xff49a09d)]
-        ),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text(
-              "Data",
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 22.0,
-                  fontWeight: FontWeight.bold
-              )
-          ),
-          Text(
-              "Data",
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 17.0,
-                  fontWeight: FontWeight.w600
-              )
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class Item3 extends StatelessWidget {
-  const Item3({Key key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            stops: [0.3, 1],
-            colors: [Color(0xffff4000),Color(0xffffcc66),]
-        ),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-
-        ],
-      ),
-    );
-  }
-}
-
-class Item4 extends StatelessWidget {
-  const Item4({Key key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text(
-              "Data",
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 22.0,
-                  fontWeight: FontWeight.bold
-              )
-          ),
-          Text(
-              "Data",
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 17.0,
-                  fontWeight: FontWeight.w600
-              )
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-
-
-
-
-final db = FirebaseFirestore.instance.reference().child("places");
-    db.once().then((iterable<DataSnapshot> snapshot){
-      Map<dynamic, dynamic> values = snapshot.value;
-      values.forEach((key,values) {
-        print(values["DisplayName"]);
-
-StreamBuilder<DocumentSnapshot>(
-            stream: FirebaseFirestore.instance.collection("client").doc(widget.id).snapshots(),
-            builder: (context,snapshot){
-            DocumentSnapshot data = snapshot.data;
-            String groundName = data.data()["groundName"];
-            String groundAddress = data.data()["address"];
-            String groundDescription = data.data()["description"];
-            String groundContactInfo = data.data()["contactInfo"];
-            print(groundName);
-            print(groundContactInfo);
-            print(groundDescription);
-            print(groundAddress);
-            return (snapshot.connectionState == ConnectionState.waiting)
-                ? Center(child: CircularProgressIndicator())
-                :
-
-
-
-
-
-
-
-
-
-final suggestionList = query.isEmpty
-        ? recentTurfs
-        : turfs.where((p)=>p.startsWith(query)).toList();
-    return ListView.builder(itemBuilder: (context,index)=>ListTile(
-      onTap: (){
-        showResults(context);
-      },
-      title: Text(suggestionList[index]),
-    ),
-      itemCount: suggestionList.length,
-    );
-    final turfs = [
-    "EcoGrass",
-    "Sundial Gardening",
-    "Fairy Yardmother",
-    "Solid Ground Landscaping",
-    "Grass Masters",
-    "Star Landscape Design",
-    "A Cut Above",
-    "Forest Green Lawn and Landscaping",
-    "Budget Lawn Mowing",
-    "Push Lawn Care",
-    "Navlan’s Landscape",
-    "Sharp Lawn Inc.",
-    "Plush Lawns",
-    "Turf Pros",
-    "Turf Terminators",
-    "Yard Smart",
-    "CleanMe Lawn",
-    "Green Acres",
-    "A Good Turf",
-    "Edge Cut Lawn",
-    "Lawn & Turf Contracting",
-    "Curb Appeal",
-    "LawnStarter",
-    "Perfect Lawncare",
-    "Cloverdale Mowing"
-  ];
-
-  final recentTurfs = [
-    "Yard Smart",
-    "Lawn & Turf Contracting",
-    "Curb Appeal",
-    "LawnStarter"
-  ];*/
-
-/*class dropdown extends StatefulWidget {
-  dropdown({Key key}) : super(key: key);
-
-  @override
-  _dropdown createState() => _dropdown();
-}
-
-
-class _dropdown extends State<dropdown> {
-  String dropdownValue;
-
-  @override
-  Widget build(BuildContext context) {
-    return DropdownButton<String>(
-      value: dropdownValue,
-      icon: Icon(Icons.account_circle),
-      iconSize: 24,
-      elevation: 16,
-      style: TextStyle(color: Colors.white),
-      underline: Container(
-        height: 2,
-        color: Colors.black,
-      ),
-      onChanged: (String newValue) {
-        setState(() {
-          dropdownValue = newValue;
-        });
-      },
-      items: <String>['Orders', 'Profile', 'Log Out']
-          .map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
-        );
-      }).toList(),
-    );
-  }
-}*/
-
-/*appBar: AppBar(
-backgroundColor: Colors.blueGrey[800],
-title : SizedBox(
-child : Row(
-mainAxisAlignment: MainAxisAlignment.end,
-children: <Widget> [
-new DropdownButton<String>(
-icon: Icon(Icons.account_circle),
-iconSize: 24,
-elevation: 16,
-items: <String>['Orders','Profile','Log Out'].map((String value) {
-return new DropdownMenuItem<String>(
-value: value,
-child: new Text(value),
-);
-}).toList(),
-onChanged: (_) {
-},
-),
-],
-),
-),
-),
-*/

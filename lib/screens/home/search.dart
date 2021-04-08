@@ -20,6 +20,7 @@ import 'file:///D:/College/Project/App/lib/screens/home/orders.dart';
 import 'file:///D:/College/Project/App/lib/screens/home/cart.dart';
 import 'package:provider/provider.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:align_positioned/align_positioned.dart';
 
 
 class Search extends StatefulWidget {
@@ -101,7 +102,6 @@ class _SearchState extends State<Search> {
           return Scaffold(
             appBar: AppBar(
               backgroundColor: Colors.teal,
-              title: Text(groundName, style: TextStyle(fontFamily: 'Kollektif'),),
               actions: <Widget>[
                 IconButton(icon: Icon(Icons.search, color: Colors.white,),iconSize : 30,onPressed:() {
                   showSearch(context: context, delegate: Datasearch());
@@ -265,34 +265,37 @@ class _SearchState extends State<Search> {
                         children: <Widget>[
                           Padding(padding: EdgeInsets.only(left: 5)),
                           Expanded(
-                            child: Text("Description".toUpperCase(), style: TextStyle(
+                            child: Text(groundName, style: TextStyle(
                                 fontFamily: 'Kollektif',
-                                fontSize: 18
+                                fontWeight: FontWeight.bold,
+                                fontSize: 25
                             ),
-                          ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Padding(padding: EdgeInsets.only(left: 5)),
-                          Expanded(
-                            child: Text(
-                              groundDescription,
-                              textAlign: TextAlign.justify,
-                              style: TextStyle(fontSize: 15,fontFamily: 'Kollektif-Bold'),
                             ),
                           ),
                         ],
                       ),
                       SizedBox(height: 10),
+                      Padding(
+                        padding: EdgeInsets.only(right: 5, left: 5),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            Expanded(
+                              child: Text(
+                                groundDescription,
+                                textAlign: TextAlign.justify,
+                                style: TextStyle(fontSize: 15,fontFamily: 'Kollektif-Bold'),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 20),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
                           Padding(padding: EdgeInsets.only(left: 5)),
-                          Text("Hours ".toUpperCase(),style: TextStyle(fontSize: 18,fontFamily: 'Kollektif')),
+                          Text("Details ",style: TextStyle(fontSize: 20,fontFamily: 'Kollektif', fontWeight: FontWeight.bold,)),
                         ],
                       ),
                       SizedBox(height: 10),
@@ -300,6 +303,7 @@ class _SearchState extends State<Search> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
                           Padding(padding: EdgeInsets.only(left: 5)),
+                          Text("Hours : ".toUpperCase(),style: TextStyle(fontSize: 15,fontFamily: 'Kollektif')),
                           Text(
                             hours,
                             style: TextStyle(fontSize: 15, fontFamily: 'Kollektif-Bold'),
@@ -311,7 +315,11 @@ class _SearchState extends State<Search> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
                           Padding(padding: EdgeInsets.only(left: 5)),
-                          Text("Contact ".toUpperCase(),style: TextStyle(fontSize: 18,fontFamily: 'Kollektif')),
+                          Text("Price : ".toUpperCase(),style: TextStyle(fontSize: 15,fontFamily: 'Kollektif')),
+                          Text(
+                            morningPrice+"rs - "+eveningPrice+"rs",
+                            style: TextStyle(fontSize: 15, fontFamily: 'Kollektif-Bold'),
+                          ),
                         ],
                       ),
                       SizedBox(height: 10),
@@ -319,6 +327,7 @@ class _SearchState extends State<Search> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
                           Padding(padding: EdgeInsets.only(left: 5)),
+                          Text("Contact : ".toUpperCase(),style: TextStyle(fontSize: 15,fontFamily: 'Kollektif')),
                           Text(
                             groundContactInfo,
                             style: TextStyle(fontSize: 15, fontFamily: 'Kollektif-Bold'),
@@ -326,19 +335,11 @@ class _SearchState extends State<Search> {
                         ],
                       ),
                       SizedBox(height: 10),
-                      Padding(padding: EdgeInsets.only(left: 5),
+                      Padding(padding: EdgeInsets.only(left: 5, right: 5),
                         child : Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            Text("Address ".toUpperCase(),style: TextStyle(fontSize: 18,fontFamily: 'Kollektif')),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Padding(padding: EdgeInsets.only(left: 5),
-                        child : Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
+                            Text("Address : ".toUpperCase(),style: TextStyle(fontSize: 15,fontFamily: 'Kollektif')),
                             Expanded(child: Text(
                               groundAddress,
                               textAlign: TextAlign.justify,
@@ -348,12 +349,8 @@ class _SearchState extends State<Search> {
                           ],
                         ),
                       ),
-                      Divider(color: Colors.grey),
-                      SizedBox(height: 15,),
+                      SizedBox(height: 20,),
                       Container(
-                        child: Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Container(
                             height: 40.0,
                             width: 350.0,
                             child: Material(
@@ -396,9 +393,7 @@ class _SearchState extends State<Search> {
                                 ),
                               ),
                             ),
-                          ),
                         ),
-                      ),
                     ],
                   ),
                 ),

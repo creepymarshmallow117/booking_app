@@ -114,7 +114,7 @@ class _SlotsState extends State<Slots> {
                               },
                           ),
                         Padding(
-                        padding: EdgeInsets.only(left: 25.0),
+                        padding: EdgeInsets.only(left: 20.0, top: 2.0),
                           child: new Text('SLOTS',
                             style: TextStyle(
                             fontSize: 20.0,
