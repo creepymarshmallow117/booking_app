@@ -25,41 +25,44 @@ class _OrdersState extends State<Orders> {
     double height1 = height - padding.top - padding.bottom;
 
     return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 1,
+        title: Padding(
+          padding: EdgeInsets.only(top: 2.0),
+          child: Text('ORDERS',
+              style: TextStyle(
+                  fontSize: 20.0,
+                  fontFamily: 'Kollektif',
+                  color: Colors.teal)),
+        ),
+        leading: Padding(padding: EdgeInsets.only(left: 10.0),
+          child: new Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              GestureDetector(
+                child: new Icon(
+                  Icons.arrow_back_ios,
+                  color: Colors.teal,
+                  size: 22.0,
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
       body: SingleChildScrollView(
         child: SafeArea(
           child: Container(
             color: Colors.white,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Padding(padding: EdgeInsets.only(left: 20.0, top: 20.0),
-                  child: new Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      GestureDetector(
-                        child: new Icon(
-                          Icons.arrow_back_ios,
-                          color: Colors.teal,
-                          size: 22.0,
-                        ),
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(left: 20.0, top: 2.0),
-                        child: new Text('ORDERS',
-                            style: TextStyle(
-                                fontSize: 20.0,
-                                fontFamily: 'Kollektif',
-                                color: Colors.teal)),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 15.0,),
                 Container(
-                  height: height1,
+                  height: 800,
                   child: StreamBuilder<QuerySnapshot>(
                     stream: widget.userDoc.data()['typeOfUser'] == 'user' ?
                     FirebaseFirestore.instance.collection("bookingRecords").where("customer_id", isEqualTo: widget.uid).snapshots()

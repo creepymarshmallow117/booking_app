@@ -74,6 +74,7 @@ class _Home1State extends State<Home1> {
     double height1 = height - padding.top - padding.bottom;
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.teal,
         title: Text("Home", style: TextStyle(color: Colors.white, fontFamily: 'Kollektif', fontSize: 22)),

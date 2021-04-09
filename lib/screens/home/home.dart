@@ -148,6 +148,7 @@ class _HomeState extends State<Home> {
             }
           }
           return Scaffold(
+            backgroundColor: Colors.white,
             appBar: AppBar(
               backgroundColor: Colors.teal,
               title: Text("Home", style: TextStyle(color: Colors.white, fontFamily: 'Kollektif', fontSize: 22)),

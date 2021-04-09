@@ -13,6 +13,8 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
+import 'home.dart';
+
 class ProfileImage extends StatefulWidget {
   final PickedFile imageFile;
   final String uid;
@@ -194,11 +196,8 @@ class _ProfileImageState extends State<ProfileImage> {
             );
             Navigator.pop(context);
             Navigator.push(context,
-              MaterialPageRoute(builder: (context) => Profile(userDocument: result)),
+              MaterialPageRoute(builder: (context) => Home()),
             );
-            Navigator.pop(context);
-            Navigator.pop(context);
-
           }
         }
         else{

@@ -119,43 +119,45 @@ class _ProfileState extends State<Profile> {
 
 
     return Scaffold(
+      backgroundColor: Colors.white,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 1,
+          title: Padding(
+            padding: EdgeInsets.only(top: 2.0),
+            child: Text('SETTINGS',
+                style: TextStyle(
+                    fontSize: 20.0,
+                    fontFamily: 'Kollektif',
+                    color: Colors.teal)),
+          ),
+          leading: Padding(padding: EdgeInsets.only(left: 10.0),
+            child: new Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                GestureDetector(
+                  child: new Icon(
+                    Icons.arrow_back_ios,
+                    color: Colors.teal,
+                    size: 22.0,
+                  ),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
       body: SingleChildScrollView(
         child: SafeArea(
           child: Container(
-            height: height1,
-            color: Colors.white,
             child: Column(
                   children: <Widget>[
                     Container(
-                      color: Colors.white,
                       child: Column(
                         children: <Widget>[
-                          Padding(padding: EdgeInsets.only(left: 20.0, top: 20.0),
-                            child: new Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                GestureDetector(
-                                child: new Icon(
-                                  Icons.arrow_back_ios,
-                                  color: Colors.teal,
-                                  size: 22.0,
-                                ),
-                                  onTap: () {
-                                    Navigator.pop(context);
-                                  },
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(left: 20.0, top: 2.0),
-                                  child: new Text('SETTINGS',
-                                      style: TextStyle(
-                                          fontSize: 20.0,
-                                          fontFamily: 'Kollektif',
-                                          color: Colors.teal)),
-                                )
-                              ],
-                          ),
-                          ),
-                          SizedBox(height: 15.0),
+                          SizedBox(height: 15.0,),
                           profileImage == null ? new Stack(
                             children: <Widget>[
                               new Center(
