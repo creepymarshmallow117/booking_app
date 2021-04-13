@@ -62,7 +62,6 @@ class _OrdersState extends State<Orders> {
             child: Column(
               children: [
                 Container(
-                  height: 800,
                   child: StreamBuilder<QuerySnapshot>(
                     stream: widget.userDoc.data()['typeOfUser'] == 'user' ?
                     FirebaseFirestore.instance.collection("bookingRecords").where("customer_id", isEqualTo: widget.uid).snapshots()
@@ -112,136 +111,154 @@ class _OrdersState extends State<Orders> {
                         }
                         return widget.userDoc.data()['typeOfUser'] == 'user' ?
                         ListView.builder(
+                            physics: NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
                             itemCount: orders.length,
                             itemBuilder: (context, index) {
-                              return Card(
-                                child: ListTile(
-                                    title: Container(
-                                      height: 110,
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Padding(padding: EdgeInsets.only(top: 5.0)),
-                                          Row(
+                              return Column(
+                                children: [
+                                  Card(
+                                    shadowColor : Colors.grey,
+                                    borderOnForeground: true,
+                                    elevation: 2,
+                                    child: ListTile(
+                                        title: Container(
+                                          height: 110,
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
-                                              Text("Ground Name : ",style: TextStyle(fontSize: 16,fontFamily: "Kollektif")),
-                                              Text(orders[index][0], style: TextStyle(
-                                                  fontFamily: "Kollektif-Bold", fontSize: 15
-                                              ),),
+                                              Padding(padding: EdgeInsets.only(top: 5.0)),
+                                              Row(
+                                                children: [
+                                                  Text("Ground Name : ",style: TextStyle(fontSize: 16,fontFamily: "Kollektif")),
+                                                  Text(orders[index][0], style: TextStyle(
+                                                      fontFamily: "Kollektif-Bold", fontSize: 15
+                                                  ),),
+                                                ],
+                                              ),
+                                              SizedBox(height: 2.0,),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Text("Date : ",style: TextStyle(fontSize: 16,fontFamily: "Kollektif")),
+                                                  Text(orders[index][1], style: TextStyle(
+                                                      fontFamily: "Kollektif-Bold", fontSize: 15
+                                                  ),),
+                                                ],
+                                              ),
+                                              SizedBox(height: 2.0,),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Text("Price : ",style: TextStyle(fontSize: 16,fontFamily: "Kollektif")),
+                                                  Text(orders[index][2], style: TextStyle(
+                                                      fontFamily: "Kollektif-Bold", fontSize: 15
+                                                  ),),
+                                                ],
+                                              ),
+                                              SizedBox(height: 2.0,),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Text("Time : ",style: TextStyle(fontSize: 16,fontFamily: "Kollektif")),
+                                                  Text(orders[index][3], style: TextStyle(
+                                                      fontFamily: "Kollektif-Bold", fontSize: 15
+                                                  ),),
+                                                ],
+                                              ),
+                                              SizedBox(height: 2.0,),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Text("Payment : ",style: TextStyle(fontSize: 16,fontFamily: "Kollektif")),
+                                                  Text(orders[index][4], style: TextStyle(
+                                                      fontFamily: "Kollektif-Bold", fontSize: 15
+                                                  ),),
+                                                ],
+                                              ),
                                             ],
                                           ),
-                                          SizedBox(height: 2.0,),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: <Widget>[
-                                              Text("Date : ",style: TextStyle(fontSize: 16,fontFamily: "Kollektif")),
-                                              Text(orders[index][1], style: TextStyle(
-                                                  fontFamily: "Kollektif-Bold", fontSize: 15
-                                              ),),
-                                            ],
-                                          ),
-                                          SizedBox(height: 2.0,),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: <Widget>[
-                                              Text("Price : ",style: TextStyle(fontSize: 16,fontFamily: "Kollektif")),
-                                              Text(orders[index][2], style: TextStyle(
-                                                  fontFamily: "Kollektif-Bold", fontSize: 15
-                                              ),),
-                                            ],
-                                          ),
-                                          SizedBox(height: 2.0,),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: <Widget>[
-                                              Text("Time : ",style: TextStyle(fontSize: 16,fontFamily: "Kollektif")),
-                                              Text(orders[index][3], style: TextStyle(
-                                                  fontFamily: "Kollektif-Bold", fontSize: 15
-                                              ),),
-                                            ],
-                                          ),
-                                          SizedBox(height: 2.0,),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: <Widget>[
-                                              Text("Payment : ",style: TextStyle(fontSize: 16,fontFamily: "Kollektif")),
-                                              Text(orders[index][4], style: TextStyle(
-                                                  fontFamily: "Kollektif-Bold", fontSize: 15
-                                              ),),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                ),
+                                        )
+                                    ),
+                                  ),
+                                ],
                               );
                             }
                         )
                         : ListView.builder(
+                            physics: NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
                             itemCount: orders.length,
                             itemBuilder: (context, index) {
-                              return Card(
-                                child: ListTile(
-                                    title: Container(
-                                      height: 110,
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Padding(padding: EdgeInsets.only(top: 5.0)),
-                                          Row(
+                              return Column(
+                                children: [
+                                  Card(
+                                    shadowColor : Colors.grey,
+                                    borderOnForeground: true,
+                                    elevation: 2,
+                                    child: ListTile(
+                                        title: Container(
+                                          height: 110,
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
-                                              Text("Customer Name : ",style: TextStyle(fontSize: 16,fontFamily: "Kollektif")),
-                                              Text(orders[index][0], style: TextStyle(
-                                                  fontFamily: "Kollektif-Bold", fontSize: 15
-                                              ),),
+                                              Padding(padding: EdgeInsets.only(top: 5.0)),
+                                              Row(
+                                                children: [
+                                                  Text("Customer Name : ",style: TextStyle(fontSize: 16,fontFamily: "Kollektif")),
+                                                  Text(orders[index][0], style: TextStyle(
+                                                      fontFamily: "Kollektif-Bold", fontSize: 15
+                                                  ),),
+                                                ],
+                                              ),
+                                              SizedBox(height: 2.0,),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Text("Date : ",style: TextStyle(fontSize: 16,fontFamily: "Kollektif")),
+                                                  Text(orders[index][1], style: TextStyle(
+                                                      fontFamily: "Kollektif-Bold", fontSize: 15
+                                                  ),),
+                                                ],
+                                              ),
+                                              SizedBox(height: 2.0,),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Text("Price : ",style: TextStyle(fontSize: 16,fontFamily: "Kollektif")),
+                                                  Text(orders[index][2], style: TextStyle(
+                                                      fontFamily: "Kollektif-Bold", fontSize: 15
+                                                  ),),
+                                                ],
+                                              ),
+                                              SizedBox(height: 2.0,),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Text("Time : ",style: TextStyle(fontSize: 16,fontFamily: "Kollektif")),
+                                                  Text(orders[index][3], style: TextStyle(
+                                                      fontFamily: "Kollektif-Bold", fontSize: 15
+                                                  ),),
+                                                ],
+                                              ),
+                                              SizedBox(height: 2.0,),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Text("Payment : ",style: TextStyle(fontSize: 16,fontFamily: "Kollektif")),
+                                                  Text(orders[index][4], style: TextStyle(
+                                                      fontFamily: "Kollektif-Bold", fontSize: 15
+                                                  ),),
+                                                ],
+                                              ),
                                             ],
                                           ),
-                                          SizedBox(height: 2.0,),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: <Widget>[
-                                              Text("Date : ",style: TextStyle(fontSize: 16,fontFamily: "Kollektif")),
-                                              Text(orders[index][1], style: TextStyle(
-                                                  fontFamily: "Kollektif-Bold", fontSize: 15
-                                              ),),
-                                            ],
-                                          ),
-                                          SizedBox(height: 2.0,),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: <Widget>[
-                                              Text("Price : ",style: TextStyle(fontSize: 16,fontFamily: "Kollektif")),
-                                              Text(orders[index][2], style: TextStyle(
-                                                  fontFamily: "Kollektif-Bold", fontSize: 15
-                                              ),),
-                                            ],
-                                          ),
-                                          SizedBox(height: 2.0,),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: <Widget>[
-                                              Text("Time : ",style: TextStyle(fontSize: 16,fontFamily: "Kollektif")),
-                                              Text(orders[index][3], style: TextStyle(
-                                                  fontFamily: "Kollektif-Bold", fontSize: 15
-                                              ),),
-                                            ],
-                                          ),
-                                          SizedBox(height: 2.0,),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: <Widget>[
-                                              Text("Payment : ",style: TextStyle(fontSize: 16,fontFamily: "Kollektif")),
-                                              Text(orders[index][4], style: TextStyle(
-                                                  fontFamily: "Kollektif-Bold", fontSize: 15
-                                              ),),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                ),
+                                        )
+                                    ),
+                                  ),
+                                ],
                               );
                             }
                         );

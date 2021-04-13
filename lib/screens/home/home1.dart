@@ -1,7 +1,10 @@
 //This is the Client's home page.
 
 import 'package:booking_app/screens/authenticate/authenticate.dart';
+import 'package:booking_app/screens/home/custom_divider_view.dart';
 import 'package:booking_app/screens/home/home.dart';
+import 'package:booking_app/screens/home/slots1.dart';
+import 'package:booking_app/screens/home/ui_helper.dart';
 import 'package:booking_app/services/auth.dart';
 import 'package:booking_app/services/database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -10,6 +13,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'clientCheckout.dart';
 import 'orders.dart';
 import 'clientProfile.dart';
 import 'package:provider/provider.dart';
@@ -105,6 +109,22 @@ class _Home1State extends State<Home1> {
             Visibility(
               visible: _isVisible,
               child: ListTile(
+                leading: Icon(Icons.history_edu, color: Colors.teal),
+                title: Text('Slots',style: TextStyle(fontFamily: 'Kollektif')),
+                onTap: () async {
+                  CollectionReference collection = FirebaseFirestore.instance.collection(
+                      "client");
+                  DocumentSnapshot doc = await collection.doc(user.uid).get();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Slots1(groundName: doc.data()['groundName'], startHour: doc.data()['startHour'], endHour: doc.data()['endHour'], morningPrice: doc.data()['morningPrice'], eveningPrice: doc.data()['eveningPrice'],)),
+                  );
+                },
+              ),
+            ),
+            Visibility(
+              visible: _isVisible,
+              child: ListTile(
                 leading: Icon(Icons.shopping_cart_rounded, color: Colors.teal),
                 title: Text('Orders', style: TextStyle(fontFamily: 'Kollektif')),
                 onTap: () async{
@@ -189,27 +209,6 @@ class _Home1State extends State<Home1> {
                           height: 10,
                         ),
                         Container(
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 20),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Today's Orders",
-                                  style: TextStyle(
-                                    fontFamily: 'Kollektif', fontSize: 20,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Divider(
-                          color: Colors.grey,
-                          indent: 20,
-                          endIndent: 20,
-                        ),
-                        Container(
                           child: StreamBuilder<DocumentSnapshot>(
                             stream: user != null ?FirebaseFirestore.instance.collection("client").doc(user.uid).snapshots() : null,
                             builder: (context,snapshot){
@@ -220,6 +219,13 @@ class _Home1State extends State<Home1> {
                                     if(snapshot.data != null && snapshot1.data != null){
                                       List bookedSlots = List();
                                       List bookedSlotsDisplay = List();
+                                      List availSlots = List();
+                                      List availSlotsDisplay = List();
+                                      String morningPrice = snapshot.data.data()["morningPrice"];
+                                      String eveningPrice = snapshot.data.data()["eveningPrice"];
+                                      String groundName = snapshot.data.data()["groundName"];
+                                      DateTime today = DateTime.now();
+                                      String currentDate = formatter.format(today);
                                       for(int i = 0; i < snapshot1.data.docs.length; i++){
                                         DocumentSnapshot doc = snapshot1.data.docs.elementAt(i);
                                         bookedSlots.add(int.parse(doc.data()["time"]));
@@ -247,27 +253,124 @@ class _Home1State extends State<Home1> {
                                               time1 = ((i-12)+1).toString() + ':00 PM';
                                             }
                                           }
-                                          int i1 = i+1;
                                           bookedSlotsDisplay.add(time + " - "+ time1);
+                                        }else{
+                                          availSlots.add(i.toString());
+                                          String time = '';
+                                          String time1 = '';
+                                          if(i < 12){
+                                            time = i.toString() +':00 AM';
+                                            time1 = (i+1).toString() + ':00 AM';
+                                            if(i+1 == 12){
+                                              time1 = '12:00 PM';
+                                            }
+                                          }else if (i == 12){
+                                            time = '12:00 PM';
+                                            time1 = (1).toString() + ':00 PM';
+                                          }
+                                          else if(i > 12){
+                                            if(i == 24){
+                                              time = '12:00 AM';
+                                              time1 = (1).toString() + ':00 AM';
+                                            }else{
+                                              time = (i-12).toString() + ':00 PM';
+                                              time1 = ((i-12)+1).toString() + ':00 PM';
+                                            }
+                                          }
+                                          availSlotsDisplay.add(time + " - "+ time1);
                                         }
                                         for(int i = 0; i < bookedSlotsDisplay.length; i++){
                                           print(bookedSlotsDisplay.elementAt(i));
                                         }
                                       }
-                                      return ListView.builder(
-                                          itemCount: bookedSlotsDisplay.length,
-                                          itemBuilder: (context,index){
-                                            return Card(
-                                              color: Colors.teal,
-                                              margin: EdgeInsets.fromLTRB(20, 6, 20, 0),
-                                              child: ListTile(
-                                                title: Text(bookedSlotsDisplay.elementAt(index), style: TextStyle(color: Colors.white),),
-                                                onTap: () {
-
-                                                },
+                                      return Column(
+                                          children: <Widget>[
+                                            Container(
+                                              child: Padding(
+                                                padding: EdgeInsets.symmetric(horizontal: 20),
+                                                child: Row(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      "Today's Orders",
+                                                      style: TextStyle(
+                                                        fontFamily: 'Kollektif', fontSize: 20,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
-                                            );
-                                          });
+                                            ),
+                                            Divider(
+                                              color: Colors.grey,
+                                              indent: 20,
+                                              endIndent: 20,
+                                            ),
+                                            Container(
+                                              height : 350,
+                                              child: ListView.builder(
+                                                  physics: NeverScrollableScrollPhysics(),
+                                                  shrinkWrap: true,
+                                                  itemCount: bookedSlotsDisplay.length,
+                                                  itemBuilder: (context,index){
+                                                    return Card(
+                                                      color: Colors.grey,
+                                                      margin: EdgeInsets.fromLTRB(20, 6, 20, 0),
+                                                      child: ListTile(
+                                                        title: Text(bookedSlotsDisplay.elementAt(index), style: TextStyle(color: Colors.white),),
+                                                        onTap: () {
+
+                                                        },
+                                                      ),
+                                                    );
+                                                  }),
+                                            ),
+                                            UIHelper.verticalSpaceSmall(),
+                                            Container(
+                                              child: Padding(
+                                                padding: EdgeInsets.symmetric(horizontal: 20),
+                                                child: Row(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      "Availaible Slots",
+                                                      style: TextStyle(
+                                                        fontFamily: 'Kollektif', fontSize: 20,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                            Divider(
+                                              color: Colors.grey,
+                                              indent: 20,
+                                              endIndent: 20,
+                                            ),
+                                            Container(
+                                              height : 350,
+                                              child: ListView.builder(
+                                                  physics: NeverScrollableScrollPhysics(),
+                                                  shrinkWrap: true,
+                                                  itemCount: availSlotsDisplay.length,
+                                                  itemBuilder: (context,index){
+                                                    return Card(
+                                                      color: Colors.teal,
+                                                      margin: EdgeInsets.fromLTRB(20, 6, 20, 0),
+                                                      child: ListTile(
+                                                        title: Text(availSlotsDisplay.elementAt(index), style: TextStyle(color: Colors.white),),
+                                                        onTap: () {
+                                                          Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(builder: (context) => clientCheckout(clientId: user.uid, groundName: groundName, price: int.parse(availSlots.elementAt(index))<17 ? morningPrice : eveningPrice, time: availSlots.elementAt(index), date: currentDate,)),
+                                                          );
+                                                        },
+                                                      ),
+                                                    );
+                                                  }),
+                                            )
+                                          ]
+                                      );
                                     }else{
                                       return CircularProgressIndicator(
                                         valueColor: new AlwaysStoppedAnimation<Color>(Colors.teal),
@@ -275,7 +378,7 @@ class _Home1State extends State<Home1> {
                                     }
                                   }
                               );
-                          },
+                            },
 
                           ),
                         ),

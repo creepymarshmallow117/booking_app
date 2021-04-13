@@ -63,11 +63,11 @@ class _updatedClientProfileState extends State<updatedClientProfile> {
     }
   }
 
-  String updateAddress;
-  String updateDescription;
-  String updateContactNumber;
-  String updateMorningPrice;
-  String updateEveningPrice;
+  String updateAddress = '';
+  String updateDescription = '';
+  String updateContactNumber = '';
+  String updateMorningPrice = '';
+  String updateEveningPrice = '';
   String drpOption1 = '12:00 AM';
   String drpOption2 = '12:00 AM';
 
@@ -281,383 +281,387 @@ class _updatedClientProfileState extends State<updatedClientProfile> {
                                   child: Padding(
                                     padding: EdgeInsets.only(bottom: 25.0),
                                     child: new Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: <Widget>[
-                                        Padding(
-                                            padding: EdgeInsets.only(
-                                                left: 25.0, right: 25.0, top: 25.0),
-                                            child: new Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              mainAxisSize: MainAxisSize.max,
-                                              children: <Widget>[
-                                                new Column(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children: <Widget>[
-                                                    new Text(
-                                                      'Personal Information',
-                                                      style: TextStyle(
-                                                        fontSize: 18.0,
-                                                        fontWeight: FontWeight.bold,
-                                                        fontFamily: 'Kollektif',),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            )),
-                                        Padding(
-                                            padding: EdgeInsets.only(
-                                                left: 25.0, right: 25.0, top: 25.0),
-                                            child: new Row(
-                                              mainAxisSize: MainAxisSize.max,
-                                              children: <Widget>[
-                                                new Column(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children: <Widget>[
-                                                    new Text(
-                                                      'Description',
-                                                      style: TextStyle(
-                                                        fontSize: 17.0,
-                                                        fontWeight: FontWeight.bold,
-                                                        fontFamily: 'Kollektif',),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            )),
-                                        Padding(
-                                            padding: EdgeInsets.only(
-                                                left: 25.0, right: 25.0, top: 2.0),
-                                            child: new Row(
-                                              mainAxisSize: MainAxisSize.max,
-                                              children: <Widget>[
-                                                new Flexible(
-                                                  child : TextFormField(
-                                                    onChanged: (val){
-                                                      print(val);
-                                                      setState(() => updateDescription = val);
-                                                    },
-                                                    decoration: new InputDecoration(
-                                                        hintText: "Enter Description",
-                                                        hintStyle: TextStyle(color: Colors.black),
-                                                        focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.teal))
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            )),
-                                        Padding(
-                                            padding: EdgeInsets.only(
-                                                left: 25.0, right: 25.0, top: 25.0),
-                                            child: new Row(
-                                              mainAxisSize: MainAxisSize.max,
-                                              children: <Widget>[
-                                                new Column(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children: <Widget>[
-                                                    new Text(
-                                                      'Contact Number',
-                                                      style: TextStyle(
-                                                        fontSize: 17.0,
-                                                        fontWeight: FontWeight.bold,
-                                                        fontFamily: 'Kollektif',),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            )),
-                                        Padding(
-                                            padding: EdgeInsets.only(
-                                                left: 25.0, right: 25.0, top: 2.0),
-                                            child: new Row(
-                                              mainAxisSize: MainAxisSize.max,
-                                              children: <Widget>[
-                                                new Flexible(
-                                                  child : TextFormField(
-                                                    onChanged: (val){
-                                                      print(val);
-                                                      setState(() => updateContactNumber = val);
-                                                    },
-                                                    decoration: new InputDecoration(
-                                                        hintText: "Enter Contact Number",
-                                                        hintStyle: TextStyle(color: Colors.black),
-                                                        focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.teal))
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            )),
-                                        Padding(
-                                            padding: EdgeInsets.only(
-                                                left: 25.0, right: 25.0, top: 25.0),
-                                            child: new Row(
-                                              mainAxisSize: MainAxisSize.max,
-                                              children: <Widget>[
-                                                new Column(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children: <Widget>[
-                                                    new Text(
-                                                      'Address',
-                                                      style: TextStyle(
-                                                        fontSize: 17.0,
-                                                        fontWeight: FontWeight.bold,
-                                                        fontFamily: 'Kollektif',),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            )),
-                                        Padding(
-                                            padding: EdgeInsets.only(
-                                                left: 25.0, right: 25.0, top: 2.0),
-                                            child: new Row(
-                                              mainAxisSize: MainAxisSize.max,
-                                              children: <Widget>[
-                                                new Flexible(
-                                                  child : TextFormField(
-                                                    onChanged: (val){
-                                                      print(val);
-                                                      setState(() => updateAddress = val);
-                                                    },
-                                                    decoration: new InputDecoration(
-                                                        hintText: "Enter Address",
-                                                        hintStyle: TextStyle(color: Colors.black),
-                                                        focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.teal))
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            )),
-                                        Padding(
-                                            padding: EdgeInsets.only(
-                                                left: 25.0, right: 25.0, top: 25.0),
-                                            child: new Row(
-                                              mainAxisSize: MainAxisSize.max,
-                                              children: <Widget>[
-                                                new Column(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children: <Widget>[
-                                                    new Text(
-                                                      'Morning Price',
-                                                      style: TextStyle(
-                                                        fontSize: 17.0,
-                                                        fontWeight: FontWeight.bold,
-                                                        fontFamily: 'Kollektif',),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            )),
-                                        Padding(
-                                            padding: EdgeInsets.only(
-                                                left: 25.0, right: 25.0, top: 2.0),
-                                            child: new Row(
-                                              mainAxisSize: MainAxisSize.max,
-                                              children: <Widget>[
-                                                new Flexible(
-                                                  child : TextFormField(
-                                                    onChanged: (val){
-                                                      print(val);
-                                                      setState(() => updateMorningPrice = val);
-                                                    },
-                                                    decoration: new InputDecoration(
-                                                        hintText: "Enter Morning Price",
-                                                        hintStyle: TextStyle(color: Colors.black),
-                                                        focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.teal))
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            )),
-                                        Padding(
-                                            padding: EdgeInsets.only(
-                                                left: 25.0, right: 25.0, top: 25.0),
-                                            child: new Row(
-                                              mainAxisSize: MainAxisSize.max,
-                                              children: <Widget>[
-                                                new Column(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children: <Widget>[
-                                                    new Text(
-                                                      'Evening Price',
-                                                      style: TextStyle(
-                                                        fontSize: 17.0,
-                                                        fontWeight: FontWeight.bold,
-                                                        fontFamily: 'Kollektif',),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            )),
-                                        Padding(
-                                            padding: EdgeInsets.only(
-                                                left: 25.0, right: 25.0, top: 2.0),
-                                            child: new Row(
-                                              mainAxisSize: MainAxisSize.max,
-                                              children: <Widget>[
-                                                new Flexible(
-                                                  child : TextFormField(
-                                                    onChanged: (val){
-                                                      print(val);
-                                                      setState(() => updateEveningPrice = val);
-                                                    },
-                                                    decoration: new InputDecoration(
-                                                        hintText: "Enter Evening Price",
-                                                        hintStyle: TextStyle(color: Colors.black),
-                                                        focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.teal))
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            )),
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                Padding(
-                                                  padding: const EdgeInsets.only(left: 25.0,right: 25.0, top: 25.0),
-                                                  child: Column(
-                                                    children: [
-                                                      Text(
-                                                        'Start Hour',
-                                                        style: TextStyle(
-                                                          fontSize: 17.0,
-                                                          fontWeight: FontWeight.bold,
-                                                          fontFamily: 'Kollektif',),
-                                                      ),
-                                                      DropdownButton<String>(
-                                                          value: drpOption1,
-                                                          icon: const Icon(Icons.arrow_downward),
-                                                          iconSize: 24,
-                                                          elevation: 16,
-                                                          style: const TextStyle(color: Colors.black),
-                                                          underline: Container(
-                                                            height: 2,
-                                                            color: Colors.teal,
-                                                          ),
-                                                          onChanged: (value){
-                                                            setState(() {
-                                                              drpOption1 = value;
-                                                            });
-                                                          },
-                                                          items: timing.map<DropdownMenuItem<String>>((String value) {
-                                                            return DropdownMenuItem<String>(
-                                                              value: value,
-                                                              child: Text(value),
-                                                            );
-                                                          }).toList()
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                Padding(
-                                                  padding: const EdgeInsets.only(left: 25.0,right: 25.0, top: 25.0),
-                                                  child: Column(
-                                                    children: [
-                                                      Text(
-                                                        'End Hour',
-                                                        style: TextStyle(
-                                                          fontSize: 17.0,
-                                                          fontWeight: FontWeight.bold,
-                                                          fontFamily: 'Kollektif',),
-                                                      ),
-                                                      DropdownButton<String>(
-                                                          value: drpOption2,
-                                                          icon: const Icon(Icons.arrow_downward),
-                                                          iconSize: 24,
-                                                          elevation: 16,
-                                                          style: const TextStyle(color: Colors.black),
-                                                          underline: Container(
-                                                            height: 2,
-                                                            color: Colors.teal,
-                                                          ),
-                                                          onChanged: (value){
-                                                            setState(() {
-                                                              drpOption2 = value;
-                                                            });
-                                                          },
-                                                          items: timing.map<DropdownMenuItem<String>>((String value) {
-                                                            return DropdownMenuItem<String>(
-                                                              value: value,
-                                                              child: Text(value),
-                                                            );
-                                                          }).toList()
-                                                      )
-                                                    ],
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 25.0),
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: <Widget>[
+                                          Padding(
+                                              padding: EdgeInsets.only(
+                                                  left: 25.0, right: 25.0, top: 25.0),
                                               child: new Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                 mainAxisSize: MainAxisSize.max,
-                                                mainAxisAlignment: MainAxisAlignment.start,
                                                 children: <Widget>[
-                                                  Expanded(
-                                                    child: Padding(
-                                                      padding: EdgeInsets.only(right: 10.0),
-                                                      child: Container(
-                                                          child: new RaisedButton(
-                                                            child: new Text("Save"),
-                                                            textColor: Colors.white,
-                                                            color: Colors.teal,
-                                                            onPressed: () async {
-                                                              int index1 = timing.indexOf(drpOption1);
-                                                              int index2 = timing.indexOf(drpOption2);
-                                                              CollectionReference col = FirebaseFirestore.instance.collection("client");
-                                                              col.doc(user.uid).update({
-                                                                'address' : updateAddress == null ? widget.userDocument['address'] : updateAddress,
-                                                                'description': updateDescription == null ? widget.userDocument['description'] :updateDescription,
-                                                                'morningPrice': updateMorningPrice == null ? widget.userDocument['morningPrice'] :updateMorningPrice,
-                                                                'eveningPrice': updateEveningPrice == null ? widget.userDocument['eveningPrice'] :updateEveningPrice,
-                                                                'startHour': drpOption1 == drpOption2 ? widget.userDocument['startHour'] : timingInternal.elementAt(index1),
-                                                                'endHour': drpOption1 == drpOption2 ? widget.userDocument['endHour'] : timingInternal.elementAt(index2),
-                                                              });
-                                                              Fluttertoast.showToast(
-                                                                  msg: "Profile Successfully Updated"
-                                                              );
-                                                              Navigator.push(context,
-                                                                MaterialPageRoute(builder: (context) => Home1()),
-                                                              );
-                                                            },
-                                                            shape: new RoundedRectangleBorder(
-                                                                borderRadius: new BorderRadius.circular(20.0)),
-                                                          )),
-                                                    ),
-                                                    flex: 2,
-                                                  ),
-                                                  Expanded(
-                                                    child: Padding(
-                                                      padding: EdgeInsets.only(left: 10.0),
-                                                      child: Container(
-                                                          child: new RaisedButton(
-                                                            child: new Text("Cancel"),
-                                                            textColor: Colors.white,
-                                                            color: Colors.grey,
-                                                            onPressed: () {
-                                                              setState(() {
-                                                                Navigator.pop(context);
-                                                              });
-
-                                                            },
-                                                            shape: new RoundedRectangleBorder(
-                                                                borderRadius: new BorderRadius.circular(20.0)),
-                                                          )),
-                                                    ),
-                                                    flex: 2,
+                                                  new Column(
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: <Widget>[
+                                                      new Text(
+                                                        'Personal Information',
+                                                        style: TextStyle(
+                                                          fontSize: 18.0,
+                                                          fontWeight: FontWeight.bold,
+                                                          fontFamily: 'Kollektif',),
+                                                      ),
+                                                    ],
                                                   ),
                                                 ],
+                                              )),
+                                          Padding(
+                                              padding: EdgeInsets.only(
+                                                  left: 25.0, right: 25.0, top: 25.0),
+                                              child: new Row(
+                                                mainAxisSize: MainAxisSize.max,
+                                                children: <Widget>[
+                                                  new Column(
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: <Widget>[
+                                                      new Text(
+                                                        'Description',
+                                                        style: TextStyle(
+                                                          fontSize: 17.0,
+                                                          fontWeight: FontWeight.bold,
+                                                          fontFamily: 'Kollektif',),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              )),
+                                          Padding(
+                                              padding: EdgeInsets.only(
+                                                  left: 25.0, right: 25.0, top: 2.0),
+                                              child: new Row(
+                                                mainAxisSize: MainAxisSize.max,
+                                                children: <Widget>[
+                                                  new Flexible(
+                                                    child : TextField(
+                                                      minLines : 1,
+                                                      maxLines: 10,
+                                                      onChanged: (val){
+                                                        print(val);
+                                                        setState(() => updateDescription = val);
+                                                      },
+                                                      decoration: new InputDecoration(
+                                                          hintText: description,
+                                                          hintStyle: TextStyle(color: Colors.grey),
+                                                          focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.teal))
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              )),
+                                          Padding(
+                                              padding: EdgeInsets.only(
+                                                  left: 25.0, right: 25.0, top: 25.0),
+                                              child: new Row(
+                                                mainAxisSize: MainAxisSize.max,
+                                                children: <Widget>[
+                                                  new Column(
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: <Widget>[
+                                                      new Text(
+                                                        'Contact Number',
+                                                        style: TextStyle(
+                                                          fontSize: 17.0,
+                                                          fontWeight: FontWeight.bold,
+                                                          fontFamily: 'Kollektif',),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              )),
+                                          Padding(
+                                              padding: EdgeInsets.only(
+                                                  left: 25.0, right: 25.0, top: 2.0),
+                                              child: new Row(
+                                                mainAxisSize: MainAxisSize.max,
+                                                children: <Widget>[
+                                                  new Flexible(
+                                                    child : TextFormField(
+                                                      onChanged: (val){
+                                                        print(val);
+                                                        setState(() => updateContactNumber = val);
+                                                      },
+                                                      decoration: new InputDecoration(
+                                                          hintText: contactInfo,
+                                                          hintStyle: TextStyle(color: Colors.grey),
+                                                          focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.teal))
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              )),
+                                          Padding(
+                                              padding: EdgeInsets.only(
+                                                  left: 25.0, right: 25.0, top: 25.0),
+                                              child: new Row(
+                                                mainAxisSize: MainAxisSize.max,
+                                                children: <Widget>[
+                                                  new Column(
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: <Widget>[
+                                                      new Text(
+                                                        'Address',
+                                                        style: TextStyle(
+                                                          fontSize: 17.0,
+                                                          fontWeight: FontWeight.bold,
+                                                          fontFamily: 'Kollektif',),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              )),
+                                          Padding(
+                                              padding: EdgeInsets.only(
+                                                  left: 25.0, right: 25.0, top: 2.0),
+                                              child: new Row(
+                                                mainAxisSize: MainAxisSize.max,
+                                                children: <Widget>[
+                                                  new Flexible(
+                                                    child : TextField(
+                                                      minLines : 1,
+                                                      maxLines: 7,
+                                                      onChanged: (val){
+                                                        print(val);
+                                                        setState(() => updateAddress = val);
+                                                      },
+                                                      decoration: new InputDecoration(
+                                                          hintText: address,
+                                                          hintStyle: TextStyle(color: Colors.grey),
+                                                          focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.teal))
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              )),
+                                          Padding(
+                                              padding: EdgeInsets.only(
+                                                  left: 25.0, right: 25.0, top: 25.0),
+                                              child: new Row(
+                                                mainAxisSize: MainAxisSize.max,
+                                                children: <Widget>[
+                                                  new Column(
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: <Widget>[
+                                                      new Text(
+                                                        'Morning Price',
+                                                        style: TextStyle(
+                                                          fontSize: 17.0,
+                                                          fontWeight: FontWeight.bold,
+                                                          fontFamily: 'Kollektif',),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              )),
+                                          Padding(
+                                              padding: EdgeInsets.only(
+                                                  left: 25.0, right: 25.0, top: 2.0),
+                                              child: new Row(
+                                                mainAxisSize: MainAxisSize.max,
+                                                children: <Widget>[
+                                                  new Flexible(
+                                                    child : TextFormField(
+                                                      onChanged: (val){
+                                                        print(val);
+                                                        setState(() => updateMorningPrice = val);
+                                                      },
+                                                      decoration: new InputDecoration(
+                                                          hintText: morningPrice,
+                                                          hintStyle: TextStyle(color: Colors.grey),
+                                                          focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.teal))
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              )),
+                                          Padding(
+                                              padding: EdgeInsets.only(
+                                                  left: 25.0, right: 25.0, top: 25.0),
+                                              child: new Row(
+                                                mainAxisSize: MainAxisSize.max,
+                                                children: <Widget>[
+                                                  new Column(
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: <Widget>[
+                                                      new Text(
+                                                        'Evening Price',
+                                                        style: TextStyle(
+                                                          fontSize: 17.0,
+                                                          fontWeight: FontWeight.bold,
+                                                          fontFamily: 'Kollektif',),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              )),
+                                          Padding(
+                                              padding: EdgeInsets.only(
+                                                  left: 25.0, right: 25.0, top: 2.0),
+                                              child: new Row(
+                                                mainAxisSize: MainAxisSize.max,
+                                                children: <Widget>[
+                                                  new Flexible(
+                                                    child : TextFormField(
+                                                      onChanged: (val){
+                                                        print(val);
+                                                        setState(() => updateEveningPrice = val);
+                                                      },
+                                                      decoration: new InputDecoration(
+                                                          hintText: eveningPrice,
+                                                          hintStyle: TextStyle(color: Colors.grey),
+                                                          focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.teal))
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              )),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.only(left: 25.0,right: 25.0, top: 25.0),
+                                                child: Column(
+                                                  children: [
+                                                    Text(
+                                                      'Start Hour',
+                                                      style: TextStyle(
+                                                        fontSize: 17.0,
+                                                        fontWeight: FontWeight.bold,
+                                                        fontFamily: 'Kollektif',),
+                                                    ),
+                                                    DropdownButton<String>(
+                                                        value: drpOption1,
+                                                        icon: const Icon(Icons.arrow_downward),
+                                                        iconSize: 24,
+                                                        elevation: 16,
+                                                        style: const TextStyle(color: Colors.black),
+                                                        underline: Container(
+                                                          height: 2,
+                                                          color: Colors.teal,
+                                                        ),
+                                                        onChanged: (value){
+                                                          setState(() {
+                                                            drpOption1 = value;
+                                                          });
+                                                        },
+                                                        items: timing.map<DropdownMenuItem<String>>((String value) {
+                                                          return DropdownMenuItem<String>(
+                                                            value: value,
+                                                            child: Text(value),
+                                                          );
+                                                        }).toList()
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
-                                            )
-                                            ]
-                                        ),
-                                            )
+                                              Padding(
+                                                padding: const EdgeInsets.only(left: 25.0,right: 25.0, top: 25.0),
+                                                child: Column(
+                                                  children: [
+                                                    Text(
+                                                      'End Hour',
+                                                      style: TextStyle(
+                                                        fontSize: 17.0,
+                                                        fontWeight: FontWeight.bold,
+                                                        fontFamily: 'Kollektif',),
+                                                    ),
+                                                    DropdownButton<String>(
+                                                        value: drpOption2,
+                                                        icon: const Icon(Icons.arrow_downward),
+                                                        iconSize: 24,
+                                                        elevation: 16,
+                                                        style: const TextStyle(color: Colors.black),
+                                                        underline: Container(
+                                                          height: 2,
+                                                          color: Colors.teal,
+                                                        ),
+                                                        onChanged: (value){
+                                                          setState(() {
+                                                            drpOption2 = value;
+                                                          });
+                                                        },
+                                                        items: timing.map<DropdownMenuItem<String>>((String value) {
+                                                          return DropdownMenuItem<String>(
+                                                            value: value,
+                                                            child: Text(value),
+                                                          );
+                                                        }).toList()
+                                                    )
+                                                  ],
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 25.0),
+                                            child: new Row(
+                                              mainAxisSize: MainAxisSize.max,
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              children: <Widget>[
+                                                Expanded(
+                                                  child: Padding(
+                                                    padding: EdgeInsets.only(right: 10.0),
+                                                    child: Container(
+                                                        child: new RaisedButton(
+                                                          child: new Text("Save"),
+                                                          textColor: Colors.white,
+                                                          color: Colors.teal,
+                                                          onPressed: () async {
+                                                            int index1 = timing.indexOf(drpOption1);
+                                                            int index2 = timing.indexOf(drpOption2);
+                                                            CollectionReference col = FirebaseFirestore.instance.collection("client");
+                                                            col.doc(user.uid).update({
+                                                              'address' : updateAddress == null || updateAddress.isEmpty ? widget.userDocument.data()['address'] : updateAddress,
+                                                              'description': updateDescription == null || updateDescription.isEmpty ? widget.userDocument.data()['description'] :updateDescription,
+                                                              'morningPrice': updateMorningPrice == null || updateMorningPrice.isEmpty ? widget.userDocument.data()['morningPrice'] :updateMorningPrice,
+                                                              'eveningPrice': updateEveningPrice == null || updateEveningPrice.isEmpty ? widget.userDocument.data()['eveningPrice'] :updateEveningPrice,
+                                                              'startHour': drpOption1 == drpOption2 ? widget.userDocument.data()['startHour'] : timingInternal.elementAt(index1),
+                                                              'endHour': drpOption1 == drpOption2 ? widget.userDocument.data()['endHour'] : timingInternal.elementAt(index2),
+                                                            });
+                                                            Fluttertoast.showToast(
+                                                                msg: "Profile Successfully Updated"
+                                                            );
+                                                            Navigator.push(context,
+                                                              MaterialPageRoute(builder: (context) => Home1()),
+                                                            );
+                                                          },
+                                                          shape: new RoundedRectangleBorder(
+                                                              borderRadius: new BorderRadius.circular(20.0)),
+                                                        )),
+                                                  ),
+                                                  flex: 2,
+                                                ),
+                                                Expanded(
+                                                  child: Padding(
+                                                    padding: EdgeInsets.only(left: 10.0),
+                                                    child: Container(
+                                                        child: new RaisedButton(
+                                                          child: new Text("Cancel"),
+                                                          textColor: Colors.white,
+                                                          color: Colors.grey,
+                                                          onPressed: () {
+                                                            setState(() {
+                                                              Navigator.pop(context);
+                                                            });
+
+                                                          },
+                                                          shape: new RoundedRectangleBorder(
+                                                              borderRadius: new BorderRadius.circular(20.0)),
+                                                        )),
+                                                  ),
+                                                  flex: 2,
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        ]
+                                    ),
+                                  )
                               )
                             ],
                           )

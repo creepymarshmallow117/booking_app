@@ -1,7 +1,9 @@
 //This is the schedule page.
 
 import 'package:booking_app/screens/authenticate/authenticate.dart';
+import 'package:booking_app/screens/home/custom_divider_view.dart';
 import 'package:booking_app/screens/home/profile.dart';
+import 'package:booking_app/screens/home/ui_helper.dart';
 import 'package:booking_app/services/auth.dart';
 import 'package:booking_app/services/database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -129,9 +131,7 @@ class _SlotsState extends State<Slots> {
               children: [
                 Column(
                     children: [
-                      SizedBox(
-                        height: 2.0,
-                      ),
+                      UIHelper.verticalSpaceSmall(),
                     StreamBuilder<DocumentSnapshot>(
                     stream: FirebaseFirestore.instance.collection("user").doc(user.uid).snapshots(),
                     builder: (context, snapshot) {
@@ -156,8 +156,8 @@ class _SlotsState extends State<Slots> {
                               eventDayStyle: TextStyle(
                                 fontFamily: 'Kollektif',
                               ),
-                              todayColor: Colors.teal,
-                              selectedColor: Colors.teal.shade100,
+                              todayColor: Colors.grey,
+                              selectedColor: Colors.teal,
                             ),
                             headerStyle: HeaderStyle(
                                 centerHeaderTitle: true,
@@ -178,7 +178,7 @@ class _SlotsState extends State<Slots> {
                       }
                       ),
                       Container(
-                        height: 655,
+                        padding: EdgeInsets.only(bottom: 5.0),
                         child: StreamBuilder<QuerySnapshot>(
                             stream: FirebaseFirestore.instance.collection("bookingRecords").where("date", isEqualTo: selectedDate).where("client_id", isEqualTo: widget.uid).snapshots(),
                             builder: (context, snapshot) {
@@ -248,6 +248,8 @@ class _SlotsState extends State<Slots> {
                                   print(next7days.elementAt(i));
                                 }
                                 return ListView.builder(
+                                    physics: NeverScrollableScrollPhysics(),
+                                    shrinkWrap: true,
                                         itemCount: availSlots.length,
                                         itemBuilder: (context, index){
                                           return Card(

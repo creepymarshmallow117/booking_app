@@ -1,7 +1,10 @@
+import 'package:booking_app/screens/home/ui_helper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:booking_app/screens/home/home.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+
+import 'custom_divider_view.dart';
 
 class Checkout extends StatefulWidget {
   final String clientId;
@@ -98,9 +101,10 @@ class _CheckoutState extends State<Checkout> {
               children: <Widget>[
                 SizedBox(height: 20.0,),
                 Container(
-                  height: 350,
+                  height: 450,
                   width: 400,
                   child: Card(
+                    elevation: 2,
                     color: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
@@ -111,57 +115,66 @@ class _CheckoutState extends State<Checkout> {
                         SizedBox(
                           height: 5,
                         ),
-                        Padding(
-                          padding: EdgeInsets.only(top: 10.0),
-                          child: Text(
-                            "Order Details",
-                            style: TextStyle(
-                              fontFamily: 'Kollektif', fontSize: 20,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(top: 10.0, left: 5.0),
+                              child: Text(
+                                "Order Details".toUpperCase(),
+                                style: TextStyle(
+                                  fontFamily: 'Kollektif', fontSize: 18,
+                                ),
+                              ),
                             ),
-                          ),
+                          ],
                         ),
-                        SizedBox(height: 10.0,),
+                        UIHelper.verticalSpaceMedium(),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
                             Padding(padding: EdgeInsets.only(left: 5)),
-                            Text("Place Name ".toUpperCase(),style: TextStyle(fontSize: 18, fontFamily: 'Kollektif')),
+                            Text("Place Name ",style: TextStyle(fontSize: 17, fontFamily: 'Kollektif')),
                           ],
                         ),
+                        UIHelper.verticalSpaceSmall(),
                         Row(
                           children: [
                             Padding(padding: EdgeInsets.only(left: 5.0)),
-                            Text(widget.groundName,style: TextStyle(fontFamily: 'Kollektif-Bold', fontSize: 15)),
+                            Text(widget.groundName,style: TextStyle(fontFamily: 'Kollektif-Bold', fontSize: 16, )),
                           ],
                         ),
-                        SizedBox(height: 10.0),
+                        UIHelper.verticalSpaceSmall(),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
                             Padding(padding: EdgeInsets.only(left: 5)),
-                            Text("Date ".toUpperCase(),style: TextStyle(fontSize: 18,fontFamily: 'Kollektif',)),
+                            Text("Date ",style: TextStyle(fontSize: 17,fontFamily: 'Kollektif',)),
                           ],
                         ),
+                        UIHelper.verticalSpaceSmall(),
                         Row(
                           children: [
                             Padding(padding: EdgeInsets.only(left: 5.0)),
-                            Text(widget.date,style: TextStyle(fontFamily: 'Kollektif-Bold', fontSize: 15)),
+                            Text(widget.date,style: TextStyle(fontFamily: 'Kollektif-Bold', fontSize: 16, )),
                           ],
                         ),
-                        SizedBox(height: 10.0),
+                        UIHelper.verticalSpaceSmall(),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
                             Padding(padding: EdgeInsets.only(left: 5)),
-                            Text("Time ".toUpperCase(),style: TextStyle(fontSize: 18,fontFamily: 'Kollektif',)),
+                            Text("Time ",style: TextStyle(fontSize: 17,fontFamily: 'Kollektif',)),
                           ],
                         ),
+                        UIHelper.verticalSpaceSmall(),
                         Row(
                           children: [
                             Padding(padding: EdgeInsets.only(left: 5.0)),
-                            Text(time1+" - "+time2,style: TextStyle(fontFamily: 'Kollektif-Bold', fontSize: 15)),
+                            Text(time1+" - "+time2,style: TextStyle(fontFamily: 'Kollektif-Bold', fontSize: 16,)),
                           ],
                         ),
+                        UIHelper.verticalSpaceSmall(),
                         Divider(
                           color: Colors.grey,
                         ),
@@ -169,10 +182,10 @@ class _CheckoutState extends State<Checkout> {
                         Row(
                           children: [
                             Padding(padding: EdgeInsets.only(left: 5.0)),
-                            Text("Total ".toUpperCase(),style: TextStyle(fontSize: 18,fontFamily: 'Kollektif',)),
+                            Text("Total ".toUpperCase(),style: TextStyle(fontSize: 16,fontFamily: 'Kollektif', fontWeight: FontWeight.bold)),
                             Spacer(),
                             Padding(padding : EdgeInsets.only(right: 5.0),
-                                child: Text(widget.price,style: TextStyle(fontFamily: 'Kollektif-Bold', fontSize: 15))),
+                                child: Text(widget.price+"rs",style: TextStyle(fontFamily: 'Kollektif-Bold', fontSize: 16))),
                           ],
                         ),
                         SizedBox(height: 5.0,),
@@ -195,40 +208,32 @@ class _CheckoutState extends State<Checkout> {
                         ),
                         SizedBox(height: 15.0,),
                         Container(
-                          child: Column(
-                            children: [
-                              Row(
-                                children: [
-                                  Flexible(
-                                    fit: FlexFit.loose,
-                                    child: RadioListTile(
-                                        title: Text("Cash", style: TextStyle(fontFamily: 'Kollektif',),),
-                                        activeColor: Colors.teal,
-                                        value: "Cash",
-                                        groupValue: radioItem,
-                                        onChanged: (val) {
-                                          setState(() {
-                                            radioItem = val;
-                                          });
-                                        }
-                                    ),
-                                  ),
-                                  Flexible(
-                                    fit: FlexFit.loose,
-                                    child: RadioListTile(
-                                      selected: false,
-                                      title: Text("Online Payment", style: TextStyle(color: Colors.grey, fontFamily: 'Kollektif',),),
-                                      value: "Online Payment",
-                                      groupValue: radioItem,
-                                      onChanged: (val) {
-                                        Fluttertoast.showToast(msg: "Coming Soon");
-                                      }
-                                    ),
-                                  ),
-                                ],
-                              )
-                            ],
+                          child: Flexible(
+                              fit: FlexFit.loose,
+                              child: RadioListTile(
+                                  title: Text("Cash", style: TextStyle(fontFamily: 'Kollektif',),),
+                                  activeColor: Colors.teal,
+                                  value: "Cash",
+                                  groupValue: radioItem,
+                                  onChanged: (val) {
+                                    setState(() {
+                                      radioItem = val;
+                                    });
+                                  }
+                              ),
                           )
+                        ),
+                        Flexible(
+                          fit: FlexFit.loose,
+                          child: RadioListTile(
+                              selected: false,
+                              title: Text("Online Payment", style: TextStyle(color: Colors.grey, fontFamily: 'Kollektif',),),
+                              value: "Online Payment",
+                              groupValue: radioItem,
+                              onChanged: (val) {
+                                Fluttertoast.showToast(msg: "Coming Soon");
+                              }
+                          ),
                         ),
 
                       ],

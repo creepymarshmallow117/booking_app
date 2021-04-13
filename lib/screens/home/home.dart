@@ -3,6 +3,7 @@
 
 import 'package:booking_app/screens/authenticate/authenticate.dart';
 import 'package:booking_app/screens/home/search.dart';
+import 'package:booking_app/screens/home/ui_helper.dart';
 import 'package:booking_app/services/auth.dart';
 import 'package:booking_app/services/database.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -294,6 +295,7 @@ class _HomeState extends State<Home> {
                   child: Container(
                     child: Column(
                       children: <Widget>[
+
                         GFCarousel(
                           autoPlay: true,
                           height: 210,
@@ -368,9 +370,7 @@ class _HomeState extends State<Home> {
                                           ),
                                         ),
                                       ),
-                                      SizedBox(
-                                        height: 15,
-                                      ),
+                                      UIHelper.verticalSpaceMedium(),
                                       Divider(
                                         color: Colors.grey,
                                         indent: 20,

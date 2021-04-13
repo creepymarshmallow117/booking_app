@@ -5,6 +5,7 @@ import 'dart:ffi';
 import 'package:booking_app/screens/authenticate/authenticate.dart';
 import 'package:booking_app/screens/authenticate/login.dart';
 import 'package:booking_app/screens/home/slots.dart';
+import 'package:booking_app/screens/home/ui_helper.dart';
 import 'package:booking_app/services/auth.dart';
 import 'package:booking_app/services/database.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -100,15 +101,19 @@ class _SearchState extends State<Search> {
             Item4(image : groundImages[3])
           ];
           return Scaffold(
+            backgroundColor: Colors.white,
             appBar: AppBar(
               backgroundColor: Colors.teal,
+              title: Text(groundName, style: TextStyle(color: Colors.white, fontFamily: 'Kollektif', fontSize: 22)),
               actions: <Widget>[
-                IconButton(icon: Icon(Icons.search, color: Colors.white,),iconSize : 30,onPressed:() {
-                  showSearch(context: context, delegate: Datasearch());
-                }),
+                IconButton(icon: Icon(Icons.search, color: Colors.white,),
+                    iconSize: 30,
+                    onPressed: () {
+                      showSearch(context: context, delegate: Datasearch());
+                    }),
               ],
             ),
-            drawer : Drawer(
+            drawer: Drawer(
               child: ListView(
                 padding: EdgeInsets.zero,
                 children: <Widget>[
@@ -121,6 +126,7 @@ class _SearchState extends State<Search> {
                               color: Colors.teal,
                             ),
                               accountName: Text("Welcome!", style: TextStyle(
+                                fontFamily: 'Kollektif',
                                 fontSize: 25.0,
                               ),
                               ),
@@ -135,6 +141,7 @@ class _SearchState extends State<Search> {
                               color: Colors.teal,
                             ),
                               accountName: Text("Welcome!", style: TextStyle(
+                                fontFamily: 'Kollektif',
                                 fontSize: 25.0,
                               ),
                               ),
@@ -145,16 +152,16 @@ class _SearchState extends State<Search> {
                             child : UserAccountsDrawerHeader(decoration: BoxDecoration(
                               color: Colors.teal,
                             ),
-                              accountName: Text(name, style: TextStyle(fontFamily: 'Kollektif')),
-                              accountEmail: Text(email, style: TextStyle(fontFamily: 'Kollektif')),
-                              currentAccountPicture: CircleAvatar(backgroundImage: FirebaseImage(image)),
+                              accountName: Text(name, style: TextStyle(fontFamily: 'Kollektif',),),
+                              accountEmail: Text(email, style: TextStyle(fontFamily: 'Kollektif',),),
+                              currentAccountPicture: CircleAvatar(backgroundImage: FirebaseImage(image), backgroundColor: Colors.teal,),
                             )
                         );
                       }
                   ),
                   ListTile(
                     leading: Icon(Icons.home, color: Colors.teal),
-                    title: Text('Home',style: TextStyle(fontFamily: 'Kollektif')),
+                    title: Text('Home', style: TextStyle(fontFamily: 'Kollektif'),),
                     onTap: () {
                       Navigator.pop(context);
                       Navigator.push(context,
@@ -165,12 +172,13 @@ class _SearchState extends State<Search> {
                   Visibility(
                     visible: _isVisible,
                     child: ListTile(
-                      leading: Icon(Icons.message, color: Colors.teal),
-                      title: Text('Your Orders',style: TextStyle(fontFamily: 'Kollektif')),
-                      onTap: () {
+                      leading: Icon(Icons.shopping_cart_rounded, color: Colors.teal),
+                      title: Text('Orders', style: TextStyle(fontFamily: 'Kollektif')),
+                      onTap: () async{
+                        DocumentSnapshot doc = await db.getDocument(user.uid);
                         Navigator.pop(context);
                         Navigator.push( context,
-                          MaterialPageRoute(builder: (context) => Orders()),
+                          MaterialPageRoute(builder: (context) => Orders(uid: user.uid, userDoc: doc,)),
                         );
                       },
                     ),
@@ -179,11 +187,13 @@ class _SearchState extends State<Search> {
                     visible: _isVisible,
                     child: ListTile(
                       leading: Icon(Icons.settings, color: Colors.teal),
-                      title: Text('Settings',style: TextStyle(fontFamily: 'Kollektif')),
-                      onTap: () async{
-                        if(user != null) {
+                      title: Text('Settings', style: TextStyle(fontFamily: 'Kollektif')),
+                      onTap: () async {
+                        if (user != null) {
+                          imageCache.clear();
                           print("Inside here");
-                          dynamic result =  await db.getDocument(user.uid.toString());
+                          dynamic result = await db.getDocument(user.uid
+                              .toString());
                           if (result == null) {
                             print("This is a problem");
                           }
@@ -191,11 +201,12 @@ class _SearchState extends State<Search> {
                             print(result);
                             Navigator.pop(context);
                             Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => Profile(userDocument: result)),
+                              MaterialPageRoute(builder: (context) =>
+                                  Profile(userDocument: result)),
                             );
                           }
                         }
-                        else{
+                        else {
                           print("This is a big problem");
                         }
                       },
@@ -215,13 +226,14 @@ class _SearchState extends State<Search> {
                   Visibility(
                     visible: !_isVisible,
                     child: ListTile(
-                      leading: Icon(Icons.account_circle,color: Colors.teal),
-                      title: Text('Login/Sign up',style: TextStyle(fontFamily: 'Kollektif')),
+                      leading: Icon(Icons.account_circle, color: Colors.teal),
+                      title: Text('Login/Sign up', style: TextStyle(fontFamily: 'Kollektif')),
                       onTap: () {
                         Navigator.pop(context);
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => Authenticate()),
+                          MaterialPageRoute(builder: (context) =>
+                              Authenticate()),
                         );
                       },
                     ),
@@ -259,22 +271,7 @@ class _SearchState extends State<Search> {
                           });
                         },
                       ),
-                      SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Padding(padding: EdgeInsets.only(left: 5)),
-                          Expanded(
-                            child: Text(groundName, style: TextStyle(
-                                fontFamily: 'Kollektif',
-                                fontWeight: FontWeight.bold,
-                                fontSize: 25
-                            ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 10),
+                      UIHelper.verticalSpaceMedium(),
                       Padding(
                         padding: EdgeInsets.only(right: 5, left: 5),
                         child: Row(
@@ -290,7 +287,7 @@ class _SearchState extends State<Search> {
                           ],
                         ),
                       ),
-                      SizedBox(height: 20),
+                      UIHelper.verticalSpaceMedium(),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
@@ -303,7 +300,7 @@ class _SearchState extends State<Search> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
                           Padding(padding: EdgeInsets.only(left: 5)),
-                          Text("Hours : ".toUpperCase(),style: TextStyle(fontSize: 15,fontFamily: 'Kollektif')),
+
                           Text(
                             hours,
                             style: TextStyle(fontSize: 15, fontFamily: 'Kollektif-Bold'),
@@ -315,21 +312,9 @@ class _SearchState extends State<Search> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
                           Padding(padding: EdgeInsets.only(left: 5)),
-                          Text("Price : ".toUpperCase(),style: TextStyle(fontSize: 15,fontFamily: 'Kollektif')),
+                          Text("Rates : ".toUpperCase(),style: TextStyle(fontSize: 15,fontFamily: 'Kollektif')),
                           Text(
                             morningPrice+"rs - "+eveningPrice+"rs",
-                            style: TextStyle(fontSize: 15, fontFamily: 'Kollektif-Bold'),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Padding(padding: EdgeInsets.only(left: 5)),
-                          Text("Contact : ".toUpperCase(),style: TextStyle(fontSize: 15,fontFamily: 'Kollektif')),
-                          Text(
-                            groundContactInfo,
                             style: TextStyle(fontSize: 15, fontFamily: 'Kollektif-Bold'),
                           ),
                         ],
@@ -349,7 +334,19 @@ class _SearchState extends State<Search> {
                           ],
                         ),
                       ),
-                      SizedBox(height: 20,),
+                      SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Padding(padding: EdgeInsets.only(left: 5)),
+                          Text("Contact : ".toUpperCase(),style: TextStyle(fontSize: 15,fontFamily: 'Kollektif')),
+                          Text(
+                            groundContactInfo,
+                            style: TextStyle(fontSize: 15, fontFamily: 'Kollektif-Bold'),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 20),
                       Container(
                             height: 40.0,
                             width: 350.0,
