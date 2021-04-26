@@ -1,29 +1,19 @@
 //This is the profiles page.
 
-import 'dart:io';
-
-import 'package:booking_app/Animation/animation.dart';
 import 'package:booking_app/Animation/animation1.dart';
-import 'package:booking_app/screens/authenticate/authenticate.dart';
-import 'package:booking_app/screens/authenticate/login.dart';
-import 'package:booking_app/screens/home/editClientProfile.dart';
-import 'package:booking_app/screens/home/forgotpassword.dart';
 import 'package:booking_app/screens/home/home1.dart';
 import 'package:booking_app/screens/home/profileImage.dart';
+import 'package:booking_app/screens/home/updateTurfImage.dart';
 import 'package:booking_app/services/auth.dart';
-import 'package:booking_app/services/image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_image/firebase_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:image_cropper/image_cropper.dart';
+import 'package:getwidget/components/carousel/gf_carousel.dart';
 import 'package:image_picker/image_picker.dart';
-import 'cart.dart';
-import 'orders.dart';
 import 'home.dart';
-
 import 'package:provider/provider.dart';
 import 'package:booking_app/services/database.dart';
 
@@ -42,6 +32,8 @@ class Constants{
 
 class _updatedClientProfileState extends State<updatedClientProfile> {
 
+
+  final _formKey = GlobalKey<FormState>();
   bool _status = true;
   final FocusNode myFocusNode = FocusNode();
   bool _isVisible = false;
@@ -70,6 +62,11 @@ class _updatedClientProfileState extends State<updatedClientProfile> {
   String updateEveningPrice = '';
   String drpOption1 = '12:00 AM';
   String drpOption2 = '12:00 AM';
+  String error = '';
+  String drpDownValue1;
+  String drpDownValue2;
+  int index1 = 0;
+
 
   @override
   Widget build(BuildContext context) {
@@ -114,6 +111,19 @@ class _updatedClientProfileState extends State<updatedClientProfile> {
           });
     }
 
+    Future<void> _pickImage(ImageSource source , String uid, String url, int index) async{
+      //function to select image from camera or gallery
+      final picker = ImagePicker();
+      PickedFile selected = await picker.getImage(source: source);
+      print("this is the image path:"+selected.path);
+      if(selected != null){
+        Navigator.pop(context);
+        Navigator.push(context,
+          MaterialPageRoute(builder: (context) => UpdateTurfImage(imageFile: selected, uid: uid, index: index, url: url)),
+        );
+      }
+    }
+
 
     print("this is document id:" + widget.userDocument.data()['displayName']);
     String name = widget.userDocument.data()['groundName'];
@@ -134,7 +144,7 @@ class _updatedClientProfileState extends State<updatedClientProfile> {
 
     List<String> timing = List<String>();
     List<String> timingInternal = List<String>();
-    for(int i = 0; i <= 24; i++){
+    for(int i = 1; i <= 24; i++){
       timingInternal.add(i.toString());
       if(i < 12){
         timing.add(i.toString() +':00 AM');
@@ -151,7 +161,73 @@ class _updatedClientProfileState extends State<updatedClientProfile> {
       }
     }
 
+    List groundImages = widget.userDocument['groundImages'];
 
+    Future<bool> _onAddPressed() {
+      showDialog(context: context, builder: (context){
+        return FadeAnimation1(
+          0.1, Container(
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(30.0, 0.0, 30.0, 20.0),
+            child : Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                new GestureDetector(
+                  onTap: () => _pickImage(ImageSource.camera, user.uid, groundImages[index1], index1),
+                  child: roundedButton(
+                      "CAMERA",
+                      EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
+                      const Color(0xFF167F67),
+                      const Color(0xFFFFFFFF)),
+                ),
+                SizedBox(height: 10.0),
+                new GestureDetector(
+                  onTap: () =>  _pickImage(ImageSource.gallery, user.uid, groundImages[index1], index1),
+                  child: roundedButton(
+                      "GALLERY",
+                      EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
+                      const Color(0xFF167F67),
+                      const Color(0xFFFFFFFF)),
+                ),
+                SizedBox(height: 25.0),
+                new GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: new Padding(
+                    padding: EdgeInsets.fromLTRB(30.0, 0.0, 30.0, 0.0),
+                    child: roundedButton(
+                        "CANCEL",
+                        EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
+                        const Color(0xFF167F67),
+                        const Color(0xFFFFFFFF)),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        );
+      });
+    }
+
+
+    Future<bool> _onImageDeletePressed() async {
+      CollectionReference col = FirebaseFirestore.instance.collection("client");
+      DocumentSnapshot doc = await col.doc(user.uid).get();
+      print(index1);
+      col.doc(user.uid).update(
+          {
+            'groundImages': FieldValue.arrayRemove([doc.data()['groundImages'][index1]])
+          }
+      );
+      Fluttertoast.showToast(
+          msg: "Image Removed Successfully"
+      );
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Home1()),
+      );
+    }
 
     return Scaffold(
         backgroundColor: Colors.white,
@@ -190,92 +266,79 @@ class _updatedClientProfileState extends State<updatedClientProfile> {
                 color: Colors.white,
                 child: Column(
                     children: <Widget>[
-                      Container(
-                          color: Colors.white,
-                          child: Column(
-                            children: <Widget>[
-                              SizedBox(height: 15.0),
-                              profileImage == null ? new Stack(
-                                children: <Widget>[
-                                  new Center(
-                                    child: new CircleAvatar(
-                                      radius: 80.0,
-                                      backgroundColor: const Color(0xFF778899),
+                      GestureDetector(
+                        onTap: (){
+                          showDialog(context: context, builder: (context){
+                            return FadeAnimation1(
+                              0.1, Container(
+                              child: Padding(
+                                padding: EdgeInsets.fromLTRB(30.0, 0.0, 30.0, 20.0),
+                                child : Column(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    new GestureDetector(
+                                      onTap: () => _onAddPressed(),
+                                      child: roundedButton(
+                                          "ADD IMAGE",
+                                          EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
+                                          const Color(0xFF167F67),
+                                          const Color(0xFFFFFFFF)),
                                     ),
-                                  ),
-                                  new Center(
-                                    child: new Image.asset("assets/photo_camera.png"),
-                                  ),
-                                ],
-                              ) :  CircleAvatar(
-                                backgroundColor: Colors.black,
-                                radius: 75.0,
-                                backgroundImage: FirebaseImage(profileImage,
-                                  maxSizeBytes: 5000 * 1000,
-                                  shouldCache: true,
-                                  cacheRefreshStrategy: CacheRefreshStrategy.BY_METADATA_DATE,
-                                ),
-                                child: Align(
-                                  alignment: Alignment.bottomRight,
-                                  child: MaterialButton(
-                                    color: Colors.teal,
-                                    minWidth: 10.0,
-                                    shape: CircleBorder(
+                                    SizedBox(height: 10.0),
+                                    new GestureDetector(
+                                      onTap: () =>  _onImageDeletePressed(),
+                                      child: roundedButton(
+                                          "DELETE IMAGE",
+                                          EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
+                                          const Color(0xFF167F67),
+                                          const Color(0xFFFFFFFF)),
                                     ),
-                                    child: Icon(
-                                      Icons.camera_alt,
-                                      color: Colors.white,
+                                    SizedBox(height: 25.0),
+                                    new GestureDetector(
+                                      onTap: () => Navigator.pop(context),
+                                      child: new Padding(
+                                        padding: EdgeInsets.fromLTRB(30.0, 0.0, 30.0, 0.0),
+                                        child: roundedButton(
+                                            "CANCEL",
+                                            EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
+                                            const Color(0xFF167F67),
+                                            const Color(0xFFFFFFFF)),
+                                      ),
                                     ),
-                                    onPressed: (){
-                                      showDialog(context: context, builder: (context){
-                                        return FadeAnimation1(
-                                          0.1, Container(
-                                          child: Padding(
-                                            padding: EdgeInsets.fromLTRB(30.0, 0.0, 30.0, 20.0),
-                                            child : Column(
-                                              mainAxisSize: MainAxisSize.max,
-                                              mainAxisAlignment: MainAxisAlignment.end,
-                                              children: [
-                                                new GestureDetector(
-                                                  onTap: () => _pickImage(ImageSource.camera, user.uid),
-                                                  child: roundedButton(
-                                                      "CAMERA",
-                                                      EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
-                                                      const Color(0xFF167F67),
-                                                      const Color(0xFFFFFFFF)),
-                                                ),
-                                                SizedBox(height: 10.0),
-                                                new GestureDetector(
-                                                  onTap: () =>  _pickImage(ImageSource.gallery, user.uid),
-                                                  child: roundedButton(
-                                                      "GALLERY",
-                                                      EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
-                                                      const Color(0xFF167F67),
-                                                      const Color(0xFFFFFFFF)),
-                                                ),
-                                                SizedBox(height: 25.0),
-                                                new GestureDetector(
-                                                  onTap: () => Navigator.pop(context),
-                                                  child: new Padding(
-                                                    padding: EdgeInsets.fromLTRB(30.0, 0.0, 30.0, 0.0),
-                                                    child: roundedButton(
-                                                        "CANCEL",
-                                                        EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
-                                                        const Color(0xFF167F67),
-                                                        const Color(0xFFFFFFFF)),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                        );
-                                      });
-                                    },
-                                  ),
+                                  ],
                                 ),
                               ),
-                              SizedBox(height: 10.0,),
+                            ),
+                            );
+                          });
+                        },
+                        child: GFCarousel(
+                          autoPlay: true,
+                          height: 210,
+                          items: groundImages.map(
+                                (url) {
+                              return Container(
+                                margin: EdgeInsets.all(3.0),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                                  child: Image.network(
+                                    url,
+                                    fit: BoxFit.cover,
+                                    width: 1000.0,
+                                  ),
+                                ),
+                              );
+                            },
+                          ).toList(),
+                          onPageChanged: (index) {
+                            setState(() {
+                              index;
+                              index1 = index;
+                            });
+                          },
+                        ),
+                      ),
                               Container(
                                   color: Color(0xffFFFFFF),
                                   child: Padding(
@@ -286,7 +349,7 @@ class _updatedClientProfileState extends State<updatedClientProfile> {
                                         children: <Widget>[
                                           Padding(
                                               padding: EdgeInsets.only(
-                                                  left: 25.0, right: 25.0, top: 25.0),
+                                                  left: 25.0, right: 25.0, top: 15.0),
                                               child: new Row(
                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                 mainAxisSize: MainAxisSize.max,
@@ -308,7 +371,7 @@ class _updatedClientProfileState extends State<updatedClientProfile> {
                                               )),
                                           Padding(
                                               padding: EdgeInsets.only(
-                                                  left: 25.0, right: 25.0, top: 25.0),
+                                                  left: 25.0, right: 25.0, top: 20.0),
                                               child: new Row(
                                                 mainAxisSize: MainAxisSize.max,
                                                 children: <Widget>[
@@ -342,8 +405,7 @@ class _updatedClientProfileState extends State<updatedClientProfile> {
                                                         setState(() => updateDescription = val);
                                                       },
                                                       decoration: new InputDecoration(
-                                                          hintText: description,
-                                                          hintStyle: TextStyle(color: Colors.grey),
+                                                          hintText: "Enter Description",
                                                           focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.teal))
                                                       ),
                                                     ),
@@ -371,27 +433,31 @@ class _updatedClientProfileState extends State<updatedClientProfile> {
                                                   ),
                                                 ],
                                               )),
-                                          Padding(
-                                              padding: EdgeInsets.only(
-                                                  left: 25.0, right: 25.0, top: 2.0),
-                                              child: new Row(
-                                                mainAxisSize: MainAxisSize.max,
-                                                children: <Widget>[
-                                                  new Flexible(
-                                                    child : TextFormField(
-                                                      onChanged: (val){
-                                                        print(val);
-                                                        setState(() => updateContactNumber = val);
-                                                      },
-                                                      decoration: new InputDecoration(
-                                                          hintText: contactInfo,
-                                                          hintStyle: TextStyle(color: Colors.grey),
-                                                          focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.teal))
+                                          Form(
+                                            key: _formKey,
+                                            child: Padding(
+                                                padding: EdgeInsets.only(
+                                                    left: 25.0, right: 25.0, top: 2.0),
+                                                child: new Row(
+                                                  mainAxisSize: MainAxisSize.max,
+                                                  children: <Widget>[
+                                                    new Flexible(
+                                                      child : TextFormField(
+                                                        validator: (val) => val.length < 10 && val.length != 0 || val.length > 10 ? 'Enter valid contact number' : null,
+                                                        onChanged: (val){
+                                                          print(val);
+                                                          setState(() => updateContactNumber = val);
+                                                        },
+                                                        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                                        decoration: new InputDecoration(
+                                                            hintText: "Enter Contact Info",
+                                                            focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.teal))
+                                                        ),
                                                       ),
                                                     ),
-                                                  ),
-                                                ],
-                                              )),
+                                                  ],
+                                                )),
+                                          ),
                                           Padding(
                                               padding: EdgeInsets.only(
                                                   left: 25.0, right: 25.0, top: 25.0),
@@ -428,8 +494,7 @@ class _updatedClientProfileState extends State<updatedClientProfile> {
                                                         setState(() => updateAddress = val);
                                                       },
                                                       decoration: new InputDecoration(
-                                                          hintText: address,
-                                                          hintStyle: TextStyle(color: Colors.grey),
+                                                          hintText: "Enter Address",
                                                           focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.teal))
                                                       ),
                                                     ),
@@ -469,9 +534,9 @@ class _updatedClientProfileState extends State<updatedClientProfile> {
                                                         print(val);
                                                         setState(() => updateMorningPrice = val);
                                                       },
+                                                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                                                       decoration: new InputDecoration(
-                                                          hintText: morningPrice,
-                                                          hintStyle: TextStyle(color: Colors.grey),
+                                                          hintText: "Enter Morning Price",
                                                           focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.teal))
                                                       ),
                                                     ),
@@ -511,9 +576,9 @@ class _updatedClientProfileState extends State<updatedClientProfile> {
                                                         print(val);
                                                         setState(() => updateEveningPrice = val);
                                                       },
+                                                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                                                       decoration: new InputDecoration(
-                                                          hintText: eveningPrice,
-                                                          hintStyle: TextStyle(color: Colors.grey),
+                                                          hintText: "Enter Evening Price",
                                                           focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.teal))
                                                       ),
                                                     ),
@@ -535,7 +600,6 @@ class _updatedClientProfileState extends State<updatedClientProfile> {
                                                         fontFamily: 'Kollektif',),
                                                     ),
                                                     DropdownButton<String>(
-                                                        value: drpOption1,
                                                         icon: const Icon(Icons.arrow_downward),
                                                         iconSize: 24,
                                                         elevation: 16,
@@ -544,17 +608,19 @@ class _updatedClientProfileState extends State<updatedClientProfile> {
                                                           height: 2,
                                                           color: Colors.teal,
                                                         ),
-                                                        onChanged: (value){
-                                                          setState(() {
-                                                            drpOption1 = value;
-                                                          });
-                                                        },
                                                         items: timing.map<DropdownMenuItem<String>>((String value) {
                                                           return DropdownMenuItem<String>(
                                                             value: value,
                                                             child: Text(value),
                                                           );
-                                                        }).toList()
+                                                        }).toList(),
+                                                      onChanged: (value){
+                                                        setState(() {
+                                                          drpDownValue1 = value;
+                                                        });
+                                                      },
+                                                      value: drpDownValue1,
+                                                      hint: Text(drpOption1),
                                                     ),
                                                   ],
                                                 ),
@@ -571,26 +637,28 @@ class _updatedClientProfileState extends State<updatedClientProfile> {
                                                         fontFamily: 'Kollektif',),
                                                     ),
                                                     DropdownButton<String>(
-                                                        value: drpOption2,
                                                         icon: const Icon(Icons.arrow_downward),
                                                         iconSize: 24,
                                                         elevation: 16,
-                                                        style: const TextStyle(color: Colors.black),
                                                         underline: Container(
                                                           height: 2,
                                                           color: Colors.teal,
                                                         ),
-                                                        onChanged: (value){
-                                                          setState(() {
-                                                            drpOption2 = value;
-                                                          });
-                                                        },
+                                                      style: const TextStyle(color: Colors.black),
                                                         items: timing.map<DropdownMenuItem<String>>((String value) {
                                                           return DropdownMenuItem<String>(
                                                             value: value,
                                                             child: Text(value),
                                                           );
-                                                        }).toList()
+                                                        }
+                                                        ).toList(),
+                                                        onChanged: (value){
+                                                          setState(() {
+                                                            drpDownValue2 = value;
+                                                          });
+                                                        },
+                                                      value: drpDownValue2,
+                                                      hint: Text(drpOption2),
                                                     )
                                                   ],
                                                 ),
@@ -612,24 +680,37 @@ class _updatedClientProfileState extends State<updatedClientProfile> {
                                                           textColor: Colors.white,
                                                           color: Colors.teal,
                                                           onPressed: () async {
-                                                            int index1 = timing.indexOf(drpOption1);
-                                                            int index2 = timing.indexOf(drpOption2);
-                                                            CollectionReference col = FirebaseFirestore.instance.collection("client");
-                                                            col.doc(user.uid).update({
-                                                              'address' : updateAddress == null || updateAddress.isEmpty ? widget.userDocument.data()['address'] : updateAddress,
-                                                              'description': updateDescription == null || updateDescription.isEmpty ? widget.userDocument.data()['description'] :updateDescription,
-                                                              'morningPrice': updateMorningPrice == null || updateMorningPrice.isEmpty ? widget.userDocument.data()['morningPrice'] :updateMorningPrice,
-                                                              'eveningPrice': updateEveningPrice == null || updateEveningPrice.isEmpty ? widget.userDocument.data()['eveningPrice'] :updateEveningPrice,
-                                                              'startHour': drpOption1 == drpOption2 ? widget.userDocument.data()['startHour'] : timingInternal.elementAt(index1),
-                                                              'endHour': drpOption1 == drpOption2 ? widget.userDocument.data()['endHour'] : timingInternal.elementAt(index2),
-                                                            });
-                                                            Fluttertoast.showToast(
-                                                                msg: "Profile Successfully Updated"
-                                                            );
-                                                            Navigator.push(context,
-                                                              MaterialPageRoute(builder: (context) => Home1()),
-                                                            );
-                                                          },
+                                                            if(updateAddress.isNotEmpty || updateContactNumber.isNotEmpty || updateDescription.isNotEmpty || updateMorningPrice.isNotEmpty || updateEveningPrice.isNotEmpty || drpDownValue1 != drpDownValue2)
+                                                            {
+                                                              if (_formKey.currentState.validate()) {
+                                                                int index1 = timing.indexOf(drpDownValue1);
+                                                                int index2 = timing.indexOf(drpDownValue2);
+                                                                print(index2);
+                                                                CollectionReference col = FirebaseFirestore.instance.collection("client");
+                                                                col.doc(user.uid).update({
+                                                                  'address' : updateAddress == null || updateAddress.isEmpty ? widget.userDocument.data()['address'] : updateAddress,
+                                                                  'description': updateDescription == null || updateDescription.isEmpty ? widget.userDocument.data()['description'] :updateDescription,
+                                                                  'contactInfo': updateContactNumber == null || updateContactNumber.isEmpty ? widget.userDocument.data()['contactInfo'] :updateContactNumber,
+                                                                  'morningPrice': updateMorningPrice == null || updateMorningPrice.isEmpty ? widget.userDocument.data()['morningPrice'] :updateMorningPrice,
+                                                                  'eveningPrice': updateEveningPrice == null || updateEveningPrice.isEmpty ? widget.userDocument.data()['eveningPrice'] :updateEveningPrice,
+                                                                  'startHour': drpDownValue1 == drpOption1 ? widget.userDocument.data()['startHour'] : timingInternal.elementAt(index1),
+                                                                  'endHour': drpDownValue2 == drpOption2 ?  widget.userDocument.data()['endHour'] : timingInternal.elementAt(index2),
+                                                                });
+                                                                Fluttertoast.showToast(
+                                                                    msg: "Profile Successfully Updated"
+                                                                );
+                                                                Navigator.push(context,
+                                                                  MaterialPageRoute(builder: (context) => Home1()),
+                                                                );
+                                                              }
+                                                            }
+                                                            else
+                                                              {
+                                                                setState(() {
+                                                                  error = "Please enter something";
+                                                                });
+                                                              }
+                                                            },
                                                           shape: new RoundedRectangleBorder(
                                                               borderRadius: new BorderRadius.circular(20.0)),
                                                         )),
@@ -658,19 +739,24 @@ class _updatedClientProfileState extends State<updatedClientProfile> {
                                                 ),
                                               ],
                                             ),
-                                          )
+                                          ),
+                                          SizedBox(height : 10.0),
+                                          Padding(
+                                            padding: EdgeInsets.only(left: 140.0, top: 2.0),
+                                            child: Text(
+                                              error,
+                                              style: TextStyle(color: Colors.red, fontSize: 14.0, fontFamily: 'Kollektif-Bold',),
+                                            ),
+                                          ),
                                         ]
                                     ),
                                   )
                               )
                             ],
-                          )
-                      ),
-                    ]
+                          ),
                 ),
               ),
             )
-        )
     );
   }
   Widget roundedButton(

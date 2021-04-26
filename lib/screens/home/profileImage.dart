@@ -188,12 +188,11 @@ class _ProfileImageState extends State<ProfileImage> {
             print("this is a problem");
           }
           else {
-            imageCache.clear();
-            imageCache.clearLiveImages();
-            print(result);
             Fluttertoast.showToast(
                 msg: "Profile Image updated Successfully"
             );
+            imageCache.clear();
+            imageCache.clearLiveImages();
             Navigator.pop(context);
             Navigator.push(context,
               MaterialPageRoute(builder: (context) => Home()),
@@ -206,146 +205,74 @@ class _ProfileImageState extends State<ProfileImage> {
       });
     }
     return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 1,
+        title: Padding(
+          padding: EdgeInsets.only(top: 2.0),
+          child: Text('UPDATE',
+              style: TextStyle(
+                  fontSize: 20.0,
+                  fontFamily: 'Kollektif',
+                  color: Colors.teal)),
+        ),
+        leading: Padding(padding: EdgeInsets.only(left: 10.0),
+          child: new Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              GestureDetector(
+                child: new Icon(
+                  Icons.arrow_back_ios,
+                  color: Colors.teal,
+                  size: 22.0,
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
       body: SingleChildScrollView(
       child: SafeArea(
-      child : Container(
-        height: height1,
-          color: Colors.white,
-          child: Column(
-           children: [
-             Container(
-             color: Colors.white,
-              child: Column(
-                children: <Widget>[
-                  Padding(padding: EdgeInsets.only(left: 20.0, top: 20.0),
-                  child: new Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    GestureDetector(
-                      child: new Icon(
-                      Icons.arrow_back_ios,
-                      color: Colors.teal,
-                      size: 22.0,
-                      ),
-                    onTap: () {
-                      Navigator.pop(context);
-                      },
-                    ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 25.0),
-                      child: new Text('UPDATE',
-                      style: TextStyle(
-                      fontSize: 20.0,
-                          fontFamily: 'Kollektif',
-                      color: Colors.teal)),
-                      )
-                    ],
-                    ),
-                  ),
-                  SizedBox(height: 15.0),
-                  Visibility(
-                    visible: !showPickImage,
-                    child: Image.file(
-                      File(_imageFile.path),
-                      height: 400,
-                      width: 400,
-                    ),
-                  ),
-              Row(
-                 children: [
-                   Visibility(
-                     visible: !showPickImage,
-                     child: Padding(
-                       padding: const EdgeInsets.only(top: 30.0, left: 30.0, right: 50.0),
-                       child: Container(
-                         height: 40.0,
-                         width: 150.0,
-                         child: Material(
-                           borderRadius: BorderRadius.circular(20.0),
-                           shadowColor: Colors.tealAccent,
-                           color: Colors.teal,
-                           elevation: 5.0,
-                           child: GestureDetector(
-                             onTap: () async{
-                               _cropImage();
-                             },
-                             child: Container(
-                               padding: EdgeInsets.symmetric(vertical: 12.0),
-                               child : Text('CROP IMAGE', textAlign: TextAlign.center,
-                                 style: TextStyle(
-                                   color: Colors.white,
-                                   fontWeight: FontWeight.bold,
-                                   fontFamily: 'Kollektif',
-                                 ),
-                               ),
-                             ),
-                           ),
-                         ),
-                       ),
-                     ),
-                   ),
-                   Visibility(
-                     visible: !showPickImage,
-                     child: Padding(
-                       padding: const EdgeInsets.only(top: 30.0),
-                       child: Container(
-                         height: 40.0,
-                         width: 150.0,
-                         child: Material(
-                           borderRadius: BorderRadius.circular(20.0),
-                           shadowColor: Colors.tealAccent,
-                           color: Colors.teal,
-                           elevation: 5.0,
-                           child: GestureDetector(
-                             onTap: () async{
-                               _clearImage();
-                             },
-                             child: Container(
-                               padding: EdgeInsets.symmetric(vertical: 12.0),
-                               child : Text('CLEAR IMAGE', textAlign: TextAlign.center,
-                                 style: TextStyle(
-                                   color: Colors.white,
-                                   fontWeight: FontWeight.bold,
-                                   fontFamily: 'Kollektif',
-                                 ),
-                               ),
-                             ),
-                           ),
-                         ),
-                       ),
-                     ),
-                   ),
-                 ],
-               ),
-                  Visibility(
-                    visible: !showPickImage,
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 30.0),
-                      child: Container(
-                        height: 40.0,
-                        width: 200.0,
-                        child: Material(
-                          borderRadius: BorderRadius.circular(20.0),
-                          shadowColor: Colors.tealAccent,
-                          color: Colors.teal,
-                          elevation: 5.0,
-                          child: GestureDetector(
-                            onTap: () async{
-                            if (_clicked == true) {
-                              setState(() {
-                                _clicked = false;
-                              });
-                              startUpload();
-                            }
-                            },
-                            child: Container(
-                              padding: EdgeInsets.symmetric(vertical: 12.0),
-                              child : Text('UPLOAD IMAGE', textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'Kollektif',
-                                ),
+        child : Column(
+          children : [
+            SizedBox(height: 15.0),
+            Visibility(
+              visible: !showPickImage,
+              child: Image.file(
+                File(_imageFile.path),
+                height: 400,
+                width: 400,
+              ),
+            ),
+            Row(
+              children: [
+                Visibility(
+                  visible: !showPickImage,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 30.0, left: 30.0, right: 50.0),
+                    child: Container(
+                      height: 40.0,
+                      width: 150.0,
+                      child: Material(
+                        borderRadius: BorderRadius.circular(20.0),
+                        shadowColor: Colors.tealAccent,
+                        color: Colors.teal,
+                        elevation: 5.0,
+                        child: GestureDetector(
+                          onTap: () async{
+                            _cropImage();
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(vertical: 12.0),
+                            child : Text('CROP IMAGE', textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Kollektif',
                               ),
                             ),
                           ),
@@ -353,14 +280,80 @@ class _ProfileImageState extends State<ProfileImage> {
                       ),
                     ),
                   ),
-           ],
+                ),
+                Visibility(
+                  visible: !showPickImage,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 30.0),
+                    child: Container(
+                      height: 40.0,
+                      width: 150.0,
+                      child: Material(
+                        borderRadius: BorderRadius.circular(20.0),
+                        shadowColor: Colors.tealAccent,
+                        color: Colors.teal,
+                        elevation: 5.0,
+                        child: GestureDetector(
+                          onTap: () async{
+                            _clearImage();
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(vertical: 12.0),
+                            child : Text('CLEAR IMAGE', textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Kollektif',
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Visibility(
+              visible: !showPickImage,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 30.0),
+                child: Container(
+                  height: 40.0,
+                  width: 200.0,
+                  child: Material(
+                    borderRadius: BorderRadius.circular(20.0),
+                    shadowColor: Colors.tealAccent,
+                    color: Colors.teal,
+                    elevation: 5.0,
+                    child: GestureDetector(
+                      onTap: () async{
+                        if (_clicked == true) {
+                          setState(() {
+                            _clicked = false;
+                          });
+                          startUpload();
+                        }
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical: 12.0),
+                        child : Text('UPLOAD IMAGE', textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Kollektif',
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ]
+        ),
          )
        ),
-    ],
-      ),
-    ),
-    ),
-      ),
       );
   }
   Widget roundedButton(

@@ -10,6 +10,7 @@ import 'package:booking_app/screens/home/editClientProfile.dart';
 import 'package:booking_app/screens/home/forgotpassword.dart';
 import 'package:booking_app/screens/home/profileImage.dart';
 import 'package:booking_app/screens/home/updateClientProfile.dart';
+import 'package:booking_app/screens/home/updateTurfImage.dart';
 import 'package:booking_app/services/auth.dart';
 import 'package:booking_app/services/image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -17,6 +18,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_image/firebase_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:getwidget/components/carousel/gf_carousel.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'cart.dart';
@@ -25,6 +27,7 @@ import 'home.dart';
 
 import 'package:provider/provider.dart';
 import 'package:booking_app/services/database.dart';
+import 'package:carousel_pro/carousel_pro.dart';
 
 class ClientProfile extends StatefulWidget {
   final DocumentSnapshot userDocument;
@@ -48,16 +51,18 @@ class _ClientProfileState extends State<ClientProfile> {
   Icon searchIcon = new Icon(Icons.search);
   int _currentIndex=0;
   String profileImage;
+  int index1 = 0;
 
 
-  Future<void> _pickImage(ImageSource source , String uid) async{
+  Future<void> _pickImage(ImageSource source , String uid, String url, int index) async{
     //function to select image from camera or gallery
     final picker = ImagePicker();
     PickedFile selected = await picker.getImage(source: source);
+    print("this is the image path:"+selected.path);
     if(selected != null){
       Navigator.pop(context);
       Navigator.push(context,
-        MaterialPageRoute(builder: (context) => ProfileImage(imageFile: selected, uid: uid)),
+        MaterialPageRoute(builder: (context) => UpdateTurfImage(imageFile: selected, uid: uid, index: index, url: url)),
       );
     }
   }
@@ -122,6 +127,8 @@ class _ClientProfileState extends State<ClientProfile> {
     imageCache.clear();
     imageCache.clearLiveImages();
 
+    List groundImages = widget.userDocument['groundImages'];
+
     return Scaffold(
         backgroundColor: Colors.white,
       appBar: AppBar(
@@ -159,33 +166,33 @@ class _ClientProfileState extends State<ClientProfile> {
                 color: Colors.white,
                 child: Column(
                     children: <Widget>[
-                      Container(
-                          color: Colors.white,
-                          child: Column(
-                            children: <Widget>[
-                              SizedBox(height: 15.0),
-                              profileImage == null ? new Stack(
-                                children: <Widget>[
-                                  new Center(
-                                    child: new CircleAvatar(
-                                      radius: 80.0,
-                                      backgroundColor: const Color(0xFF778899),
-                                    ),
+                      GestureDetector(
+                        child: GFCarousel(
+                          autoPlay: true,
+                          height: 210,
+                          items: groundImages.map(
+                                (url) {
+                              return Container(
+                                margin: EdgeInsets.all(3.0),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                                  child: Image.network(
+                                    url,
+                                    fit: BoxFit.cover,
+                                    width: 1000.0,
                                   ),
-                                  new Center(
-                                    child: new Image.asset("assets/photo_camera.png"),
-                                  ),
-                                ],
-                              ) :  CircleAvatar(
-                                backgroundColor: Colors.black,
-                                radius: 75.0,
-                                backgroundImage: FirebaseImage(profileImage,
-                                  maxSizeBytes: 5000 * 1000,
-                                  shouldCache: true,
-                                  cacheRefreshStrategy: CacheRefreshStrategy.BY_METADATA_DATE,
                                 ),
-                              ),
-                              SizedBox(height: 10.0,),
+                              );
+                            },
+                          ).toList(),
+                          onPageChanged: (index) {
+                            setState(() {
+                              index;
+                              index1 = index;
+                            });
+                          },
+                        ),
+                      ),
                               Container(
                                   color: Color(0xffFFFFFF),
                                   child: Padding(
@@ -196,7 +203,7 @@ class _ClientProfileState extends State<ClientProfile> {
                                       children: <Widget>[
                                         Padding(
                                             padding: EdgeInsets.only(
-                                                left: 25.0, right: 25.0, top: 25.0),
+                                                left: 25.0, right: 25.0, top: 20.0),
                                             child: new Row(
                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               mainAxisSize: MainAxisSize.max,
@@ -241,7 +248,7 @@ class _ClientProfileState extends State<ClientProfile> {
                                             )),
                                         Padding(
                                             padding: EdgeInsets.only(
-                                                left: 25.0, right: 25.0, top: 25.0),
+                                                left: 25.0, right: 25.0, top: 20.0),
                                             child: new Row(
                                               mainAxisSize: MainAxisSize.max,
                                               children: <Widget>[
@@ -547,12 +554,9 @@ class _ClientProfileState extends State<ClientProfile> {
                             ],
                           )
                       ),
-                    ]
                 ),
               ),
-            )
-        )
-    );
+            );
   }
   Widget roundedButton(
       String buttonLabel, EdgeInsets margin, Color bgColor, Color textColor) {

@@ -10,9 +10,10 @@ class clientCheckout extends StatefulWidget {
   final String groundName;
   final String time;
   final String date;
+  final DateTime timestamp;
   final String price;
 
-  const clientCheckout({Key key, this.clientId, this.groundName,this.time, this.date, this.price}) : super(key: key);
+  const clientCheckout({Key key, this.clientId, this.groundName,this.time, this.date, this.timestamp, this.price}) : super(key: key);
   @override
   _clientCheckoutState createState() => _clientCheckoutState();
 }
@@ -25,8 +26,10 @@ class _clientCheckoutState extends State<clientCheckout> {
   bool _clicked = true;
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
   String customerName;
+
   @override
   Widget build(BuildContext context) {
+    Timestamp timestamp1 = Timestamp.fromDate(widget.timestamp);
 
     double height = MediaQuery.of(context).size.height;
     var padding = MediaQuery.of(context).padding;
@@ -55,6 +58,84 @@ class _clientCheckoutState extends State<clientCheckout> {
         time1 = (time-12).toString() + ':00 PM';
         time2 = ((time-12)+1).toString() + ':00 PM';
       }
+      if(time+1 == 24){
+        time2 = '12:00 AM';
+      }
+    }
+
+    Future<bool> _onBookSlotPressed() {
+      return showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Are you sure?', style: TextStyle(
+                  fontFamily: "Kallektif"
+              ),),
+              content: Text('You are going to book the slot',style: TextStyle(
+                  fontFamily: "Kallektif-Bold"
+              ),),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text('NO', style: TextStyle(color: Colors.teal, fontFamily: "Kallektif-Bold")),
+                  onPressed: () {
+                    WidgetsBinding.instance.handlePopRoute();
+                    Navigator.of(context).pop(false);
+                    imageCache.clear();
+                    imageCache.clearLiveImages();
+                  },
+                ),
+                FlatButton(
+                  child: Text('YES', style: TextStyle(color: Colors.teal,fontFamily: "Kallektif-Bold")),
+                  onPressed: () async {
+                    if (_clicked == true) {
+                      setState(() {
+                        _clicked = false;
+                      });
+                      if(customerName == null) {
+                        setState(() {
+                          error = "Please enter Customer's Name";
+                          _clicked = true;
+                        });
+
+                      }
+                      if (radioItem == '') {
+                        setState(() {
+                          error = "Please select payment mode";
+                          _clicked = true;
+                        });
+                      }
+                      else {
+                        if(customerName == null || customerName.isEmpty){
+                          setState(() {
+                            error = "Please enter Customer's Name";
+                            _clicked = true;
+                          });
+                        }else{
+                          Dialogs.showLoadingDialog(context, _keyLoader);
+                          final CollectionReference collection = FirebaseFirestore.instance.collection("bookingRecords");
+                          await collection.doc().set({
+                            'client_id': widget.clientId,
+                            'customer_name': customerName,
+                            'ground_name': widget.groundName,
+                            'date': widget.date,
+                            'time': widget.time,
+                            'price': widget.price,
+                            'payment_mode': radioItem,
+                            'timestamp': timestamp1,
+                          });
+                          Fluttertoast.showToast(
+                              msg: "Booking Successful");
+                          Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => Home1()),
+                          );
+                        }
+                      }
+                    }
+                  },
+                ),
+              ],
+            );
+          });
     }
 
 
@@ -147,7 +228,6 @@ class _clientCheckoutState extends State<clientCheckout> {
                                       },
                                       decoration: new InputDecoration(
                                           hintText: "Enter Customer's Name",
-                                          hintStyle: TextStyle(color: Colors.grey),
                                           focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.teal))
                                       ),
                                     ),
@@ -195,7 +275,7 @@ class _clientCheckoutState extends State<clientCheckout> {
                               Text("Total ".toUpperCase(),style: TextStyle(fontSize: 16,fontFamily: 'Kollektif', fontWeight: FontWeight.bold)),
                               Spacer(),
                               Padding(padding : EdgeInsets.only(right: 5.0),
-                                  child: Text(widget.price,style: TextStyle(fontFamily: 'Kollektif-Bold', fontSize: 16))),
+                                  child: Text(widget.price+"rs",style: TextStyle(fontFamily: 'Kollektif-Bold', fontSize: 16))),
                             ],
                           ),
                           SizedBox(height: 5.0,),
@@ -262,49 +342,7 @@ class _clientCheckoutState extends State<clientCheckout> {
                         elevation: 5.0,
                         child: GestureDetector(
                           onTap: () async {
-                            if (_clicked == true) {
-                              setState(() {
-                                _clicked = false;
-                              });
-                              if(customerName == null) {
-                                setState(() {
-                                  error = "Please enter Customer's Name";
-                                  _clicked = true;
-                                });
-
-                              }
-                              if (radioItem == '') {
-                                setState(() {
-                                  error = "Please select payment mode";
-                                  _clicked = true;
-                                });
-                              }
-                              else {
-                                if(customerName == null || customerName.isEmpty){
-                                  setState(() {
-                                    error = "Please enter Customer's Name";
-                                    _clicked = true;
-                                  });
-                                }else{
-                                  Dialogs.showLoadingDialog(context, _keyLoader);
-                                  final CollectionReference collection = FirebaseFirestore.instance.collection("bookingRecords");
-                                  await collection.doc().set({
-                                    'client_id': widget.clientId,
-                                    'customer_name': customerName,
-                                    'ground_name': widget.groundName,
-                                    'date': widget.date,
-                                    'time': widget.time,
-                                    'price': widget.price,
-                                    'payment_mode': radioItem,
-                                  });
-                                  Fluttertoast.showToast(
-                                      msg: "Booking Successful");
-                                  Navigator.push(context,
-                                    MaterialPageRoute(builder: (context) => Home1()),
-                                  );
-                                }
-                              }
-                            }
+                            _onBookSlotPressed();
                           },
                           child: Container(
                             padding: EdgeInsets.symmetric(vertical: 12.0),

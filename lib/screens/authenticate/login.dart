@@ -39,6 +39,12 @@ class _LoginState extends State<Login> {
     });
   }
 
+  Future<bool> _onBackPressed() {
+    _auth.signOut();
+    Navigator.push(context,
+      MaterialPageRoute(builder: (context) => Home()),
+    );
+  }
 
 
   bool flag = false;
@@ -59,232 +65,234 @@ class _LoginState extends State<Login> {
         }
       }
     }
-    return Scaffold(
-          resizeToAvoidBottomPadding: false,
-          body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
-            Container(
-              height: 200,
-              child: Stack(
-                children: <Widget>[
-                  Positioned(
-                      child: FadeAnimation(
-                        1,
-                        Container(
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: AssetImage("assets/images/1.png"),
+    return WillPopScope(
+      onWillPop: _onBackPressed,
+      child: Scaffold(
+            resizeToAvoidBottomPadding: false,
+            body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
+              Container(
+                height: 200,
+                child: Stack(
+                  children: <Widget>[
+                    Positioned(
+                        child: FadeAnimation(
+                          1,
+                          Container(
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                fit: BoxFit.cover,
+                                image: AssetImage("assets/images/1.png"),
+                              ),
                             ),
                           ),
-                        ),
-                      ))
-                ],
+                        ))
+                  ],
+                ),
               ),
+              FadeAnimation(
+                1,
+                Container(
+                child: Stack(
+                  children: <Widget>[
+                    Container(
+                    padding: EdgeInsets.fromLTRB(15.0, 0.0, 0.0, 0.0),
+                      child: Text('Login', textAlign: TextAlign.center,
+                      style:
+                        TextStyle(fontSize: 50.0,fontFamily: 'Kollektif', fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ],
+                ),
             ),
+              ),
             FadeAnimation(
               1,
               Container(
-              child: Stack(
-                children: <Widget>[
-                  Container(
-                  padding: EdgeInsets.fromLTRB(15.0, 0.0, 0.0, 0.0),
-                    child: Text('Login', textAlign: TextAlign.center,
-                    style:
-                      TextStyle(fontSize: 50.0,fontFamily: 'Kollektif', fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ],
-              ),
-          ),
-            ),
-          FadeAnimation(
-            1,
-            Container(
-                padding: EdgeInsets.only(top: 35.0, left: 20.0, right: 20.0),
-                child: Form(
-                key: _formKey,
-                child: SingleChildScrollView(
-                child: Column(
-                    children: <Widget>[
-                      SizedBox(height: 20.0),
-                      TextFormField(
-                          validator: (val) => val.isEmpty ? 'Enter valid email' : null,
+                  padding: EdgeInsets.only(top: 35.0, left: 20.0, right: 20.0),
+                  child: Form(
+                  key: _formKey,
+                  child: SingleChildScrollView(
+                  child: Column(
+                      children: <Widget>[
+                        SizedBox(height: 20.0),
+                        TextFormField(
+                            validator: (val) => val.isEmpty ? 'Enter valid email' : null,
+                            onChanged: (val){
+                              setState(() => email = val);
+                            },
+                            decoration: InputDecoration(
+                            hintText: 'Enter Email',
+                            labelStyle: TextStyle(
+                            fontFamily: 'Kollektif-Bold',
+                                fontWeight: FontWeight.bold,
+                            color: Colors.grey),
+                            // hintText: 'EMAIL',
+                            // hintStyle: ,
+                            focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.teal))),
+                        ),
+                        SizedBox(height: 20.0),
+                        TextFormField(
+                          obscureText: _obscureText,
+                          validator: (val) => val.length < 6 ? 'Enter valid password' : null,
                           onChanged: (val){
-                            setState(() => email = val);
+                            setState(() => password = val);
                           },
                           decoration: InputDecoration(
-                          hintText: 'Enter Email',
+                          hintText: 'Enter Password',
+                              suffixIcon: IconButton(
+                                onPressed: _toggle,
+                                icon: Icon(Icons.visibility),
+                                  color: Colors.teal,
+                              ),
+
                           labelStyle: TextStyle(
                           fontFamily: 'Kollektif-Bold',
-                              fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.bold,
                           color: Colors.grey),
                           // hintText: 'EMAIL',
                           // hintStyle: ,
                           focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.teal))),
-                      ),
-                      SizedBox(height: 20.0),
-                      TextFormField(
-                        obscureText: _obscureText,
-                        validator: (val) => val.length < 6 ? 'Enter valid password' : null,
-                        onChanged: (val){
-                          setState(() => password = val);
-                        },
-                        decoration: InputDecoration(
-                        hintText: 'Enter Password',
-                            suffixIcon: IconButton(
-                              onPressed: _toggle,
-                              icon: Icon(Icons.visibility),
-                                color: Colors.teal,
-                            ),
-
-                        labelStyle: TextStyle(
-                        fontFamily: 'Kollektif-Bold',
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey),
-                        // hintText: 'EMAIL',
-                        // hintStyle: ,
-                        focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.teal))
-                        ),
-                      ),
-                      SizedBox(height: 10.0),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          SizedBox(width: 5.0),
-                          InkWell(
-                            onTap: () async{
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => forgotpassword()),
-                              );
-                            },
-                            child: Text('Forgot Password?',
-                                style: TextStyle(
-                                    color: Colors.teal,
-                                    fontFamily: 'Kollektif-Bold',
-                                    fontWeight: FontWeight.bold,
-                                    decoration: TextDecoration.underline)),
+                          borderSide: BorderSide(color: Colors.teal))
                           ),
-                        ],
-                      ),
-                      SizedBox(height: 35.0),
-                      Container(
-                      height: 40.0,
-                      width: 300.0,
-                      child: Material(
-                        borderRadius: BorderRadius.circular(20.0),
-                        shadowColor: Colors.tealAccent,
-                        color: Colors.teal,
-                        elevation: 7.0,
-                        child: GestureDetector(
-                          onTap: () async{
-                            if(_clicked == true) {
-                              setState(() {
-                                _clicked = false;
-                              });
-                              if (_formKey.currentState.validate()) {
-                                dynamic result = await _auth.signInWithEmail(email, password);
-                                if (result == null) {
-                                  setState(() {
-                                    error = 'Invalid Credentials';
-                                    _clicked = true;
-                                  });
-                                }
-                                else {
-                                  User u = result;
-                                  _verify();
-                                  try {
-                                    Dialogs.showLoadingDialog(context, _keyLoader);
-                                    CollectionReference collection = FirebaseFirestore.instance.collection("user");
-                                    DocumentSnapshot document = await collection.doc(u.uid).get();
-                                    Map<String, Object> map = document.data();
-                                    if (map.length > 0) {
-                                      if (flag == false) {
-                                        Dialogs.showLoadingDialog(context, _keyLoader);
-                                        setState(() {
-                                          error = "Please verify your email";
-                                        });
-                                        print(flag);
+                        ),
+                        SizedBox(height: 10.0),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            SizedBox(width: 5.0),
+                            InkWell(
+                              onTap: () async{
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => forgotpassword()),
+                                );
+                              },
+                              child: Text('Forgot Password?',
+                                  style: TextStyle(
+                                      color: Colors.teal,
+                                      fontFamily: 'Kollektif-Bold',
+                                      fontWeight: FontWeight.bold,
+                                      decoration: TextDecoration.underline)),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 35.0),
+                        Container(
+                        height: 40.0,
+                        width: 300.0,
+                        child: Material(
+                          borderRadius: BorderRadius.circular(20.0),
+                          shadowColor: Colors.tealAccent,
+                          color: Colors.teal,
+                          elevation: 7.0,
+                          child: GestureDetector(
+                            onTap: () async{
+                              if(_clicked == true) {
+                                setState(() {
+                                  _clicked = false;
+                                });
+                                if (_formKey.currentState.validate()) {
+                                  dynamic result = await _auth.signInWithEmail(email, password);
+                                  if (result == null) {
+                                    setState(() {
+                                      error = 'Invalid Credentials';
+                                      _clicked = true;
+                                    });
+                                  }
+                                  else {
+                                    User u = result;
+                                    _verify();
+                                    try {
+                                      CollectionReference collection = FirebaseFirestore.instance.collection("user");
+                                      DocumentSnapshot document = await collection.doc(u.uid).get();
+                                      Map<String, Object> map = document.data();
+                                      if (map.length > 0) {
+                                        if (flag == false) {
+                                          setState(() {
+                                            error = "Please verify your email";
+                                            _clicked = true;
+                                          });
+                                        }
+                                        else{
+                                          Dialogs.showLoadingDialog(context, _keyLoader);
+                                          Navigator.push(context,
+                                            MaterialPageRoute(builder: (context) => Home()),
+                                          );
+                                        }
                                       }
-                                      else {
-                                        Navigator.push(context,
-                                          MaterialPageRoute(builder: (context) => Home()),
+                                    } on NoSuchMethodError {
+                                      CollectionReference collection = FirebaseFirestore.instance.collection("client");
+                                      DocumentSnapshot document = await collection.doc(u.uid).get();
+                                      Map<String, Object> map = document.data();
+                                      if (map.length > 0) {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) => Home1()),
                                         );
                                       }
                                     }
-                                  } on NoSuchMethodError {
-                                    CollectionReference collection = FirebaseFirestore.instance.collection("client");
-                                    DocumentSnapshot document = await collection.doc(u.uid).get();
-                                    Map<String, Object> map = document.data();
-                                    if (map.length > 0) {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(builder: (context) => Home1()),
-                                      );
+                                    catch (e) {
+                                      print(e.toString());
                                     }
-                                  }
-                                  catch (e) {
-                                    print(e.toString());
                                   }
                                 }
                               }
-                            }
-                          },
-                          child: Container(
-                          padding: EdgeInsets.symmetric(vertical: 12.0),
-                          child : Text('LOGIN', textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              fontFamily: 'Kollektif-Bold',
+                            },
+                            child: Container(
+                            padding: EdgeInsets.symmetric(vertical: 12.0),
+                            child : Text('LOGIN', textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                fontFamily: 'Kollektif-Bold',
+                                ),
                               ),
                             ),
-                          ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 30.0),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            "Don't have an account?",
-                            style: TextStyle(
-                              fontFamily: 'Kollektif-Bold',
                             ),
                           ),
-                          SizedBox(width: 5.0),
-                          InkWell(
-                            onTap: () async{
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => Register()),
-                              );
-                            },
-                            child: Text('Signup',
-                                style: TextStyle(
-                                    color: Colors.teal,
-                                    fontFamily: 'Kollektif-Bold',
-                                    fontWeight: FontWeight.bold,
-                                    decoration: TextDecoration.none)),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height : 10.0),
-                      Text(
-                        error,
-                        style: TextStyle(color: Colors.red, fontSize: 14.0, fontFamily: 'Kollektif-Bold',),
-                      ),
-                    ]
-                )
-            ),
-        )
-    ),
+                        ),
+                        SizedBox(height: 30.0),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              "Don't have an account?",
+                              style: TextStyle(
+                                fontFamily: 'Kollektif-Bold',
+                              ),
+                            ),
+                            SizedBox(width: 5.0),
+                            InkWell(
+                              onTap: () async{
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => Register()),
+                                );
+                              },
+                              child: Text('Signup',
+                                  style: TextStyle(
+                                      color: Colors.teal,
+                                      fontFamily: 'Kollektif-Bold',
+                                      fontWeight: FontWeight.bold,
+                                      decoration: TextDecoration.none)),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height : 10.0),
+                        Text(
+                          error,
+                          style: TextStyle(color: Colors.red, fontSize: 14.0, fontFamily: 'Kollektif-Bold',),
+                        ),
+                      ]
+                  )
+              ),
           )
-    ]
-          ),
+      ),
+            )
+      ]
+            ),
+      ),
     );
   }
 }

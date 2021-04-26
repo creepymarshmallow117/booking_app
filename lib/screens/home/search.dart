@@ -94,12 +94,6 @@ class _SearchState extends State<Search> {
           String morningPrice = data.data()["morningPrice"];
           String eveningPrice = data.data()["eveningPrice"];
           List groundImages = data.data()["groundImages"];
-          List cardList=[
-            Item1(image : groundImages[0]),
-            Item2(image : groundImages[1]),
-            Item3(image : groundImages[2]),
-            Item4(image : groundImages[3])
-          ];
           return Scaffold(
             backgroundColor: Colors.white,
             appBar: AppBar(
@@ -173,7 +167,7 @@ class _SearchState extends State<Search> {
                     visible: _isVisible,
                     child: ListTile(
                       leading: Icon(Icons.shopping_cart_rounded, color: Colors.teal),
-                      title: Text('Orders', style: TextStyle(fontFamily: 'Kollektif')),
+                      title: Text('Bookings', style: TextStyle(fontFamily: 'Kollektif')),
                       onTap: () async{
                         DocumentSnapshot doc = await db.getDocument(user.uid);
                         Navigator.pop(context);

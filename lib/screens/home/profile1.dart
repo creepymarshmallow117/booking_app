@@ -178,6 +178,65 @@ class _ProfileState extends State<Profile> {
                                 shouldCache: true,
                               cacheRefreshStrategy: CacheRefreshStrategy.BY_METADATA_DATE,
                             ),
+                            child: Align(
+                              alignment: Alignment.bottomRight,
+                              child: MaterialButton(
+                                color: Colors.teal,
+                                minWidth: 10.0,
+                                shape: CircleBorder(
+                                ),
+                                child: Icon(
+                                  Icons.camera_alt,
+                                  color: Colors.white,
+                                ),
+                                onPressed: (){
+                                  showDialog(context: context, builder: (context){
+                                    return FadeAnimation1(
+                                      0.1, Container(
+                                        child: Padding(
+                                          padding: EdgeInsets.fromLTRB(30.0, 0.0, 30.0, 20.0),
+                                          child : Column(
+                                          mainAxisSize: MainAxisSize.max,
+                                          mainAxisAlignment: MainAxisAlignment.end,
+                                          children: [
+                                            new GestureDetector(
+                                              onTap: () => _pickImage(ImageSource.camera, user.uid),
+                                              child: roundedButton(
+                                                  "CAMERA",
+                                                  EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
+                                                  const Color(0xFF167F67),
+                                                  const Color(0xFFFFFFFF)),
+                                            ),
+                                            SizedBox(height: 10.0),
+                                            new GestureDetector(
+                                              onTap: () =>  _pickImage(ImageSource.gallery, user.uid),
+                                              child: roundedButton(
+                                                  "GALLERY",
+                                                  EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
+                                                  const Color(0xFF167F67),
+                                                  const Color(0xFFFFFFFF)),
+                                            ),
+                                            SizedBox(height: 25.0),
+                                            new GestureDetector(
+                                              onTap: () => Navigator.pop(context),
+                                              child: new Padding(
+                                                padding: EdgeInsets.fromLTRB(30.0, 0.0, 30.0, 0.0),
+                                                child: roundedButton(
+                                                    "CANCEL",
+                                                    EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
+                                                    const Color(0xFF167F67),
+                                                    const Color(0xFFFFFFFF)),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        ),
+                                      ),
+                                    );
+                                  });
+                                },
+                              ),
+                            ),
                           ),
                           SizedBox(height: 10.0,),
                           Container(
@@ -208,29 +267,6 @@ class _ProfileState extends State<Profile> {
                                           ),
                                         ],
                                       ),
-                                        new Column(
-                                          mainAxisAlignment: MainAxisAlignment.end,
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: <Widget>[
-                                            new GestureDetector(
-                                              child: new CircleAvatar(
-                                                backgroundColor: Colors.teal,
-                                                radius: 14.0,
-                                                child: new Icon(
-                                                  Icons.edit,
-                                                  color: Colors.white,
-                                                  size: 16.0,
-                                                ),
-                                              ),
-                                              onTap: () {
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(builder: (context) => updateProfile(userDocument: widget.userDocument,))
-                                                );
-                                              },
-                                            ),
-                                          ],
-                                        )
                                     ],
                               )),
                             Padding(

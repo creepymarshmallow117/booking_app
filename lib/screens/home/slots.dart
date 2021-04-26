@@ -47,6 +47,7 @@ class _SlotsState extends State<Slots> {
   DateFormat formatter = DateFormat("dd-MM-yyy");
   String currentDate;
   String selectedDate;
+  DateTime selectedTimeStamp;
   String name;
   String currentTime;
   String time1;
@@ -55,6 +56,7 @@ class _SlotsState extends State<Slots> {
   void _onDaySelected(DateTime date) {
     setState(() {
       selectedDate = formatter.format(date);
+      selectedTimeStamp = date;
       print(selectedDate);
     });
   }
@@ -220,6 +222,9 @@ class _SlotsState extends State<Slots> {
                                         time = (i-12).toString() + ':00 PM';
                                         time1 = ((i-12)+1).toString() + ':00 PM';
                                       }
+                                      if(i+1 == 24){
+                                        time1 = '12:00 AM';
+                                      }
                                     }
                                     int i1 = i+1;
                                     availSlotsInternal.add(i.toString());
@@ -261,7 +266,7 @@ class _SlotsState extends State<Slots> {
                                                 Navigator.push(context,
                                                 MaterialPageRoute(
                                                 builder: (context) =>
-                                                Checkout(clientId: widget.uid, customerId: user.uid, customerName: name ,groundName: widget.groundName ,time: availSlotsInternal.elementAt(index), date: selectedDate==null ? currentDate : selectedDate, price: int.parse(availSlotsInternal.elementAt(index))<17 ? widget.morningPrice : widget.eveningPrice)));
+                                                Checkout(clientId: widget.uid, customerId: user.uid, customerName: name ,groundName: widget.groundName ,time: availSlotsInternal.elementAt(index), date: selectedDate==null ? currentDate : selectedDate, timestamp: selectedTimeStamp,price: int.parse(availSlotsInternal.elementAt(index))<17 ? widget.morningPrice : widget.eveningPrice)));
                                                 },
                                               ),
                                             );

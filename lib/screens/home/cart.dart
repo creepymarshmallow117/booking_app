@@ -2,9 +2,9 @@
 
 import 'package:booking_app/services/auth.dart';
 import 'package:flutter/material.dart';
-import 'file:///C:/Users/Aditya/AndroidStudioProjects/booking_app/lib/screens/home/home.dart';
-import 'file:///C:/Users/Aditya/AndroidStudioProjects/booking_app/lib/screens/home/orders.dart';
-import 'file:///C:/Users/Aditya/AndroidStudioProjects/booking_app/lib/screens/home/profile.dart';
+import 'file:///D:/College/Project/App/lib/screens/home/orders.dart';
+import 'file:///D:/College/Project/App/lib/screens/home/profile.dart';
+import 'file:///D:/College/Project/App/lib/screens/home/home.dart';
 
 
 

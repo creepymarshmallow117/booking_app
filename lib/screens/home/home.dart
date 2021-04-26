@@ -1,14 +1,11 @@
 //This is the User's home page.
 
-
 import 'package:booking_app/screens/authenticate/authenticate.dart';
 import 'package:booking_app/screens/home/search.dart';
 import 'package:booking_app/screens/home/ui_helper.dart';
 import 'package:booking_app/services/auth.dart';
 import 'package:booking_app/services/database.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dots_indicator/dots_indicator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_image/firebase_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -17,11 +14,8 @@ import 'package:flutter/services.dart';
 import 'file:///D:/College/Project/App/lib/screens/home/orders.dart';
 import 'file:///D:/College/Project/App/lib/screens/home/profile.dart';
 import 'package:provider/provider.dart';
-import 'package:booking_app/services/database.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:getwidget/getwidget.dart';
-import 'package:hexcolor/hexcolor.dart';
 
 
 class Home extends StatefulWidget{
@@ -33,8 +27,7 @@ class _HomeState extends State<Home> {
   bool _isVisible = false;
   Widget appBarTitle = new Text("Home");
   Icon searchIcon = new Icon(Icons.search);
-  int _currentIndex=0;
-
+  int _currentIndex = 0;
 
   List cardList=[
     Item1(),
@@ -52,8 +45,7 @@ class _HomeState extends State<Home> {
   }
 
 
-
-  Future<bool> _onBackPressed() {
+  Future<bool> _onBackPressed() { //For when someone tries to press back on the home screen
     return showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -100,15 +92,16 @@ class _HomeState extends State<Home> {
   String image = "";
   int _current;
 
-  final List<String> imageList = [
-    "assets/images/C1.jpeg",
-    "assets/images/C2.jpeg",
+  final List<String> imageList = [ //Images for carousel slider
+    "assets/images/Offers/1.jpeg",
+    "assets/images/Offers/2.jpeg",
+    "assets/images/Offers/3.jpeg",
   ];
 
   @override
   Widget build(BuildContext context) {
-    final AuthService auth = AuthService();
-    final DatabaseService db = DatabaseService();
+    final AuthService auth = AuthService(); //Handles all the authentication
+    final DatabaseService db = DatabaseService(); //Handles the work related to database
     final user = Provider.of<User>(context);
     if(user == null){
       setState(() {
@@ -125,7 +118,9 @@ class _HomeState extends State<Home> {
         image = "gs://booking-app-63e61.appspot.com/profileImages/${user.uid}.png";
       });
     }
-    imageCache.clear();
+    imageCache.clear(); //To show
+    imageCache.clearLiveImages();
+    imageCache.clear(); //To show
     imageCache.clearLiveImages();
     return StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection("client").orderBy("groundName").snapshots(),
@@ -221,7 +216,7 @@ class _HomeState extends State<Home> {
                     visible: _isVisible,
                     child: ListTile(
                       leading: Icon(Icons.shopping_cart_rounded, color: Colors.teal),
-                      title: Text('Orders', style: TextStyle(fontFamily: 'Kollektif')),
+                      title: Text('Bookings', style: TextStyle(fontFamily: 'Kollektif')),
                       onTap: () async{
                         DocumentSnapshot doc = await db.getDocument(user.uid);
                         Navigator.pop(context);
@@ -295,20 +290,20 @@ class _HomeState extends State<Home> {
                   child: Container(
                     child: Column(
                       children: <Widget>[
-
                         GFCarousel(
                           autoPlay: true,
-                          height: 210,
+                          autoPlayAnimationDuration: Duration(seconds: 1),
+                          height: 200,
                           items: imageList.map(
                                 (url) {
                               return Container(
+                                width: 1000,
                                 margin: EdgeInsets.all(3.0),
-                                child: ClipRRect(
+                                decoration: BoxDecoration(
                                   borderRadius: BorderRadius.all(Radius.circular(2.0)),
-                                  child: Image.asset(
-                                      url,
-                                      fit: BoxFit.contain,
-                                      width: 1000.0,
+                                  image: DecorationImage(
+                                    image: AssetImage(url),
+                                    fit: BoxFit.fill,
                                   ),
                                 ),
                               );

@@ -47,6 +47,7 @@ class _Slots1State extends State<Slots1> {
   DateFormat formatter = DateFormat("dd-MM-yyy");
   String currentDate;
   String selectedDate;
+  DateTime selectedTimeStamp;
   String name;
   String currentTime;
   String time1;
@@ -55,6 +56,7 @@ class _Slots1State extends State<Slots1> {
   void _onDaySelected(DateTime date) {
     setState(() {
       selectedDate = formatter.format(date);
+      selectedTimeStamp = date;
       print(selectedDate);
     });
   }
@@ -156,8 +158,8 @@ class _Slots1State extends State<Slots1> {
                                 eventDayStyle: TextStyle(
                                   fontFamily: 'Kollektif',
                                 ),
-                                todayColor: Colors.teal,
-                                selectedColor: Colors.teal.shade100,
+                                todayColor: Colors.grey,
+                                selectedColor: Colors.teal,
                               ),
                               headerStyle: HeaderStyle(
                                   centerHeaderTitle: true,
@@ -220,6 +222,9 @@ class _Slots1State extends State<Slots1> {
                                       time = (i-12).toString() + ':00 PM';
                                       time1 = ((i-12)+1).toString() + ':00 PM';
                                     }
+                                    if(i+1 == 24){
+                                      time1 = '12:00 AM';
+                                    }
                                   }
                                   int i1 = i+1;
                                   availSlotsInternal.add(i.toString());
@@ -260,7 +265,7 @@ class _Slots1State extends State<Slots1> {
                                         onTap: () {
                                           Navigator.push(
                                             context,
-                                            MaterialPageRoute(builder: (context) => clientCheckout(clientId: user.uid, groundName: widget.groundName, price: int.parse(availSlotsInternal.elementAt(index))<17 ? widget.morningPrice : widget.eveningPrice, time: availSlotsInternal.elementAt(index), date: selectedDate,)),
+                                            MaterialPageRoute(builder: (context) => clientCheckout(clientId: user.uid, groundName: widget.groundName, price: int.parse(availSlotsInternal.elementAt(index))<17 ? widget.morningPrice : widget.eveningPrice, time: availSlotsInternal.elementAt(index), date: selectedDate, timestamp: selectedTimeStamp,)),
                                           );
                                         },
                                       ),

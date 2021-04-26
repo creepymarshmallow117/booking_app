@@ -115,6 +115,7 @@ class _Home1State extends State<Home1> {
                   CollectionReference collection = FirebaseFirestore.instance.collection(
                       "client");
                   DocumentSnapshot doc = await collection.doc(user.uid).get();
+                  Navigator.pop(context);
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => Slots1(groundName: doc.data()['groundName'], startHour: doc.data()['startHour'], endHour: doc.data()['endHour'], morningPrice: doc.data()['morningPrice'], eveningPrice: doc.data()['eveningPrice'],)),
@@ -126,7 +127,7 @@ class _Home1State extends State<Home1> {
               visible: _isVisible,
               child: ListTile(
                 leading: Icon(Icons.shopping_cart_rounded, color: Colors.teal),
-                title: Text('Orders', style: TextStyle(fontFamily: 'Kollektif')),
+                title: Text('Bookings', style: TextStyle(fontFamily: 'Kollektif')),
                 onTap: () async{
                   DocumentSnapshot doc = await db.getDocument(user.uid);
                   Navigator.pop(context);
@@ -230,7 +231,7 @@ class _Home1State extends State<Home1> {
                                         DocumentSnapshot doc = snapshot1.data.docs.elementAt(i);
                                         bookedSlots.add(int.parse(doc.data()["time"]));
                                       }
-                                      for(int i = int.parse(currentTime)+1; i <= int.parse(data['endHour']); i++){
+                                      for(int i = int.parse(currentTime)+1; i < int.parse(data['endHour']); i++){
                                         if(bookedSlots.contains(i)){
                                           String time = '';
                                           String time1 = '';
@@ -255,32 +256,38 @@ class _Home1State extends State<Home1> {
                                           }
                                           bookedSlotsDisplay.add(time + " - "+ time1);
                                         }else{
-                                          availSlots.add(i.toString());
-                                          String time = '';
-                                          String time1 = '';
+                                          String time2 = '';
+                                          String time3 = '';
                                           if(i < 12){
-                                            time = i.toString() +':00 AM';
-                                            time1 = (i+1).toString() + ':00 AM';
+                                            time2 = i.toString() +':00 AM';
+                                            time3 = (i+1).toString() + ':00 AM';
                                             if(i+1 == 12){
-                                              time1 = '12:00 PM';
+                                              time3 = '12:00 PM';
                                             }
                                           }else if (i == 12){
-                                            time = '12:00 PM';
-                                            time1 = (1).toString() + ':00 PM';
+                                            time2 = '12:00 PM';
+                                            time3 = (1).toString() + ':00 PM';
                                           }
                                           else if(i > 12){
                                             if(i == 24){
-                                              time = '12:00 AM';
-                                              time1 = (1).toString() + ':00 AM';
+                                              time2 = '12:00 AM';
+                                              time3 = (1).toString() + ':00 AM';
                                             }else{
-                                              time = (i-12).toString() + ':00 PM';
-                                              time1 = ((i-12)+1).toString() + ':00 PM';
+                                              time2 = (i-12).toString() + ':00 PM';
+                                              time3 = ((i-12)+1).toString() + ':00 PM';
+                                            }
+                                            if(i+1 == 24){
+                                              time3 = '12:00 AM';
                                             }
                                           }
-                                          availSlotsDisplay.add(time + " - "+ time1);
+                                          availSlots.add(i.toString());
+                                          availSlotsDisplay.add(time2 + " - "+ time3);
                                         }
                                         for(int i = 0; i < bookedSlotsDisplay.length; i++){
                                           print(bookedSlotsDisplay.elementAt(i));
+                                        }
+                                        for(int i = 0; i < availSlotsDisplay.length; i++){
+                                          print(availSlotsDisplay.elementAt(i));
                                         }
                                       }
                                       return Column(
@@ -292,7 +299,7 @@ class _Home1State extends State<Home1> {
                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
                                                     Text(
-                                                      "Today's Orders",
+                                                      "Today's Bookings",
                                                       style: TextStyle(
                                                         fontFamily: 'Kollektif', fontSize: 20,
                                                       ),
@@ -309,8 +316,6 @@ class _Home1State extends State<Home1> {
                                             Container(
                                               height : 350,
                                               child: ListView.builder(
-                                                  physics: NeverScrollableScrollPhysics(),
-                                                  shrinkWrap: true,
                                                   itemCount: bookedSlotsDisplay.length,
                                                   itemBuilder: (context,index){
                                                     return Card(
@@ -343,15 +348,13 @@ class _Home1State extends State<Home1> {
                                               ),
                                             ),
                                             Divider(
-                                              color: Colors.grey,
+                                              color: Colors.grey.shade400,
                                               indent: 20,
                                               endIndent: 20,
                                             ),
                                             Container(
                                               height : 350,
                                               child: ListView.builder(
-                                                  physics: NeverScrollableScrollPhysics(),
-                                                  shrinkWrap: true,
                                                   itemCount: availSlotsDisplay.length,
                                                   itemBuilder: (context,index){
                                                     return Card(
@@ -362,7 +365,7 @@ class _Home1State extends State<Home1> {
                                                         onTap: () {
                                                           Navigator.push(
                                                             context,
-                                                            MaterialPageRoute(builder: (context) => clientCheckout(clientId: user.uid, groundName: groundName, price: int.parse(availSlots.elementAt(index))<17 ? morningPrice : eveningPrice, time: availSlots.elementAt(index), date: currentDate,)),
+                                                            MaterialPageRoute(builder: (context) => clientCheckout(clientId: user.uid, groundName: groundName, price: int.parse(availSlots.elementAt(index))<17 ? morningPrice : eveningPrice, time: availSlots.elementAt(index), date: currentDate, timestamp : today)),
                                                           );
                                                         },
                                                       ),

@@ -13,9 +13,10 @@ class Checkout extends StatefulWidget {
   final String groundName;
   final String time;
   final String date;
+  final DateTime timestamp;
   final String price;
 
-  const Checkout({Key key, this.clientId, this.customerId, this.customerName, this.groundName,this.time, this.date, this.price}) : super(key: key);
+  const Checkout({Key key, this.clientId, this.customerId, this.customerName, this.groundName,this.time, this.date, this.timestamp, this.price}) : super(key: key);
   @override
   _CheckoutState createState() => _CheckoutState();
 }
@@ -28,8 +29,72 @@ class _CheckoutState extends State<Checkout> {
   bool _clicked = true;
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
 
+
+
   @override
   Widget build(BuildContext context) {
+    Timestamp timestamp1 = Timestamp.fromDate(widget.timestamp);
+    Future<bool> _onBookSlotPressed() {
+      return showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Are you sure?', style: TextStyle(
+                  fontFamily: "Kallektif"
+              ),),
+              content: Text('You are going to book a slot',style: TextStyle(
+                  fontFamily: "Kallektif-Bold"
+              ),),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text('NO', style: TextStyle(color: Colors.teal, fontFamily: "Kallektif-Bold")),
+                  onPressed: () {
+                    WidgetsBinding.instance.handlePopRoute();
+                    Navigator.of(context).pop(false);
+                    imageCache.clear();
+                    imageCache.clearLiveImages();
+                  },
+                ),
+                FlatButton(
+                  child: Text('YES', style: TextStyle(color: Colors.teal,fontFamily: "Kallektif-Bold")),
+                  onPressed: () async {
+                    if (_clicked == true) {
+                      setState(() {
+                        _clicked = false;
+                      });
+                      if (radioItem == '') {
+                        setState(() {
+                          error = "Please select payment mode";
+                          _clicked = true;
+                        });
+                      }
+                      else {
+                        Dialogs.showLoadingDialog(context, _keyLoader);
+                        final CollectionReference collection = FirebaseFirestore.instance.collection("bookingRecords");
+                        await collection.doc().set({
+                          'client_id': widget.clientId,
+                          'customer_id': widget.customerId,
+                          'customer_name': widget.customerName,
+                          'ground_name': widget.groundName,
+                          'date': widget.date,
+                          'time': widget.time,
+                          'price': widget.price,
+                          'payment_mode': radioItem,
+                          'timestamp': timestamp1,
+                        });
+                        Fluttertoast.showToast(
+                            msg: "Booking Successfull");
+                        Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Home()),
+                        );
+                      }
+                    }
+                  },
+                ),
+              ],
+            );
+          });
+    }
 
     double height = MediaQuery.of(context).size.height;
     var padding = MediaQuery.of(context).padding;
@@ -57,6 +122,9 @@ class _CheckoutState extends State<Checkout> {
       }else{
         time1 = (time-12).toString() + ':00 PM';
         time2 = ((time-12)+1).toString() + ':00 PM';
+      }
+      if(time+1 == 24){
+        time2 = '12:00 AM';
       }
     }
 
@@ -252,36 +320,7 @@ class _CheckoutState extends State<Checkout> {
                       elevation: 5.0,
                       child: GestureDetector(
                         onTap: () async {
-                          if (_clicked == true) {
-                            setState(() {
-                              _clicked = false;
-                            });
-                            if (radioItem == '') {
-                              setState(() {
-                                error = "Please select payment mode";
-                                _clicked = true;
-                              });
-                            }
-                            else {
-                              Dialogs.showLoadingDialog(context, _keyLoader);
-                              final CollectionReference collection = FirebaseFirestore.instance.collection("bookingRecords");
-                              await collection.doc().set({
-                                'client_id': widget.clientId,
-                                'customer_id': widget.customerId,
-                                'customer_name': widget.customerName,
-                                'ground_name': widget.groundName,
-                                'date': widget.date,
-                                'time': widget.time,
-                                'price': widget.price,
-                                'payment_mode': radioItem,
-                              });
-                              Fluttertoast.showToast(
-                                  msg: "Booking Successfull");
-                              Navigator.push(context,
-                                MaterialPageRoute(builder: (context) => Home()),
-                              );
-                            }
-                          }
+                          _onBookSlotPressed();
                         },
                         child: Container(
                           padding: EdgeInsets.symmetric(vertical: 12.0),

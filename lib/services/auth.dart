@@ -1,7 +1,12 @@
+import 'dart:async';
+
 import 'package:booking_app/services/database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 
 class AuthService{
+
   final FirebaseAuth auth = FirebaseAuth.instance;
   Stream<User> get user {
     return auth.authStateChanges();
@@ -17,6 +22,7 @@ class AuthService{
       return null;
     }
   }
+
   Future signInWithEmail(String email, String password) async{
     try{
       User user = (await auth.signInWithEmailAndPassword(email: email, password: password))
@@ -33,4 +39,15 @@ class AuthService{
       print(e.toString());
     }
   }
+
+
+
+
+  Future<void> updatePassword(String password) async {
+    var firebaseUser = await auth.currentUser;
+    firebaseUser.updatePassword(password);
+  }
+
 }
+
+

@@ -69,7 +69,7 @@ class _RegisterState extends State<Register> {
                     padding: EdgeInsets.fromLTRB(15.0, 200.0, 0.0, 0.0),
                     child: Text('Signup', textAlign: TextAlign.center,
                     style:
-                    TextStyle(fontSize: 50.0, fontWeight: FontWeight.bold),
+                    TextStyle(fontSize: 50.0,fontFamily: 'Kollektif', fontWeight: FontWeight.bold),
                   ),
                ),
               ],
@@ -91,7 +91,7 @@ class _RegisterState extends State<Register> {
                         decoration: new InputDecoration(
                             hintText: 'Enter Full Name',
                             labelStyle: TextStyle(
-                                fontFamily: 'Montserrat',
+                                fontFamily: 'Kollektif-Bold',
                                 fontWeight: FontWeight.bold,
                                 color: Colors.grey),
                             // hintText: 'EMAIL',
@@ -114,7 +114,7 @@ class _RegisterState extends State<Register> {
                           decoration: InputDecoration(
                             hintText: 'Enter Email',
                             labelStyle: TextStyle(
-                            fontFamily: 'Montserrat',
+                                fontFamily: 'Kollektif-Bold',
                             fontWeight: FontWeight.bold,
                             color: Colors.grey),
                             // hintText: 'EMAIL',
@@ -132,7 +132,7 @@ class _RegisterState extends State<Register> {
                         decoration: new InputDecoration(
                             hintText: 'Enter Password',
                             labelStyle: TextStyle(
-                            fontFamily: 'Montserrat',
+                                fontFamily: 'Kollektif-Bold',
                             fontWeight: FontWeight.bold,
                             color: Colors.grey),
                             // hintText: 'EMAIL',
@@ -147,7 +147,7 @@ class _RegisterState extends State<Register> {
                         decoration: new InputDecoration(
                             hintText: 'Re-enter Password',
                             labelStyle: TextStyle(
-                            fontFamily: 'Montserrat',
+                                fontFamily: 'Kollektif-Bold',
                             fontWeight: FontWeight.bold,
                             color: Colors.grey),
                             // hintText: 'EMAIL',
@@ -204,7 +204,7 @@ class _RegisterState extends State<Register> {
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
-                                  fontFamily: 'Montserrat',
+                                  fontFamily: 'Kollektif-Bold',
                                 ),
                               ),
                             ),
@@ -219,7 +219,7 @@ class _RegisterState extends State<Register> {
                            Text(
                             'Already have an account?',
                             style: TextStyle(
-                               fontFamily: 'Montserrat',
+                              fontFamily: 'Kollektif-Bold',
                             ),
                           ),
                            SizedBox(width: 5.0),
@@ -233,7 +233,7 @@ class _RegisterState extends State<Register> {
                             child: Text('Login',
                                 style: TextStyle(
                                     color: Colors.teal,
-                                    fontFamily: 'Montserrat',
+                                    fontFamily: 'Kollektif-Bold',
                                     fontWeight: FontWeight.bold,
                                    decoration: TextDecoration.none)),
                         ),
@@ -242,7 +242,7 @@ class _RegisterState extends State<Register> {
                       SizedBox(height : 10.0),
                       Text(
                         error,
-                        style: TextStyle(color: Colors.red, fontSize: 14.0),
+                        style: TextStyle(color: Colors.red,fontFamily: 'Kollektif-Bold', fontSize: 14.0),
                       ),
                     ]
                 )
